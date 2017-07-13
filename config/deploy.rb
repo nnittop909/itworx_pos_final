@@ -5,7 +5,7 @@ require 'mina/rbenv'
 
 set :domain, '192.168.254.104'
 set :deploy_to, '/var/www/itworx_pos_final'
-set :repository, 'https://gitlab.com/tophiepumihic/jas_ims.git'
+set :repository, 'https://github.com/nnittop909/itworx_pos_final.git'
 set :branch, 'master'
 set :user, 'deploy'
 set :term_mode, nil

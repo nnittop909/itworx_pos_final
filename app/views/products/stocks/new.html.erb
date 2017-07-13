@@ -1,0 +1,118 @@
+<div class="row">
+  <div class="col-md-9 col-md-offset-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4> New Stock for <%= @product.name_and_description %></h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <%=simple_form_for [@product, @stock], url: :product_stocks  do |f| %>
+          <%=f.error_notification %> 
+          <div class="row">
+            <div class="col-md-6">
+              <%= f.input :reference_number %>
+              <%=f.input :serial_number, label: "Bar Code" %>
+            </div>
+            <div class="col-md-6">
+              <%=f.input :date, as: :string, label: 'Date Purchased', input_html: {class: "datepicker"} %>
+              <%=f.input :expiry_date, as: :string, input_html: {class: "datepicker"} %>
+            </div>
+          </div>
+          <div class="no-padding"><hr></div>
+          <h4 class="text-muted">Supplier Details</h4>
+          <div class="row">
+            <div class="col-md-8">
+              <span class="pull-right"><%= link_to "New Supplier?", new_supplier_path, remote: true %></span>
+              <%=f.input :supplier_id, collection: Supplier.all.map{ |a| [a.business_name, a.id]} %>
+            </div>
+            <div class="col-md-4">
+             <%=f.input :payment_type, collection: Stock.payment_types.keys.to_a.map { |s| [s.titleize, s] }%>
+            </div>
+          </div>
+          <div class="no-padding"><hr></div>
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="text-muted">Discount Details </h4>
+              <%=f.input :discounted, input_html: { id: 'stock-discount' } %>
+              <div class="col-md-12" id='discount-details' style="display:none;">
+              <div class="form-group has-warning">
+                <%=f.input :discount_amount, input_html: {id: 'discount-amount', oninput: 'calculateTotalPurchase()'}%>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h4 class="text-muted">Freight In Details </h4>
+              <%=f.input :has_freight ,input_html: { id: 'has-freight' } %>
+              <div class="col-md-12" id='freight-details' style="display:none;">
+              <div class="form-group has-warning">
+                <%=f.input :freight_amount, input_html: {id: 'freight-amount', oninput: 'calculateTotalPurchase()'}%>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-md-4">
+              <label>Quantity in <%= @stock.product.retail_unit%></label>
+              <%=f.input :quantity, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
+            </div>
+            <div class="col-md-4">
+              <label>Unit Cost / <%= @stock.product.retail_unit%></label>
+              <%=f.input :unit_cost, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
+            </div>
+            <div class="col-md-4">
+              <%=f.input :total_cost, input_html: { class: 'input-lg' }, label: 'Total Cost', readonly: true %>
+            </div>
+          </div>
+          <!-- <h4 class="text-muted">Merging Details</h4>
+          <div class="row">
+          <div class="col-md-12">
+             <%#=f.input :merged, label: 'Merge this stock?' %>
+              <span class="help-block"> Please ensure the product has previous stocks if this checkcard is clicked! </span>
+              <hr>
+            </div>
+            </div> -->
+          <div class="modal-footer">
+            <%=f.submit "Save Stock", class: "btn btn-primary" %>
+            <span class='pull-left'><%=link_to 'Cancel', stocks_path, class: 'btn btn-default' %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="product-modal" class="modal fade"></div>
+<div id="supplier-modal" class="modal fade"></div>
+<script>
+  $(document).ready(function() {
+    $("#stock_product_id").select2({
+      theme: "bootstrap"
+    });
+  });
+</script>
+
+
+<script>
+  var checkcard = document.getElementById('stock-discount');
+  var details_div = document.getElementById('discount-details');
+  checkcard.onchange = function() {
+     if(this.checked) {
+       details_div.style['display'] = 'block';
+     } else {
+       details_div.style['display'] = 'none';
+     }
+  };
+</script>
+
+<script>
+  var checkcard = document.getElementById('has-freight');
+  var freight_div = document.getElementById('freight-details');
+  checkcard.onchange = function() {
+     if(this.checked) {
+       freight_div.style['display'] = 'block';
+     } else {
+       freight_div.style['display'] = 'none';
+     }
+  };
+</script>

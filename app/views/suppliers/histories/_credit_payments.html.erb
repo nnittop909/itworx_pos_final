@@ -1,0 +1,31 @@
+<div class="tab-pane <%='active' if current_page? credit_payments_supplier_path %>">
+Credit Payments
+<div class="table table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th> Date </th>
+        <th> Description </th>
+        <th> Reference Number </th>
+        <th> Amount </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @credit_payments.each do |payment| %>
+      <tr>
+        <td><%=payment.date.strftime("%B %e, %Y") %></td>
+        <td><%=payment.description %></td>
+        <td><%=payment.reference_number %></td>
+
+        <td><%=number_to_currency payment.debit_amounts.sum(:amount) %></td>
+
+
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+</div>
+
+</div>

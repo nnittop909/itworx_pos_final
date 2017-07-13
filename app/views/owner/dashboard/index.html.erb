@@ -1,0 +1,124 @@
+<div class="row">
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-aqua">
+      <div class="inner">
+        <h4><%=Order.created_between(form_date: Time.zone.now.beginning_of_month, to_date: Time.zone.now.end_of_month).count %></h4>
+        <p>New Orders</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-cart-plus"></i>
+      </div>
+      <%=link_to orders_path, class: 'small-box-footer' do %>
+      <span>More info <i class="fa fa-arrow-circle-right"></i></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-green">
+      <div class="inner">
+          <h4><%#=number_to_currency LineItem.cash.created_between(from_date: Time.zone.now.beginning_of_year, to_date: Time.zone.now.end_of_year).sum(:total_cost) %></h4>
+        <p>Sales</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-bar-chart"></i>
+      </div>
+      <%= link_to orders_path, class: 'small-box-footer' do %>
+        <span>More info <i class="fa fa-arrow-circle-right"></i></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-yellow">
+      <div class="inner">
+        <h4><%=Member.count %></h4>
+        <p>Members</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-users"></i>
+      </div>
+      <%=link_to members_path, class: 'small-box-footer' do %>
+        <span>More info <i class="fa fa-arrow-circle-right"></i></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="col-lg-3 col-xs-6">
+    <div class="small-box bg-red">
+      <div class="inner">
+        <h4><%=number_to_currency LineItem.credit.pluck(:total_cost).sum %></h4>
+        <p>Credits</p>
+      </div>
+      <div class="icon">
+        <i class="fa fa-cart-arrow-down"></i>
+      </div>
+      <%=link_to credits_path, class: 'small-box-footer' do %>
+        <span>More info <i class="fa fa-arrow-circle-right"></i></span>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="box box-danger">
+      <div class="box-header">
+        <h4> Credits </h4>
+      </div>
+      <div class="box-body">
+        <% if Member.by_total_credit.present? %>
+          <div class="table table-responsive">
+            <table class="table table-hover">
+              <tbody>
+                <% Member.by_total_credit.first(10).each do |member| %>
+                <tr>
+                  <td><%=image_tag(member.profile_photo.url(:small), class: 'img-circle', height: 35, width: 35) %> <%= member.full_name %></td>
+                  <td><span class='pull-right'><%=number_to_currency member.total_credit %></span></td>
+                </tr>
+                  <% end %>
+              </tbody>
+            </table>
+          </div>
+          <center> <%=link_to 'View All', credits_path, class: 'btn btn-info' %></center>
+          <% else %>
+            No Credits found.
+          <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="box box-success">
+      <div class="box-header">
+        <h4> Cash Sales </h4>
+      </div>
+      <div class="box-body">
+        <% if LineItem.cash.present? %>
+          <div class="table table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Customer </th>
+                  <th> Date </th>
+                  <th> Total Amount </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% Order.cash.limit(10).each do |order| %>
+                  <tr>
+                    <td><%=order.member.try(:full_name) %></td>
+                    <td><%= order.date.strftime("%B %e %y") %></td>
+                    <td><span class='pull-right'><%= number_to_currency order.total_amount_without_discount%></span></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <center> <%=link_to 'View All', orders_path, class: 'btn btn-info' %></center>
+          <% else %>
+            No Sales found.
+          <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Top ten unpaid credits
+top ten new sales
+top ten new members -->

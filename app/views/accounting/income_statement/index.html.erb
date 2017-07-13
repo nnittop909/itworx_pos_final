@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4><center>Income Statement</center></h4>
+          <div class="row"><hr></div>
+          <div class="row">
+            <div class="col-md-12">
+              <label>Report Filter:</label>
+              <%= form_tag({:action => 'index'}, {:method => :get}) do%>
+                <div class="col-md-3">
+                  <%= label_tag :from_date, nil, class: 'sr-only'%>
+                  <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control border-input', :placeholder => "Date" %>
+                </div>
+                <div class="col-md-3">
+                  <%= label_tag :to_date, nil, class: 'sr-only'%>
+                  <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker', :placeholder => "Date" %>
+                </div>
+                <div class="col-md-3">
+                  <button type="submit" class="btn btn-primary">Get Report</button>
+                </div>
+                <div class="col-md-3">
+                  <%=link_to "Print Report (PDF)", accounting_income_statement_index_path(format: 'pdf', from_date: @from_date, to_date: @to_date), class: "btn btn-info pull-right active"%>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <%= render 'accounting/account', :name => "Revenues", :accounts => @revenues %>
+        <%= render 'accounting/account', :name => "Expenses", :accounts => @expenses %>
+        <hr>
+        <h4 class="title">Net Income: <span class="pull-right"><%=number_to_currency (@revenues.balance(from_date: @from_date.beginning_of_day, to_date: @to_date.end_of_day ) - @expenses.balance(from_date: @from_date.beginning_of_day, to_date: @to_date.end_of_day )) %></h4>
+      </div>
+    </div>
+  </div>
+</div>

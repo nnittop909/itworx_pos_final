@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="box box-danger">
+      <div class="box-header">
+        <h4>Edit Employee </h4>
+      </div>
+      <div class="box-body">
+        <div class="row">
+          <div class="col-md-3">
+          </div>
+          <div class="col-md-6">
+        <%=simple_form_for @user, url: :user, html: {class: "form-horizontal"}, wrapper: :horizontal_form do |f| %>
+        <%if @user.profile_photo.blank? %>
+            <center><%=image_tag("default.png", height: 80, width: 80, :class=>"img-square") %></center>
+          <% else %>
+            <center><%= image_tag @user.profile_photo.url(:large), class: 'center-block img-responsive img-rounded'%></center>
+          <% end %>
+          <center><%= f.input :profile_photo, as: :file %></center>
+        <h4>Information </h4>
+          <%=f.error_notification %>
+          <%=f.input :first_name %>
+          <%= f.input :last_name %>
+          <hr>
+          <h4>Contact Details </h4>
+          <%= f.input :mobile %>
+          <%= f.input :email %>
+          <hr>
+          <h4>Account Settings </h4>
+          <%= f.input :role, collection: User.roles.keys.to_a.map{|a| [a.titleize, a] } %>
+          <hr>
+          <p class="text-muted">*Please fill up the password and password confirmation to apply the changes.</p>
+          <br>
+          <%= f.input :password %>
+          <%= f.input :password_confirmation %>
+          <div class="modal-footer">
+            <div class="pull-left">
+              <%= link_to "Cancel", user_path(@user), class: 'btn btn-default' %>
+            </div>
+            <%=f.submit 'Update Employee', class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-md-3">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#user_role").select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

@@ -1,0 +1,54 @@
+<div class="tab-pane <%='active' if current_page? account_details_member_path %>">
+<h4 class="title">Credit Details </h4>
+   <div class="row">
+    <div class="col-md-3">
+      <h4 class="title"><center class="text-muted"><%=number_to_currency @member.total_credit %></center></h4>
+        <center> AMOUNT </center>
+    </div>
+    <div class="col-md-3">
+      <h4 class="title"><center class="text-muted"><%=number_to_currency @member.total_payment %></center></h4>
+      <center> PAYMENTS </center>
+      </h4>
+    </div>
+    <div class="col-md-3">
+      <h4 class="title"> <center class="text-muted"><%=number_to_currency @member.total_remaining_balance %></center></h4>
+        <center> BALANCE </center>
+      </h4>
+    </div>
+    <div class="col-md-3">
+      <% if @member.has_credit? %>
+        <span class='pull-right'><%=link_to 'New Payment', new_member_payment_path(@member), class: 'btn btn-primary' %></span>
+      <% end %></span>
+    </div>
+  </div>
+  <hr>
+<h4> Payments </h4>
+<div class="table table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th> Date </th>
+        <th> Description </th>
+        <th> Reference Number </th>
+        <th> Amount </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @credit_payments.each do |payment| %>
+      <tr>
+        <td><%=payment.date.strftime("%B %e, %Y") %></td>
+        <td><%=payment.description %></td>
+        <td><%=payment.reference_number %></td>
+
+        <td><%=number_to_currency payment.debit_amounts.sum(:amount) %></td>
+
+
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+</div>
+
+</div>

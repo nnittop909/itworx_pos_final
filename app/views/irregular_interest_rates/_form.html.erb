@@ -1,0 +1,18 @@
+<div class="col-md-4 col-md-offset-4">
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h4>Interest Rate Details</h4>
+    </div>
+    <div class="box-body">
+    <%=simple_form_for @interest_rate, url: :regular_interest_rates do |f| %>
+      <%=f.error_notification %>
+      <%=f.input :rate, placeholder: "example: 0.035" %>
+      <span class="help-block"> Please convert percent to decimal. </span>
+      <% if @interest_rate.new_record? %>
+        <%=f.submit "Create Rate", class: "btn btn-primary" %>
+      <% else %>
+        <%=f.submit "Update Rate", class: "btn btn-primary" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

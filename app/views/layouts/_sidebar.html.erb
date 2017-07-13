@@ -1,0 +1,26 @@
+<div class="side-menu sidebar-inverse">
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="side-menu-container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <div class="icon fa fa-paper-plane"></div>
+          <div class="title">ITWORX</div>
+        </a>
+        <button type="button" class="navbar-expand-toggle pull-right visible-xs">
+          <i class="fa fa-times icon"></i>
+        </button>
+      </div>
+      
+      <% if current_user.proprietor? %>
+        <%= render 'layouts/shared/sidebar_for_owner' %>
+      <% elsif current_user.cashier? %>
+        <%= render 'layouts/shared/sidebar_for_cashier' %>
+      <% elsif current_user.stock_custodian? %>
+        <%= render 'layouts/shared/sidebar_for_stock_custodian' %>
+      <% elsif current_user.bookkeeper? %>
+        <%= render 'layouts/shared/sidebar_for_bookkeeper' %>
+      <% end %>
+    </div>
+    <!-- /.navbar-collapse -->
+  </nav>
+</div>

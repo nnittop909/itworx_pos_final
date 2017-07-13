@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-3">
+              <h4>Accounts Receivables </h4>
+            </div>
+            <div class="col-md-6">
+              <%=form_tag credits_path, method: :get do %>
+                <div class="input-group stylish-input-group" id="product-prefetch">
+                  <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_member_full_name_members_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
+                  <span class="input-group-btn">
+                    <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
+                      <i class="fa fa-search"></i>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-3">
+              <%#=link_to "Add Interests", accounts_receivables_interests_path, method: :post, class: "btn btn-primary" %>
+              <span class="pull-right">
+                <%=link_to 'Print Report', credits_path(format: 'pdf'), class: "btn btn-danger" %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Customer </th>
+                <th> Amount </th>
+                <th> Since </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @members.each do |member| %>
+                <tr>
+                  <% if member.has_credit? %>
+                    <td>
+                      <%=image_tag(member.profile_photo.url(:small), class: 'img-circle', height: 35, width: 35) %>
+                      <%=link_to member.full_name, info_member_path(member) %>
+                    </td>
+                    <td><%=number_to_currency member.total_remaining_balance %></td>
+                    <td><%=time_ago_in_words(member.first_credit_created_at) if member.first_credit_created_at.present? %> ago </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="tab-pane" id='balance-sheet'>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="card">
+      <div class="header">
+        <h4 class="title"><center>Balance Sheet</center></h4>
+        <div class="row"><hr class="no-padding"></div>
+        <div class="row">
+          <div class="col-md-12">
+            <label>Report Filter:</label>
+            <%= form_tag({:action => 'index'}, {:method => :get}) do%>
+              <div class="col-md-4">
+                <%= text_field_tag :date, @to_date, :class => 'datetimepicker form-control border-input' %>
+              </div>
+              <div class="col-md-8">
+                <button type="submit" class="btn btn-primary">Get Report</button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="row"><hr></div>
+      </div>
+      <div class="content">
+        <%= render 'accounting/account', :name => "Assets", :accounts => @assets %>
+        <%= render 'accounting/account', :name => "Liabilities", :accounts => @liabilities %>
+        <%= render 'accounting/account', :name => "Equity", :accounts => @equity %>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,31 @@
+<div class="col-md-6 col-md-offset-3">
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <h4> Refund Details</h4>
+      <hr>
+      <span class="text-muted">Product: &nbsp&nbsp&nbsp</span> <span class="text-danger"><%= @stock.product.name_and_description%></span><br>
+      <span class="text-muted">Remaining Stock: &nbsp&nbsp&nbsp</span> <span class="text-danger"><%= @refund.stock.converted_in_stock_quantity%></span>
+    </div>
+    <div class="panel-body">
+      <%=simple_form_for [@stock, @refund] do |f| %>
+        <%=f.error_notification %>
+        <%= f.input :date, as: :string, input_html: { class: 'datepicker'} %>
+        <label>Quantity in <%= @stock.product.unit%></label>
+        <%= f.input :quantity, label: false, input_html: {value: @stock.in_stock} %>
+        <%= f.input :amount, label: "Refund Amount", input_html: {value: @refund.refund_amount} %>
+        <%= f.input :remarks, as: :text %>
+        <div class="modal-footer">
+          <%=link_to 'Cancel', stock_path(@stock), class: 'btn btn-default pull-left' %>
+          <%=f.submit 'Save', class: 'btn btn-danger' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#refund_stock_id").select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

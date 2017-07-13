@@ -1,0 +1,36 @@
+<div class="col-md-12">
+  <div class="box box-solid">
+    <br>
+    <div class="header">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Active Accounts</a></li>
+      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Current</a></li>
+      <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Restructured</a></li>
+      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Overdue</a></li>
+    </ul>
+  </div>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="home">
+    <div class="header">
+      <%= link_to "New Account", new_accounting_account_path, remote: true, class: "btn btn-primary" %>
+    </div>
+    <div class="new-entry"></div>
+    <div class="content">
+    <table class="table table-hover">
+      <thead>
+        <tr class="title">
+          <th>Code</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th> Debits Balance </th>
+          <th> Credits Balance </th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody class="entry-index">
+        <%= render "index" %>
+      </tbody>
+    </table>
+  </div>
+  <div id="account-modal" class="modal fade"></div>
+</div>

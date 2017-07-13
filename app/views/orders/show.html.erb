@@ -1,0 +1,96 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4>Order Details <span class="pull-right"><small><i class="fa fa-clock-o"></i> <%=@order.date.strftime("%A, %B %e, %Y %H:%m %p") %> &nbsp;
+          </small></span></h4>
+          <% if @order.line_items.present? %>
+            <span>
+              <%=link_to order_return_order_path(@order), data: { confirm: "By doing so, all line items under this order will be returned too. Do you wish to continue?"} do %>
+                <span class="btn btn-danger btn-xs" title="By doing so, all line items under this order will be deleted too" data-toggle='tooltip'><i class="fa fa-exclamation"></i> Return this Order</span>
+              <% end %>
+            </span>
+          <% else %>
+            <span>
+              <%=link_to order_path(@order), method: :delete, data: { confirm: "By doing so, all line items under this order will be returned too. Do you wish to continue?"} do %>
+                <span class="btn btn-danger btn-xs" title="Delete Order" data-toggle='tooltip'><i class="fa fa-trash"></i></span>
+              <% end %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <b> Invoice No. <%=@order.invoice_number.try(:number) %></b>
+        <span class="pull-right">
+          <%=link_to 'Print Invoice', print_invoice_order_path(@order, format: 'pdf'), class: 'btn btn-primary' %>
+        </span>
+        <hr>
+        <h4><b>Customer</b></h4>
+        <br>
+        <table class="table">
+          <tr>
+            <td width="150px"><b>Name: </b></td>
+            <td><%=@order.member.try(:full_name) || 'Guest'%></td>
+          </tr>
+          <tr>
+            <td width="150px"><b>Address: </b></td>
+            <td><%=@order.member.try(:address_details) || 'N/A' %></td>
+          </tr>
+          <tr>
+            <td width="150px"><b>Mobile Number:</b></td>
+            <td><%=@order.member.try(:mobile_number) || 'N/A' %></td>
+          </tr>
+        </table>
+        <hr>
+        <h4><b>Items </b></h4>
+        <br>
+        <table class="table table-hover">
+          <%@order.line_items.each do |line_item| %>
+            <tr>
+              <td><%=line_item.stock.try(:name)%></td>
+              <td><%=line_item.converted_quantity %></td>
+              <td class="text-right">
+                <% if line_item.retail? %>
+                  <%=number_to_currency line_item.converted_price %>
+                <% else %>
+                  <%=number_to_currency line_item.converted_price %>
+                <% end %>
+              </td>
+              <td class="text-right">
+                <% if line_item.retail? %>
+                  <%=number_to_currency line_item.total_price %>
+                <% else %>
+                  <%=number_to_currency line_item.total_wholesale_price %>
+                <% end %>
+              </td>
+              <% if @order.line_items.count > 1 %>
+                <td>
+                  <div class="pull-right">
+                    <%=link_to line_item_return_line_item_path(line_item), data: {confirm: 'Are you sure?'} do %>
+                      <span class="btn btn-danger btn-xs" title="Return Item" data-toggle='tooltip'><i class="fa fa-undo"></i></span>
+                    <% end %>
+                  </div>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        </table>
+        <table class="table">
+          <tr>
+            <td width="150px"><b>SubTotal: </b></td>
+            <td><%=number_to_currency @order.total_amount_without_discount %></td>
+          </tr>
+          <tr>
+            <td width="150px"><b class="text-danger">Discount: </b></td>
+            <td><span class='text-danger'><%= number_to_currency @order.total_discount%></span></td>
+          </tr>
+          <tr>
+            <td width="150px"><h4><b>Total:</b></h4></td>
+            <td><h4><%=number_to_currency @order.total_amount_less_discount %></h4></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

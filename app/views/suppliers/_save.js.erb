@@ -1,0 +1,13 @@
+$("ul.errors").html("")
+<% if @supplier.errors.any? %>
+  <% @supplier.errors.full_messages.each do |message| %>
+    $("ul.errors").append($("<li />").html("<%= message.html_safe %>"))
+  <% end %>
+<% else %>
+  $("#supplier-modal").modal("hide")
+  <% if current_page? new_supplier_path %>
+  	window.location.reload();
+  <% else %>
+  	$("#stock_supplier_id").load(location.href + " #stock_supplier_id>*", "");
+  <% end %>
+<% end %>

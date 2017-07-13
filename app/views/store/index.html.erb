@@ -1,0 +1,192 @@
+<div class="row">
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="col-md-12">
+            <% if params[:name_and_description].present? %>
+              <%=form_tag store_index_path, method: :get do %>
+                <div class="input-group" id="product-prefetch">
+                  <%= autocomplete_field_tag "name_and_description", params[:name_and_description], autocomplete_product_name_and_description_products_path, class: 'form-control input-lg', placeholder: 'Search Inventory...' %>
+                  <span class="input-group-btn">
+                    <%= button_tag(type: 'submit', class: "btn btn-flat btn-lg") do %>
+                      <i class="fa fa-search"></i>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+            <% else %>
+              <%=form_tag store_index_path, method: :get do %>
+                <div class="input-group" id="product-prefetch">
+                  <%= autocomplete_field_tag "name_and_description", params[:name_and_description], autocomplete_product_name_and_description_products_path, class: 'form-control input-lg', placeholder: 'Search Inventory...' %>
+                  <span class="input-group-btn">
+                    <%= button_tag(type: 'submit', class: "btn btn-flat btn-lg") do %>
+                      <i class="fa fa-search"></i>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if params[:name_and_description].present? && @stocks.count > 0 %>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th class="text-right" width="110px">Price </th>
+                <th class="text-center">Quantity </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @stocks.each do |stock| %>
+                <% if stock.out_of_stock? %>
+                  <tr><td colspan="4" class="text-center text-muted"><h3>Out of Stock!</h3></td></tr>
+                <% elsif stock.expired? %>
+                  <tr><td colspan="4" class="text-center text-muted"><h3>Expired!</h3></td></tr>
+                <% else %>
+                  <tr>
+                    <td>
+                      <h5><%=stock.product.name_and_description %></h5>
+                      <p class="text-muted">Remaining: <%=stock.converted_in_stock_quantity%></p>
+                    </td>
+                    <%=simple_form_for @line_item, url: :line_items do |f| %>
+                    <%=f.error_notification %>
+                    
+                      <td width="130px">
+                        <% if current_page? store_index_path %>
+                          <%= f.input :pricing_type, input_html: {value: 'retail'}, as: :hidden %>
+                        <% elsif current_page? wholesales_path %>
+                          <%= f.input :pricing_type, input_html: {value: 'wholesale'}, as: :hidden %>
+                        <% end %>
+                        <div class="pull-right"> 
+                        <span>&nbsp</span><br>
+                          <%=f.input :unit_price, input_html: { value: stock.retail_price}, label: false %>
+                        </div>
+                      </td>
+                      <td width="110px">
+                        <span>&nbsp</span><br>
+                        <%=f.input :quantity,  input_html: {value: 1, max: stock.quantity}, autofocus: true, label: false %>
+                        <%=f.input :stock_id, input_html: {value: stock.id }, as: :hidden %>
+                      </td>
+                      <td width="60px">
+                        <span>&nbsp</span><br>
+                        <div class="pull-right">
+                          <%=f.submit "Add", data: {disable_with: "Adding Product..."}, class: "btn btn-primary btn-sm active" %>
+                        </div>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        <% elsif @stocks.count.zero? && params[:name_and_description].blank? %>
+          <p class="alert alert-info"> Product not found or out of stock.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> </p>
+        <% end %>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <% if @cart.line_items.blank? %>
+            <center><%=image_tag('empty_cart.png', height: 150, width: 150) %></center>
+          <% else %>
+            <h4> <i class="fa fa-cart-plus fa-2x"></i> <span class='badge badge-notify'><%=@cart.line_items.count %></span> <span>Items in Cart</span>
+              <span class="pull-right">
+                <%= link_to 'Empty Cart', @cart, method: :delete, data: {confirm: 'Are you sure you want to empty cart?'}, class: "btn btn-danger btn-xs" %>
+              </span>
+            </h4>
+            <hr>
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <%=render @cart.line_items.sort_by{|l| l.stock_name } %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5" id="cart">
+    <% if @cart.line_items.present? %>
+      <div class="card">
+        <div class="card-body">
+        <div id="member-modal" class="modal fade"></div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <h2> <b>Sub Total</b> </h2>
+              </div>
+              <div class="pull-right">
+                <h2> <b><%=number_to_currency @cart.total_retail_price %></b></h2>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-12">
+              <%=simple_form_for @order, url: :orders do |f| %>
+                <% if current_page? store_index_path %>
+                  <%= f.input :order_type, input_html: {value: 'retail'}, as: :hidden %>
+                <% elsif current_page? wholesales_path %>
+                  <%= f.input :order_type, input_html: {value: 'wholesale'}, as: :hidden %>
+                <% end %>
+                <span><label>Customer</label> <span class="pull-right"><%= link_to 'New Customer', new_member_path, remote: true %></span></span>
+                <%=f.input :user_id, label: false, collection: Member.all.map{|a| [a.full_name, a.id] } || 'Guest', input_html: {id: 'order_user_id', default: Member.find_by_email("guest@itworx.com")} %>
+                <input type="hidden" name="total" id="total" value="<%= @cart.total_retail_price %>" oninput="calculateChange()">
+                <div class="row">
+                  <div class="col-md-5">
+                    <%=f.input :pay_type, collection: Order.pay_types.keys.to_a.map{|a| [a.titleize, a]}, default: Order.pay_types.first%>
+                  </div>
+                  <div class="col-md-7">
+                    <%=f.input :date, as: :string, input_html: {class: 'datepicker', value: Time.zone.now.strftime("%Y-%m-%d %I:%M %p")} %>
+                  </div>
+                </div>
+                <%=f.input :discounted, as: :boolean, input_html: { id: 'order_discount'} %>
+                <div id="discount_details" style="display:none;">
+                  <%=f.simple_fields_for :discount do |ff| %>
+                    <div class="form-group has-warning">
+                     <%= ff.input :amount, input_html: {oninput: 'calculateChange()', class: 'input-lg text-warning', value: 0}, label: "Discount Amount" %>
+                    </div>
+                  <% end %>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <%=f.input :cash_tendered, input_html: {oninput: 'calculateChange()', class: 'input-lg'}, label: "Amount Tendered" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%=f.input :change, input_html: { class: 'input-lg'}, readonly: true %>
+                  </div>
+                </div>
+                <%=f.submit "Checkout", class: 'btn btn-success btn-block btn-lg' %>
+                <br>
+              <% end %>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#order_user_id").select2({
+      theme: "bootstrap",
+      width: "100%"
+    });
+  });
+</script>
+<script>
+  var checkbox = document.getElementById('order_discount');
+  var details_div = document.getElementById('discount_details');
+  checkbox.onchange = function() {
+     if(this.checked) {
+       details_div.style['display'] = 'block';
+     } else {
+       details_div.style['display'] = 'none';
+     }
+  };
+</script>

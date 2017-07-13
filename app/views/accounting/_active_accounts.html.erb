@@ -1,0 +1,39 @@
+<div class="tab-pane active" id='active-accounts'>
+  <div class="table table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th> Code </th>
+          <th> Name </th>
+          <th> Type </th>
+          <th> Debits </th>
+          <th> Credits </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @active_accounts.each do |account| %>
+          <tr>
+            <td><%=account.code %></td>
+            <td><%=account.name %></td>
+            <td><%=account.type.gsub('Accounting::', '') %></td>
+            <td><%= number_to_currency account.debits_balance %></td>
+            <td><%= number_to_currency account.credits_balance %><td>
+              <%if account.inactive? %>
+              <%=link_to activate_accounting_account_path(account), method: :post do %>
+              <btn class="btn"><i class="fa fa-toggle-off fa-2x"></i></btn>
+              <% end %>
+              <% elsif account.active? %>
+              <%=link_to deactivate_accounting_account_path(account), method: :post do %>
+              <btn class="btn"><i class="fa fa-toggle-on fa-2x"></i></btn>
+              <% end %>
+              <% end %>
+
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <div class="modal-footer">
+      <center><%= paginate @active_accounts, :window => 1 %></center>
+    </div>
+  </div>
+</div>

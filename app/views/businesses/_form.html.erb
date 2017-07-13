@@ -1,0 +1,35 @@
+<div class="col-md-12">
+  <div class="box box-solid">
+    <div class="box-header with-border">
+      <h3 class="box-title">About Business</h3>
+      <br>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-6">
+          <%=simple_form_for @business do |f| %>
+            <%=f.error_notification %>
+            <%if @business.logo.blank? %>
+                <center><%=image_tag("default.png", height: 80, width: 80, :class=>"img-square") %></center>
+              <% else %>
+                <center><%= image_tag @business.logo.url(:large), class: 'center-block img-responsive img-rounded'%></center>
+              <% end %>
+              <center><%= f.input :logo, as: :file %></center>
+            <%=f.input :name %>
+            <%=f.input :tin %>
+            <%=f.input :vat,  as: :boolean, label: 'VAT Registered', input_html: { class: 'inline'}  %>
+            <%=f.input :proprietor %>
+            <%= f.input :address %>
+            <%=f.input :mobile_number %>
+            <%=f.input :email %>
+            <div class="modal-footer">
+              <%=f.submit 'Save', class: 'btn btn-primary' %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

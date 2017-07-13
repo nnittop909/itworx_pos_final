@@ -1,0 +1,39 @@
+
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="box box-solid">
+      <div class="box-header">
+        <h4 class="title"> Interest Details </h4>
+      </div>
+      <div class="box-body">
+        <span class="title">Total  Balance: <%= number_to_currency @member.total_remaining_balance %></span>
+        <hr>
+        <%= simple_form_for @entry, url: :member_interests do |f| %>
+        <%= f.error_notification %>
+        <div class="row">
+          <div class="col-md-6">
+            <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+          </div>
+          <div class="col-md-6">
+            <%=f.input :reference_number %>
+          </div>
+        </div>
+          <%=f.input :description, as: :text, input_html: { value: "Add Interest for #{Time.zone.now.last_month.strftime("%B %Y")}" }%>
+
+          <%=f.simple_fields_for :debit_amounts do |ff| %>
+          <%=ff.input :amount, input_html: { value: (@member.total_remaining_balance * @member.interest_rate).round(2) } %>
+          <%=ff.input :account, input_html: { value: "Interests on Credit Receivables"}, readonly: true %>
+          <% end %>
+          <%=f.simple_fields_for :credit_amounts do |ff| %>
+          <%=ff.input :amount, readonly: true, input_html: { value: (@member.total_remaining_balance * @member.interest_rate).round(2)}  %>
+          <%=ff.input :account, input_html: { value: "Interest Income from Credit Sales"}, readonly: true %>
+          <% end %>
+          <div class="modal-footer">
+            <%= f.submit 'Save Payment', class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

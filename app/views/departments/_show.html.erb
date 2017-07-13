@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-1">
+            </div>
+            <div class="col-md-10">
+              <h4>
+                <br>
+                <%= @department.full_name %><br />
+                <a href="#"><small></small></a>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+      <div class="nav-tabs-navigation">
+        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+          <li class="<%='active' if current_page? info_department_path %>">
+            <%= link_to 'Info', info_department_path %>
+          </li>
+          <li class="<%='active' if current_page? purchases_department_path %>">
+            <%= link_to 'Purchases', purchases_department_path %>
+          </li>
+          <li class="<%='active' if current_page? account_details_department_path %>">
+            <%= link_to 'Account Details', account_details_department_path %>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div id="my-tab-content" class="tab-content">
+          <%= render '/departments/transactions/info' if current_page? info_department_path %>
+          <%= render '/departments/transactions/purchases' if current_page? purchases_department_path %>
+          <%= render '/departments/transactions/account_details' if current_page? account_details_department_path %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

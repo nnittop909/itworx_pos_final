@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="assets/img/favicon.png">
+  <!--<link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>-->
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="<%= meta_description %>">
+  <meta name="author" content="<%= meta_author %>">
+  <meta name="Keywords" content="<%= meta_keywords %>">
+  <title><%= full_title(yield(:title)) %></title>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%= javascript_include_tag 'application'%>
+  <%= csrf_meta_tags %>
+  </head>
+  <body class="flat-blue">
+  <div class="app-container">
+    <div class="row content-container">
+      <%= render 'layouts/header' %>
+      <%= render 'layouts/sidebar' %>
+      <div class="container-fluid">
+        <div class="side-body padding-top">
+          <%=render 'layouts/flash' %>
+          <div class="row">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= render 'layouts/footer' %>
+  </div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+.card .card-header .card-action {
+	display: inline-block;
+	position: relative;
+	padding: 1.1em 10px;
+}
+
+.card-glass .card-header .card-action {
+	display: inline-block;
+	position: relative;
+	padding: 1.1em 10px;
+}
+
+.card-glass {
+  background-color: #FFF;
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+  opacity: 0.7;
+  z-index: 10000;
+}
+.card-glass .card-body {
+  padding: 25px;
+}
+.card .card-body .sub-title {
+  font-size: 1.2em;
+  padding: 1.2em 0em 0.4em 0em;
+  margin-bottom: 25px; 
+}
+.card-glass .card-body .sub-title .description {
+  padding-left: 0.4em;
+  font-size: 0.8em;
+  opacity: 0.8; 
+}
+.card-glass .card-body.half-padding {
+  padding: 12.5px; 
+}
+.card-glass .card-header .card-title {
+  padding: 1.2em 10px;
+  display: inline-block;
+  width: 100%;
+}
+.card-glass .card-header .card-title .title {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.5em;
+  text-decoration: none; 
+}
+.card-glass .card-header .pull-right {
+  padding: 0.5em 1em;
+  float: right !important;
+}
+.card-glass .card-header {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+}
+.card-glass .card-profile-img img {
+  width: 100%;
+  height: auto; 
+}
+.card-glass .card-jumbotron {
+  padding: 1.5em 1.5em; 
+}
+
+.card-glass:hover .card-header .title {
+  text-decoration: none !important; 
+}
+
+.card-glass.summary-inline .card-body {
+  padding: 20px; }
+  .card.summary-inline .card-body .content {
+    float: right; }
+    .card.summary-inline .card-body .content .title {
+      font-family: 'Lato', sans-serif;
+      margin-top: -0.3em;
+      font-size: 3.5em;
+      text-align: right; }
+    .card.summary-inline .card-body .content .sub-title {
+      font-family: 'Lato', sans-serif;
+      font-size: 0.9em;
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 0;
+      padding: 0;
+      border-bottom: 0; }
+
+.card-glass.profile .card-body {
+  padding: 0.5em 0.8em; }
+
+.card-glass.profile .card-footer {
+  padding: 0.5em 0.8em; }
+
+.input-group-addon {
+  padding: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 34px;
+  color: #555555;
+  text-align: center;
+  background-color: none;
+  border: none;
+  border-radius: 0px;
+}

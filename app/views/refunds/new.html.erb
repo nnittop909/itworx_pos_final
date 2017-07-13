@@ -1,0 +1,28 @@
+<div class="col-md-6 col-md-offset-3">
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <h4 class="panel-title"> Refund Details </h4>
+      <hr>
+    </div>
+    <div class="panel-body">
+      <%=simple_form_for @refund do |f| %>
+        <%=f.error_notification %>
+        <%= f.input :stock_id, collection: Stock.all.map{ |a| [ a.name, a.id]} %>
+        <%= f.input :quantity %>
+        <%= f.input :amount %>
+        <%= f.input :remarks, as: :text %>
+        <%= f.input :date, as: :string, input_html: { class: 'datepicker'} %>
+        <div class="modal-footer">
+          <%=f.submit 'Save', class: 'btn btn-danger' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#refund_stock_id").select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

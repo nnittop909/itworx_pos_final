@@ -1,0 +1,73 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">New Product </h4>
+    </div>
+    <div class="box-body">
+      <div class="content">
+        <div class="modal-body">
+          <ul class="errors text-danger">
+          </ul>
+          <%=simple_form_for @product, remote: true do |f| %>
+          <%=f.error_notification %>
+            <%=f.input :name, autofocus: true %>
+            <div class="row">
+              <div class="col-md-6">
+                <%=f.input :description %>
+              </div>
+              <div class="col-md-6">
+                <%= f.input :category_id, collection: Category.all %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <%= f.input :conversion_quantity, label: 'Bigger Ratio' %>
+              </div>
+              <div class="col-md-4">
+                <%= f.input :retail_unit, label: 'Unit(Retail)', placeholder: 'kgs' %>
+              </div>
+              <div class="col-md-1"><h2 class="text-muted">/</h2></div>
+              <div class="col-md-4">
+                <%= f.input :wholesale_unit, label: 'Unit(Wholesale)', placeholder: 'bag' %>
+              </div>
+              <div class="col-md-12">
+                <p class="text-muted">*Enter the value for "Bigger Ratio" if you want to set the value for "Unit(Wholesale)", or leave it as default value. This values will be used during conversion.</p>
+              </div>
+            </div>
+            <%=f.input :stock_alert_count, placeholder: 'Enter quantity based on Unit(Retail)...' %>
+            <div class="row">
+              <div class="col-md-6">
+                <%=f.input :retail_price, label: 'Retail Price' %>
+              </div>
+              <div class="col-md-6">
+                <%=f.input :wholesale_price, label: 'Wholesale Price' %>
+              </div>
+            </div>
+            <%=f.input :program_product, label: "Program", input_html: { id: 'program-product' } %>
+              <div class="col-md-12" id='programs' style="display:none;">
+              <div class="form-group has-warning">
+                <%=f.input :program_id, collection: Program.all.map{ |a| [a.name, a.id]} %>
+                </div>
+              </div>
+
+            <div class="modal-footer">
+              <%= link_to "Cancel", "#", class: "btn pull-left btn-default", data: {dismiss: "modal"} %>
+              <%=f.submit "Save Product", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var checkbox = document.getElementById('program-product');
+  var details_div = document.getElementById('programs');
+  checkbox.onchange = function() {
+     if(this.checked) {
+       details_div.style['display'] = 'block';
+     } else {
+       details_div.style['display'] = 'none';
+     }
+  };
+</script>

@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="box box-solid">
+      <div class="box-header">
+        <h4 class="title"> Payment Details </h4>
+      </div>
+      <div class="box-body">
+        <span class="title">Total Remaining Balance: <%= number_to_currency @supplier.total_remaining_balance %></span>
+        <hr>
+        <%= simple_form_for @entry, url: :supplier_payments do |f| %>
+        <%= f.error_notification %>
+          <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+          <%=f.input :reference_number %>
+              <%=f.input :description %>
+        <%=f.simple_fields_for :debit_amounts do |ff| %>
+        <%=ff.input :amount, input_html: {value: @supplier.total_remaining_balance } %>
+        <%=ff.input :account, input_html: { value: "Accounts Payable-Trade"}, readonly: true, as: :hidden %>
+        <% end %>
+        <%=f.simple_fields_for :credit_amounts do |ff| %>
+        <%=ff.input :amount, input_html: {value: @supplier.total_remaining_balance }, readonly: true, as: :hidden %>
+        <%=ff.input :account, input_html: { value: "Cash on Hand"}, readonly: true, as: :hidden %>
+        <% end %>
+        <div class="modal-footer">
+          <%= link_to "Cancel", credit_stocks_supplier_path(@supplier), class: 'btn btn-default pull-left' %>
+          <%= f.submit 'Save Payment', class: "btn btn-primary" %>
+        </div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+</div>

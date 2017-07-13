@@ -1,0 +1,14 @@
+<div class="col-md-6">
+  <div class="panel panel-warning">
+    <div class="panel-heading">
+      <h4 class="panel-title"> Warranty Details </h4>
+    </div>
+    <div class="panel-body">
+      <%=simple_form_for @warranty do |f| %>
+        <%=f.error_notification %>
+        <%=f.input :description, as: :text %>
+        <%=f.submit "Set", class: 'btn btn-warning' %>
+      <% end %>
+    </div>
+  </div>
+</div>

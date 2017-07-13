@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-6">
+              <h4>
+                <br>
+                <%=@supplier.business_name.try(:upcase) %><br /><br>
+                <a href="#"><small><i class='fa fa-user'></i> &nbsp; <%=@supplier.owner %></small>
+                &nbsp; &nbsp; <small><i class='fa fa-map-marker'></i> &nbsp; <%=@supplier.address %></small>
+                 &nbsp; &nbsp; <small><i class='fa fa-phone'></i> &nbsp; <%=@supplier.mobile_number %></small>
+                </a>
+              </h4>
+            </div>
+            <div class="col-md-6">
+              <span class='pull-right'><%=link_to 'Edit', edit_supplier_path(@supplier), class: 'btn btn-danger', remote: true %>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div class="card-body">
+      <div class="nav-tabs-navigation">
+        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+          <li class="<%='active' if current_page? cash_stocks_supplier_path %>">
+            <%= link_to 'Stocks (Cash)', cash_stocks_supplier_path %>
+          </li>
+          <li class="<%='active' if current_page? credit_stocks_supplier_path %>">
+            <%= link_to 'Stocks (Credit)', credit_stocks_supplier_path %>
+          </li>
+          <li class="<%='active' if current_page? credit_payments_supplier_path %>">
+            <%= link_to 'Payments History', credit_payments_supplier_path %>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div class="tab-content">
+          <%= render '/suppliers/histories/cash_stocks' if current_page? cash_stocks_supplier_path %>
+          <%= render '/suppliers/histories/credit_stocks' if current_page? credit_stocks_supplier_path %>
+          <%= render '/suppliers/histories/credit_payments' if current_page? credit_payments_supplier_path %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</span>
+<div id="supplier-modal" class="modal fade"></div>

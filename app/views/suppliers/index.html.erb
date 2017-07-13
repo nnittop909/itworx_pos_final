@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-3">
+              <h4> Suppliers </h4>
+            </div>
+            <div class="col-md-6">
+              <%=form_tag suppliers_path, method: :get do %>
+                <div class="input-group stylish-input-group" id="product-prefetch">
+                  <%= autocomplete_field_tag "owner", params[:owner], autocomplete_supplier_owner_suppliers_path, class: 'form-control', placeholder: 'Enter Owners Name...' %>
+                  <span class="input-group-btn">
+                    <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
+                      <i class="fa fa-search"></i>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-3">
+              <span class="pull-right">
+                <%=link_to new_supplier_path, remote: true do %>
+                <span class="btn btn-primary"><i class="fa fa-male"></i> New Supplier </span>
+                <% end %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Business Name</th>
+              <th>Owner</th>
+              <th>Address</th>
+              <th>Mobile Number</th>
+              <th>Payables</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @suppliers.each do |supplier| %>
+              <tr>
+                <td><%= link_to supplier.business_name, cash_stocks_supplier_path(supplier) %></td>
+                <td><%= supplier.owner %></td>
+                <td><%= supplier.address %></td>
+                <td><%= supplier.mobile_number %></td>
+                <td><%= number_to_currency supplier.total_remaining_balance %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="supplier-modal" class="modal fade"></div>

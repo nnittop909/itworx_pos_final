@@ -1,0 +1,49 @@
+<%= simple_form_for @entry, html: { style: "display:inline;" } do |f| %>
+<%=f.error_notification %>
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">New Entry</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <%=f.input :reference_number %>
+            </div>
+            <div class="col-md-6">
+              <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+            </div>
+          </div>
+          <%=f.input :description %>
+          <%=f.simple_fields_for :debit_amounts do |ff| %>
+            <%=ff.input :amount %>
+            <%=ff.association :account, collection: Accounting::Account.active.all.map { |a| [a.name, a.id] }, label: 'Debit Account' %>
+          <% end %>
+          <%=f.simple_fields_for :credit_amounts do |ff| %>
+            <%=ff.input :amount, as: :hidden %>
+            <%=ff.association :account, collection: Accounting::Account.active.all.map { |a| [a.name, a.id] }, label: 'Credit Account' %>
+          <% end %>
+        </div>
+        <div class="modal-footer">
+          <%= f.submit class: "btn btn-primary" %>
+          <%= link_to "Cancel", accounting_entries_path, class: "btn pull-left" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<script type="text/javascript">
+  $("#accounting_entry_debit_amounts_attributes_0_account_id").select2({
+    theme: "bootstrap",
+    placeholder: 'Select Account',
+    width: '100%',
+    dropdownAutoWidth : true
+  });
+  $("#accounting_entry_credit_amounts_attributes_0_account_id").select2({
+    theme: "bootstrap",
+    placeholder: 'Select Account',
+    width: '100%',
+    dropdownAutoWidth : true
+  });
+</script>

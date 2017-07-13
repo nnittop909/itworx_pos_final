@@ -1,0 +1,27 @@
+
+<ul class="list-unstyled team-members">
+  <li id="current_item">
+    <div class="row">
+      <div class="col-xs-3">
+          <small><%= line_item.converted_quantity %></small>
+      </div>
+      <div class="col-xs-4">
+        <small>
+          <%=line_item.stock.product.name_and_description %><br>
+          <span class="text-muted"><%=number_to_currency line_item.unit_price%></span>
+        </small>
+      </div>
+      <div class="col-xs-2 text-right">
+        <small>
+          <%=number_to_currency line_item.total_price %>
+        </small>
+      </div>
+      <div class="col-xs-2">
+        <%=link_to line_item, method: :delete, data: {confirm: 'Are you sure?'}, class: ' pull-right' do %>
+          <span class='text-danger' title="Remove Item" data-toggle='tooltip'><i class="fa fa-times-circle-o fa-2x"></i></span>
+        <% end %>
+      </div>
+    </div>
+    <hr>
+  </li>
+</ul>

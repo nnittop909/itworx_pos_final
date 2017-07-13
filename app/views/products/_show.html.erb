@@ -1,0 +1,63 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-8">
+              <h4><%=@product.name_and_description.try(:upcase) %> &nbsp; &nbsp; 
+                <small class="label label-<%="danger" if @product.out_of_stock? %><%= "warning" if @product.low_stock?%>">
+                  <%= @product.stock_alert %>
+                </small>
+              </h4>
+              <div class="row">
+                <div class="col-md-4">
+                  <p><i class="fa fa-plus-circle"></i> DELIVERIES: <%=@product.converted_total_quantity %></p>
+                </div>
+                <div class="col-md-4">
+                  <p><span class="text-danger"><i class="fa fa-minus-circle"></i> SOLD: <%=@product.converted_sold_quantity %></span></p>
+                </div>
+                <div class="col-md-4">
+                  <p><span class="text-success"><i class="fa fa-server"></i> IN STOCK: <%=@product.converted_in_stock_quantity %></span></p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <span class='pull-right'>
+                <%=link_to 'Edit', edit_product_path(@product), class: 'btn btn-danger', remote: true %> 
+                <%=link_to 'New Stock', new_product_stock_path(@product), class: 'btn btn-primary' %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+      <div class="nav-tabs-navigation">
+        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+          <li class="<%='active' if current_page? stock_histories_product_path %>">
+            <%= link_to 'Stocks', stock_histories_product_path %>
+          </li>
+          <li class="<%='active' if current_page? cash_sales_product_path %>">
+            <%= link_to 'Cash Sales', cash_sales_product_path %>
+          </li>
+          <li class="<%='active' if current_page? credit_sales_product_path %>">
+            <%= link_to 'Credit Sales', credit_sales_product_path %>
+          </li>
+          <li class="<%='active' if current_page? reports_product_path %>">
+            <%= link_to 'Reports', reports_product_path %>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div class="tab-content">
+          <%= render '/products/histories/stock_histories' if current_page? stock_histories_product_path %>
+          <%= render '/products/histories/cash_sales' if current_page? cash_sales_product_path %>
+          <%= render '/products/histories/credit_sales' if current_page? credit_sales_product_path %>
+          <%= render '/products/reports/reports' if current_page? reports_product_path %>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="product-modal" class="modal fade"></div>

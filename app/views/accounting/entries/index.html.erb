@@ -1,0 +1,91 @@
+<div id="entryModal" class="modal fade"></div>
+<div class="row">
+  <div class="col-md-12">
+  	<div class="card">
+    	<div class="card-header">
+    		<div class="card-title">
+					<div class="col-md-4">
+				  	<ul class="nav navbar-nav">
+				      <li class="dropdown">
+				        <button href="#" class="dropdown-toggle btn btn-primary" data-toggle="dropdown" aria-expanded="false">Show Activity <b class="caret"></b></button>
+				        <ul class="dropdown-menu dropdown-menu-right">
+				          <li><%=link_to 'This Day', scope_to_date_accounting_entries_path(:from_date => Time.zone.now.beginning_of_day, :to_date => Time.zone.now.end_of_day, format: 'pdf') %></li>
+							    <li> <%=link_to 'This Week', scope_to_date_accounting_entries_path(from_date: Time.zone.now.beginning_of_week, to_date: Time.zone.now.end_of_week, format: 'pdf') %></li>
+							    <li> <%=link_to 'This Month', scope_to_date_accounting_entries_path(from_date: Time.zone.now.beginning_of_month, to_date: Time.zone.now.end_of_month, format: 'pdf') %></li>
+				        </ul>
+				      </li>
+				    </ul>
+					</div>
+					<div class="col-md-4">
+				    <%=form_tag accounting_entries_path, method: :get do %>
+				      <div class="input-group stylish-input-group" id="entry-prefetch">
+				        <%= autocomplete_field_tag "description", params[:description], autocomplete_entry_description_accounting_entries_path, class: 'form-control', placeholder: 'Search Entry...' %>
+				        <span class="input-group-btn">
+				          <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
+				            <i class="fa fa-search"></i>
+				          <% end %>
+				        </span>
+				      </div>
+				    <% end %>
+					</div>
+					<div class="col-md-4">
+						<ul class="nav navbar-nav pull-right">
+				      <li class="dropdown">
+				        <button href="#" class="dropdown-toggle btn btn-danger" data-toggle="dropdown" aria-expanded="false">New Entry <b class="caret"></b></button>
+				        <ul class="dropdown-menu dropdown-menu-right">
+				          <li><%=link_to 'New Entry', new_accounting_entry_path %></li>
+							    <!-- <li> <%#=link_to 'New Entry (Member)', new_accounting_member_entry_path%></li>
+							    <li> <%#=link_to 'New Entry (Employee)', new_accounting_employee_entry_path %></li>
+							    <li> <%#=link_to 'New Entry (Supplier)', new_accounting_supplier_entry_path %></li> -->
+				        </ul>
+				      </li>
+				    </ul>
+					</div>
+					<div class="row">
+					  <div class="col-md-3">
+					    <span class="pull-right title">Filter Date:</span>
+					  </div>
+					  <div class="col-md-9">
+					    <%= form_tag({:action => 'index'}, {:method => :get})  do %>
+					      <div class="row">
+					        <div class="col-md-4">
+					          <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control'%>
+					        </div>
+					        <div class="col-md-4">
+					          <%= text_field_tag :to_date, @to_date, :class => 'form-control datepicker'%>
+					        </div>
+					        <div class="col-md-4">
+					        	<button type="submit" class="btn btn-success active"> Go </button>
+					          <%=link_to "PDF", accounting_entries_path(format: 'pdf', from_date: @from_date, to_date: @to_date), class: "btn btn-default active"%>
+					        </div>
+					      </div>
+					    <% end %>
+					  </div>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="table table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr class="title">
+                <th> Date </th>
+								<th> Description </th>
+                <!-- <th> Proprietor / Supplier </th> -->
+								<th> Employee </th>
+								<th> Debit</th>
+								<th> Credit </th>
+							</tr>
+						</thead>
+						<tbody class="entry-index">
+							<%=render 'index' %>
+						</tbody>
+					</table>
+					<div class="modal-footer">
+	          <center><%= paginate @entries, :window => 1 %></center>
+	        </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

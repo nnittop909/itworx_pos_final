@@ -1,0 +1,32 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title"><%= "Editing #{@account.name}" %> </h4>
+    </div>
+    <div class="box-body">
+      <div class="content">
+        <div class="modal-body">
+          <%= simple_form_for  @account, remote: true, html: { style: "display:inline;" } do |f| %>
+            <ul class="errors text-danger">
+            </ul>
+            <div class="form-group">
+              <%=f.input :name %>
+            </div>
+            <div class="form-group">
+              <%=f.input :code %>
+            </div>
+            <%=f.input :definition, as: :text %>
+            <div class="form-group">
+              <%=f.input :type, collection: Accounting::Account.types, as: :radio_buttons %>
+            </div>
+            <%=f.input :contra %>
+          </div>
+          <div class="modal-footer">
+            <%= link_to "Cancel", "#", class: "btn pull-left btn-default", data: {dismiss: "modal"} %>
+            <%=f.submit "Update Account", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

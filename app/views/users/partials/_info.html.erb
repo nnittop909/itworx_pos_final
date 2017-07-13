@@ -1,0 +1,24 @@
+<div class="tab-pane <%='active' if current_page? info_user_path %>">
+  <div class="row">
+    <div class="col-md-3">
+      <i class="fa fa-user"></i> Name:
+    </div>
+    <div class="col-md-6">
+       <%=@user.full_name %>
+    </div>
+   </div>
+   <br>
+   <div class="row">
+    <div class="col-md-3">
+      <i class="fa fa-list-alt"></i> Role:
+    </div>
+    <div class="col-md-6">
+       <%=@user.role.try(:titleize) %>
+    </div>
+   </div>
+   <br>
+  </div>
+  <% if current_user.proprietor? %>
+    <%=link_to 'Update Info', edit_user_path(@user), class: 'btn btn-warning'%>
+  <% end %>
+</div>

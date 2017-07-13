@@ -1,0 +1,119 @@
+<nav class="navbar navbar-inverse navbar-fixed-top navbar-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-expand-toggle">
+        <i class="fa fa-bars icon"></i>
+      </button>
+      <ol class="breadcrumb navbar-breadcrumb">
+        <li>
+          <%= "Retail Section" if current_page? store_index_path %>
+          <%= "Wholesale Section" if current_page? wholesales_path %>
+          <%= "Products" if current_page? products_path %>
+
+          <%= "Stocks > Available" if current_page? stocks_path %>
+          <%= "Stocks > Out of Stock" if current_page? out_of_stock_stocks_path %>
+          <%= "Stocks > Expired" if current_page? expired_stocks_path %>
+          <%= "Stocks > Discontinued" if current_page? discontinued_stocks_path %>
+
+          <%= "Sales > Retail" if current_page? retail_orders_path %>
+          <%= "Sales > Wholesale" if current_page? wholesale_orders_path %>
+
+          <%= "Credits" if current_page? credits_path %>
+
+          <%= "Members" if current_page? members_path %>
+          <%= "Members > Information" if current_page? info_member_path(1) %>
+          <%= "Members > Purchases" if current_page? purchases_member_path(1) %>
+          <%= "Members > Account Details" if current_page? account_details_member_path(1) %>
+
+          <%= "Suppliers" if current_page? suppliers_path %>
+          <%= "Reports" if current_page? reports_path %>
+          <%= "General Ledger" if current_page? accounting_index_path %>
+          <%= "Income Statement" if current_page? accounting_income_statement_index_path %>
+          <%= "Balance Sheet" if current_page? accounting_balance_sheet_index_path %>
+          <%= "Settings" if current_page? settings_path %>
+        </li>
+      </ol>
+      <button type="button" class="navbar-right-expand-toggle pull-right visible-xs">
+        <i class="fa fa-th icon"></i>
+      </button>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <button type="button" class="navbar-right-expand-toggle pull-right visible-xs">
+        <i class="fa fa-times icon"></i>
+      </button>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-comments-o"></i></a>
+        <ul class="dropdown-menu animated fadeInDown">
+          <li class="title">
+            Notification <span class="badge pull-right">0</span>
+          </li>
+          <li class="message">
+            No new notification
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown danger">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-star-half-o"></i> 4</a>
+        <ul class="dropdown-menu danger  animated fadeInDown">
+          <li class="title">
+            Notification <span class="badge pull-right">4</span>
+          </li>
+          <li>
+            <ul class="list-group notifications">
+              <a href="#">
+                <li class="list-group-item">
+                  <span class="badge">1</span> <i class="fa fa-exclamation-circle icon"></i> new registration
+                </li>
+              </a>
+              <a href="#">
+                <li class="list-group-item">
+                  <span class="badge success">1</span> <i class="fa fa-check icon"></i> new orders
+                </li>
+              </a>
+              <a href="#">
+                <li class="list-group-item">
+                  <span class="badge danger">2</span> <i class="fa fa-comments icon"></i> customers messages
+                </li>
+              </a>
+              <a href="#">
+                <li class="list-group-item message">
+                  view all
+                </li>
+              </a>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li class="dropdown profile">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.full_name.titleize %> <span class="caret"></span></a>
+        <ul class="dropdown-menu animated fadeInDown">
+          <li class="profile-img">
+            <%=image_tag("profile-1.jpg", class: 'profile-img') %>
+          </li>
+          <li>
+            <div class="profile-info">
+              <h4 class="username"><%= current_user.full_name.titleize %></h4>
+              <p><%= current_user.email %></p>
+              <div class="btn-group margin-bottom-2x" role="group">
+                <button type="button" class="btn btn-default"><i class="fa fa-user"></i> Profile</button>
+                <button type="button" class="btn btn-default"><i class="fa fa-sign-out"></i> <%=link_to 'Logout', destroy_user_session_path, method: :delete %></button>
+
+              </div>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- <%#=form_tag products_path, method: :get, class: 'sidebar-form' do %>
+            <div class="input-group" style="width:300px">
+              <%#= autocomplete_field_tag "name_and_description", params[:name_and_description], autocomplete_product_name_and_description_products_path, class: 'form-control', placeholder: 'Search Product...' %>
+              <span class="input-group-btn">
+                <%#= button_tag(type: 'submit', class: "btn btn-flat") do %>
+                  <i class="fa fa-search"></i>
+                <%# end %>
+              </span>
+            </div>
+          <%# end %> -->

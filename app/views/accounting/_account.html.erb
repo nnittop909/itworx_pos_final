@@ -1,0 +1,19 @@
+<table class="table table-hover">
+  <caption class="text-left"><b><%=name%></b></caption>
+  <% if accounts.count > 0%>
+    <tbody>
+      <% accounts.each do |account| %>
+        <tr>
+          <td><%=h account.name %></td>
+          <td><span class="pull-right"><%=number_to_currency account.balance(:from_date => @from_date.beginning_of_day, :to_date => @to_date.end_of_day) %></span></td>
+        </tr>
+      <% end %>
+      <tr>
+        <strong>
+          <td>Total <%= name %></td>
+          <td><span class="pull-right"><%=number_to_currency accounts.balance(:from_date => @from_date.beginning_of_day, :to_date => @to_date.end_of_day) %></span></td>
+        </strong>
+      </tr>
+    </tbody>
+  <% end %>
+</table>

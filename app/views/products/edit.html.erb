@@ -1,0 +1,26 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">New Product Details </h4>
+    </div>
+    <div class="box-body">
+      <div class="content">
+        <div class="modal-body">
+          <ul class="errors text-danger">
+          </ul>
+          <%=simple_form_for @product, remote: true do |f| %>
+          <%=f.error_notification %>
+            <%=f.input :name, autofocus: true %>
+            <%=f.input :description %>
+            <%= f.input :category_id, collection: Category.all %>
+            <%=f.input :stock_alert_count %>
+            <div class="modal-footer">
+              <%= link_to "Cancel", "#", class: "btn pull-left", data: {dismiss: "modal"} %>
+              <%=f.submit "Save Product", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

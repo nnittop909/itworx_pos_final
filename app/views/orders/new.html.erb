@@ -1,0 +1,43 @@
+<div id="member-modal" class="modal fade"></div>
+<div class="col-md-12">
+  <div class="card">
+    <div class="header">
+      <h4 class="title">Order Details </h4>
+      <hr>
+    </div>
+    <div class="content">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-1 well">
+          <%=simple_form_for @order do |f| %>
+            <%=f.error_notification %>
+            <%=f.input :date, as: :string, input_html: {class: 'datepicker' } %>
+            <%=link_to 'New Member', new_member_path, remote: true %>
+            <%=f.input :user_id, label: 'Customer', collection: Member.all.map{ |a| [a.full_name, a.id]} %>
+
+
+            <%=f.input :pay_type, collection: Order.pay_types.keys.to_a.map{|a| [a.titleize, a]}, as: :radio_buttons, checked: Order.pay_types.first %>
+            <%=f.input :delivery_type, collection: Order.delivery_types.keys.to_a.map{|a| [a.titleize, a]}, checked: Order.delivery_types.keys.to_a.third, as: :radio_buttons %>
+            <div class="modal-footer">
+              <%=f.submit "Place Order", class: "btn btn-primary active" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-md-5 col-md-offset-1">
+          <%=render @cart.line_items %>
+          <hr>
+            <span class="pull-left"><b>Total</b></span>
+            <span class="pull-right"><%=number_to_currency (@cart.total_retail_price)  %></span>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $(document).ready(function() {
+    $("#order_user_id").select2({
+      theme: "bootstrap"
+    });
+  });
+</script>

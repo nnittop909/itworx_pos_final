@@ -1,0 +1,58 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Customer</h4>
+    </div>
+    <%=simple_form_for @member do |f| %>
+    <%= f.error_notification %>
+      <div class="modal-body">
+        <ul class="errors text-danger">
+        </ul>
+        <div class="row">
+          <div class="col-md-6">
+            <%=f.input :first_name %>
+          </div>
+          <div class="col-md-6">
+            <%=f.input :last_name %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <%=f.input :mobile %>
+          </div>
+          <div class="col-md-6">
+            <%=f.input :email, input_html:{ value: "#{rand(1_000_000)}#{rand(1_000_000)}#{rand(1_000_000)}@#{rand(99999)}itworx.com"}, as: :hidden %>
+          </div>
+        </div>
+        <%=f.input :password, input_html: { value: '111111' },as: :hidden %>
+        <%=f.input :password_confirmation,  input_html: { value: '111111' }, as: :hidden  %>
+        <%=f.input :role, as: :string, input_html: { value: 'customer' }, as: :hidden %>
+        <hr>
+        <p class="category"> Address Details </p>
+        <%=f.simple_fields_for :addresses do |a| %>
+          <div class="row">
+            <div class="col-md-6">
+              <%=a.input :street %>
+            </div>
+            <div class="col-md-6">
+              <%=a.input :barangay %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <%=a.input :municipality, input_html: { value: "Lagawe" } %>
+            </div>
+            <div class="col-md-6">
+              <%=a.input :province, input_html: { value: "Ifugao" } %>
+            </div>
+          </div>
+        <% end %>
+
+      <div class="modal-footer">
+        <%#= link_to 'Cancel', monitoring_project_path(@project), class: 'btn btn-default pull-left' %>
+        <%= link_to "Cancel", "#", class: "btn pull-left", data: {dismiss: "modal"} %>
+        <%=f.submit "Update", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

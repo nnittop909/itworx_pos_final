@@ -1,0 +1,17 @@
+<% @entries.each do |entry| %>
+  <tr>
+    <td><%= entry.date.strftime("%B %e, %Y") %></td>
+
+    <td><%=link_to entry.description.truncate(200), accounting_entry_path(entry) %></td>
+    <!-- <td><%#=entry.commercial_document || "Proprietor" %></td> -->
+    <td><%=entry.recorder.try(:full_name) %></td>
+    <td><%entry.debit_amounts.each do |debit| %>
+      <small><%= debit.account.try(:name) %> <span class='pull-right'><%=number_to_currency debit.amount %></span></small><br>
+      <% end %>
+      </td>
+       <td><%entry.credit_amounts.each do |credit| %>
+      <small><%= credit.account.try(:name) %> <span class='pull-right'><%=number_to_currency credit.amount %></span></small><br>
+      <% end %>
+      </td>
+  </tr>
+<% end %>

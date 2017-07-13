@@ -1,0 +1,21 @@
+<div class="tab-pane <%='active' if current_page? reports_product_path %>">
+ <h4 class="title"> Sales Report </h4>
+ <hr>
+  <%= form_tag({:action => "scope_to_date_sales", controller: "products", format: 'pdf', product_id: @product.id}, {:method => :get})  do %>
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control border-input', :placeholder => "From " %>
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker', :placeholder => "To " %>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" class="btn btn-success active"> Go </button>
+                </div>
+              </div>
+            <% end %>
+</div>

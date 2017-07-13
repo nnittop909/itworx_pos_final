@@ -1,0 +1,92 @@
+<div id="product-modal" class="modal fade"></div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-8">
+              <%=form_tag products_path, method: :get do %>
+                <div class="input-group">
+                  <%= autocomplete_field_tag "name_and_description", params[:name_and_description], autocomplete_product_name_and_description_products_path, class: 'form-control', placeholder: 'Search Product...' %>
+                  <span class="input-group-btn">
+                    <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
+                      <i class="fa fa-search"></i>
+                    <% end %>
+                  </span>
+                </div>
+              <% end %>
+            </div>
+            <div class="col-md-2">
+              <%=link_to products_path(format: 'pdf') do %>
+                <span class="btn btn-default pull-right"><i class="fa fa-file-text-o"></i> View Report</span>
+              <% end %>
+            </div>
+            <div class="col-md-2">
+              <%=link_to new_product_path, remote: true do %>
+                <span class="btn btn-primary pull-right"><i class="fa fa-plus"></i> New Product</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-header">
+        <div class="card-title">
+          <h4>Categories</h4>
+          <% Category.all.each do |category| %>
+            <%=link_to category.name.truncate(25), scope_to_category_products_path(category: category), title: category.name, class: "btn btn-info btn-xs" %>
+            &nbsp&nbsp&nbsp
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive table-full-width">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th><span class='pull-right'> Retail</span></th>
+                <th><span class='pull-right'> Wholesale</span> </th>
+                <th><span class='pull-right'> Deliveries </span> </th>
+                <th><span class='pull-right'>In Stock</span></th>
+                <th><span class='pull-right'>Sold </span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @products.each do |product| %>
+                <tr class="<%="text-danger" if product.out_of_stock?%> <%= "text-warning" if product.low_stock?%>">
+                  <td>
+                    <%=link_to product.name_description, stock_histories_product_path(product) %>
+                    <small class="label label-<%="danger" if (product.out_of_stock? || product.any_expired_and_low_stock? || product.any_expired?) %><%= "warning" if product.low_stock?%>">
+                      <%= product.stock_alert %>
+                    </small>
+                  </td>
+                  <td><span class='pull-right'><%=number_to_currency product.retail_price%></span></td>
+                  <td><span class='pull-right'><%=number_to_currency product.wholesale_price%></span></td>
+                  <td><span class='pull-right'><%=product.converted_total_quantity%></span></td>
+                  <td><span class='pull-right'><%=product.converted_in_stock_quantity%></span></td>
+                  <td><span class="pull-right"><%=product.converted_sold_quantity %></span></td>
+                  <td><%=link_to new_product_stock_path(product) do %>
+                    <span class="text-primary"><i class="fa fa-plus-circle" title="New Stock" data-toggle='tooltip'></i>
+                    <% end %> &nbsp; &nbsp;
+                    <%=link_to edit_product_path(product), remote: true do %>
+                    <span class="text-danger"><i class="fa fa-pencil" title="Edit" data-toggle='tooltip'></i>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+          <div class="box-footer">
+          <center><%= paginate @products, params: { controllers: 'products', action: 'index' } %></center>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('#search').bind('railsAutocomplete.select', function(event, data){
+  $('#search-form').submit()
+  });
+</script>

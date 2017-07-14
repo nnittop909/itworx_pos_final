@@ -2,6 +2,7 @@ require 'mina/bundler'
 require 'mina/rails'
 require 'mina/git'
 require 'mina/rbenv'
+require 'mina/deploy'
 
 set :domain, '192.168.254.105'
 set :deploy_to, '/var/www/itworx_pos_final'
@@ -34,17 +35,17 @@ end
 # For Rails apps, we'll make some of the shared paths that are shared between
 # all releases.
 task :setup => :environment do
-  command %[mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/log"]
-  command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/log"]
+  command %[mkdir -p "#{fetch(:shared_path)}/log"]
+  command %[chmod g+rx,u+rwx "#{fetch(:shared_path)}/log"]
 
-  command %[mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/log"]
-  command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/log"]
+  command %[mkdir -p "#{fetch(:shared_path)}/tmp/log"]
+  command %[chmod g+rx,u+rwx "#{fetch(:shared_path)}/tmp/log"]
 
-  command %[mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/config"]
-  command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/config"]
+  command %[mkdir -p "#{fetch(:shared_path)}/config"]
+  command %[chmod g+rx,u+rwx "#{fetch(:shared_path)}/config"]
 
-  command %[mkdir -p "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/public/system"]
-  command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/public/system"]
+  command %[mkdir -p "#{fetch(:shared_path)}/public/system"]
+  command %[chmod g+rx,u+rwx "#{fetch(:shared_path)}/public/system"]
 
   command %[mkdir -p "#{fetch(:deploy_to)}/shared/tmp/pids"]
   command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/shared/tmp"]
@@ -53,13 +54,13 @@ task :setup => :environment do
   command %[mkdir -p "#{fetch(:deploy_to)}/shared/tmp/sockets"]
   command %[chmod g+rx,u+rwx "#{fetch(:deploy_to)}/shared/tmp/sockets"]
 
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/log/stdout"]
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/log/stderr"]
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/pids/puma.pid"]
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/tmp/sockets/puma.sock"]
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/config/database.yml"]
-  command %[touch "#{fetch(:deploy_to)}/#{fetch(:shared_path)}/config/secrets.yml"]
-  comment  %[echo "-----> Be sure to edit '#{fetch(:deploy_to)}/#{fetch(:shared_path)}/config/database.yml' and 'secrets.yml'."]
+  command %[touch "#{fetch(:shared_path)}/config/database.yml"]
+  command %[touch "#{fetch(:shared_path)}/config/secrets.yml"]
+  command %[touch "#{fetch(:shared_path)}/tmp/log/stdout"]
+  command %[touch "#{fetch(:shared_path)}/tmp/log/stderr"]
+  command %[touch "#{fetch(:shared_path)}/tmp/pids/puma.pid"]
+  command %[touch "#{fetch(:shared_path)}/tmp/sockets/puma.sock"]
+  comment  %[echo "-----> Be sure to edit '#{fetch(:shared_path)}/config/database.yml' and 'secrets.yml'."]
 
   # if repository
   #   repo_host = repository.split(%r{@|://}).last.split(%r{:|\/}).first

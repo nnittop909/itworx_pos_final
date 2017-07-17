@@ -14,7 +14,7 @@ module Accounting
       @entry = Accounting::Entry.create(entry_params)
       @entry.recorder = current_user
       if @entry.save
-        redirect_to accounting_entries_path, notice: 'Entry for sales has been saved successfully.'
+        redirect_to retail_orders_path, notice: 'Entry for sales has been saved successfully.'
       else
         render :new
       end

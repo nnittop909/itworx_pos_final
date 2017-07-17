@@ -1,8 +1,8 @@
 module Stocks
   class ExpiredPdf < Prawn::Document
-    TABLE_WIDTHS = [170, 80, 80, 80, 120 ]
+    TABLE_WIDTHS = [200, 100, 232 ]
     def initialize(stocks, view_context)
-      super(margin: 40, page_size: [612, 1008], page_layout: :portrait)
+      super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
       @stocks = stocks
       @view_context = view_context
       heading
@@ -13,29 +13,37 @@ module Stocks
       @view_context.number_to_currency(number, :unit => "P ")
     end
     def heading
+      text "#{Business.last.name}", style: :bold, size: 10, align: :center
+      text "#{Business.last.address}", size: 10, align: :center
+      move_down 15
       text 'Expired Stocks Report', size: 12, align: :center, style: :bold
       move_down 10
       stroke_horizontal_rule
       move_down 5
     end
-    def display_stocks_table
-      if @stocks.blank?
+    def display_products_table
+      if @products.blank?
         move_down 10
-        text "No stocks data.", align: :center
+        text "No products data.", align: :center
       else
         move_down 10
-
-        table(table_data, header: true, cell_style: { size: 8, font: "Helvetica"}, column_widths: TABLE_WIDTHS) do
+        header = [["STOCK", "IN STOCK", "SOLD"]]
+        table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+          cells.borders = []
           row(0).font_style = :bold
-          row(0).background_color = 'DDDDDD'
+        end
+
+        stroke_horizontal_rule
+
+        header = ["", "", ""]
+        footer = ["", "", ""]
+        products_data = @products.map { |e| [e.name_and_description, e.converted_total_quantity, e.sold]}
+        table_data = [header, *products_data, footer]
+        table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+          cells.borders = [:top]
+          row(0).font_style = :bold
         end
       end
-    end
-
-    def table_data
-      move_down 5
-      [["STOCK", "UNIT", "IN STOCK", "SOLD", "DATE EXPIRED"]] +
-      @table_data ||= @stocks.map { |e| [e.product.name_and_description, price(e.product.try(:unit)), e.converted_total_quantity, e.sold, e.expiry_date.strftime("%B %e, %Y")]}
     end
   end
 end

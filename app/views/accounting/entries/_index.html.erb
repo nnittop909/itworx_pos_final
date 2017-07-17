@@ -1,6 +1,6 @@
 <% @entries.each do |entry| %>
   <tr>
-    <td><%= entry.date.strftime("%B %e, %Y") %></td>
+    <td><%= entry.date.strftime("%b %e, %Y - %I:%M %p") %></td>
 
     <td><%=link_to entry.description.truncate(200), accounting_entry_path(entry) %></td>
     <!-- <td><%#=entry.commercial_document || "Proprietor" %></td> -->

@@ -89,10 +89,22 @@ class Order < ApplicationRecord
       0.12
     end
   end
+
+  def total_catering_cost
+    catering_line_items.sum(:total_cost)
+  end
+
+  def total_catering_less_discount
+    total_catering_cost - total_discount
+  end
+
+  def total_amount_plus_catering
+    line_items.sum(:total_price) + total_catering_cost
+  end
   
   def total_amount_without_discount
     if self.catering?
-      line_items.sum(:total_price) + catering_line_items.sum(:total_cost)
+      line_items.sum(:total_price) + total_catering_cost
     else
       line_items.sum(:total_price)
     end
@@ -121,11 +133,7 @@ class Order < ApplicationRecord
   end
 
   def stock_cost
-    if self.catering?
-      (line_items.map{|a| a.stock.unit_cost * a.quantity}.sum) + (catering_line_items.map{|a| a.unit_cost * a.quantity}.sum)
-    else
-      line_items.map{|a| a.stock.unit_cost * a.quantity}.sum
-    end
+    line_items.map{|a| a.stock.unit_cost * a.quantity}.sum
   end
 
   def return_line_items_to_stock!
@@ -144,6 +152,7 @@ class Order < ApplicationRecord
 
   def create_entry
     @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand")
+    @purchases = Accounting::Account.find_by(name: "Purchases")
     @cost_of_goods_sold = Accounting::Account.find_by(name: "Cost of Goods Sold")
     @sales = Accounting::Account.find_by(name: "Sales")
     @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
@@ -176,17 +185,29 @@ class Order < ApplicationRecord
     elsif self.catering? && !self.discounted?
       Accounting::Entry.create(order_id: self.id, commercial_document_id: self.user_id, 
         commercial_document_type: self.department.class, date: self.date, 
-        description: "Credit for order ##{self.reference_number}", 
+        description: "Credit for catering order ##{self.reference_number}", 
         debit_amounts_attributes: [{amount: self.total_amount_without_discount, account: @accounts_receivable}, {amount: self.stock_cost, account: @cost_of_goods_sold}], 
         credit_amounts_attributes:[{amount: self.total_amount_without_discount, account: @sales}, {amount: self.stock_cost, account: @merchandise_inventory}], 
+        employee_id: self.employee_id)
+      Accounting::Entry.create(order_id: self.id, commercial_document_id: self.user_id, 
+        commercial_document_type: self.department.class, date: self.date, 
+        description: "Purchase of items for catering order ##{self.reference_number}", 
+        debit_amounts_attributes: [{amount: self.total_catering_cost, account: @purchases}], 
+        credit_amounts_attributes:[{amount: self.total_catering_cost, account: @cash_on_hand}], 
         employee_id: self.employee_id)
 
     elsif self.catering? && self.discounted?
       Accounting::Entry.create(order_id: self.id, commercial_document_id: self.user_id, 
         commercial_document_type: self.department.class, date: self.date, 
-        description: "Credit for order ##{self.reference_number}", 
+        description: "Credit for catering order ##{self.reference_number}", 
         debit_amounts_attributes: [{amount: self.total_amount_less_discount, account: @accounts_receivable}, {amount: self.stock_cost, account: @cost_of_goods_sold}], 
         credit_amounts_attributes:[{amount: self.total_amount_less_discount, account: @sales}, {amount: self.stock_cost, account: @merchandise_inventory}], 
+        employee_id: self.employee_id)
+      Accounting::Entry.create(order_id: self.id, commercial_document_id: self.user_id, 
+        commercial_document_type: self.department.class, date: self.date, 
+        description: "Purchase of items for catering order ##{self.reference_number}", 
+        debit_amounts_attributes: [{amount: self.total_catering_cost, account: @purchases}], 
+        credit_amounts_attributes:[{amount: self.total_catering_cost, account: @cash_on_hand}], 
         employee_id: self.employee_id)
 
     elsif self.credit? && self.discounted? && !self.catering?

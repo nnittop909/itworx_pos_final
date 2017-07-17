@@ -1,8 +1,8 @@
 module Accounting
   class DueFromCustomersPdf < Prawn::Document
-    TABLE_WIDTHS = [150, 150, 110,  120]
+    TABLE_WIDTHS = [140, 190, 90, 112]
     def initialize(members, view_context)
-      super(margin: 40, page_size: [612, 1008], page_layout: :portrait)
+      super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
       @members = members
       @view_context = view_context
       heading
@@ -16,8 +16,11 @@ module Accounting
       @view_context.time_ago_in_words(time)
     end
     def heading
+      text "#{Business.last.name}", style: :bold, size: 10, align: :center
+      text "#{Business.last.address}", size: 10, align: :center
+      move_down 15
       text 'DUE FROM CUSTOMERS', size: 12, align: :center, style: :bold
-      move_down 10
+      move_down 5
       stroke_horizontal_rule
     end
     def display_products_table
@@ -26,23 +29,32 @@ module Accounting
         text "No products data.", align: :center
       else
         move_down 10
-
-        table(table_data, header: true, cell_style: { size: 8, font: "Helvetica"}, column_widths: TABLE_WIDTHS) do
+        header = [["NAME", "ADDRESS", "CONTACT",   "TOTAL AMOUNT"]]
+        table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+          cells.borders = []
           row(0).font_style = :bold
-          row(0).background_color = 'DDDDDD'
           column(3).align = :right
-          row(-1).size = 10
-          row(-1).font_style = :bold
+        end
 
+        stroke_horizontal_rule
+        header = ["", "", "", ""]
+        footer = ["", "", "", ""]
+        members_data = @members.map { |e| [e.full_name, e.try(:address_details) || "N/A", e.mobile || "N/A",  price(e.total_remaining_balance)]}
+        table_data = [header, *members_data, footer]
+        table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+          cells.borders = [:top]
+          row(0).font_style = :bold
+          column(3).align = :right
+        end
+
+        stroke_horizontal_rule
+        footer = [["TOTAL","","", "#{price(Member.total_remaining_balance + Department.total_remaining_balance)}"]]
+        table(footer, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+          cells.borders = []
+          row(0).font_style = :bold
+          column(3).align = :right
         end
       end
-    end
-
-    def table_data
-      move_down 5
-      [["NAME", "ADDRESS", "CONTACT",   "TOTAL AMOUNT"]] +
-      @table_data ||= @members.map { |e| [e.full_name, e.try(:address_details), e.mobile,  price(e.total_remaining_balance)]} +
-      [["TOTAL","","", "#{price(Member.total_remaining_balance)}"]]
     end
   end
 end

@@ -6,7 +6,15 @@ class CateringLineItem < ApplicationRecord
   belongs_to :member, foreign_key: 'department_id'
   validates :name, :unit, :quantity, :total_cost, presence: true
   before_save :compute_unit_price
-  delegate :credit?, to: :order
+  delegate :credit?, :cash?, to: :order
+
+  def self.cash
+    all.select{|a| a.cash? }
+  end
+
+  def cash?
+     order.present? && order.cash?
+  end
 
   def self.credit
       all.select{|a| a.credit? }

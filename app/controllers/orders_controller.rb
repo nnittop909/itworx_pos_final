@@ -124,7 +124,7 @@ class OrdersController < ApplicationController
   end
   def print_invoice
     @order = Order.find(params[:id])
-    @line_items = @order.line_items
+    @line_items = @order.line_items + @order.catering_line_items
     respond_to do |format|
       format.pdf do
         pdf = InvoicePdf.new(@order, @line_items, view_context)

@@ -1,4 +1,4 @@
-<%=simple_form_for @entry, remote: true do |f| %>
+<%=simple_form_for @entry do |f| %>
 <%=f.error_notification %>
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -18,12 +18,13 @@
           <%=f.input :description, as: :text, input_html: { value: "Cash Sales on #{Time.zone.now.strftime('%B %e, %Y')}"} %>
           <%=f.simple_fields_for :debit_amounts do |ff| %>
             <%=ff.input :amount, input_html: {value: @cash_sales }, as: :hidden %>
-            <%=ff.input :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand")}, readonly: true%>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand").id}, readonly: true, as: :hidden%>
           <% end %>
           <%=f.simple_fields_for :credit_amounts do |ff| %>
-            <%=ff.input :amount, input_html: {value: @cash_sales }, readonly: true %>
-            <%=ff.input :account, input_html: { value: Accounting::Account.find_by(name: "Sales")}, readonly: true %>
+            <%=ff.input :amount, input_html: {value: @cash_sales, class: 'input-lg input-warning' }, readonly: true %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales").id}, readonly: true, as: :hidden %>
           <% end %>
+          <br>
           <div class="modal-footer">
             <%= f.submit 'Save Entry', class: "btn btn-primary" %>
             <span class="pull-left">

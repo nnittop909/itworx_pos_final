@@ -2,7 +2,7 @@ require 'barby'
 require 'barby/barcode/code_39'
 require 'barby/outputter/prawn_outputter'
 class InvoicePdf < Prawn::Document
-  TABLE_WIDTHS = [50, 210, 120, 80, 90, 100]
+  TABLE_WIDTHS = [90, 200, 100, 70, 90]
   ORDER_DETAILS_WIDTHS = [200,200, 150]
   def initialize(order, line_items, view_context)
     super(margin: 30, page_size: [612, 792], page_layout: :portrait)
@@ -102,7 +102,13 @@ end
   def table_data
     move_down 5
     [["QTY", "DESCRIPTION", "SERIAL NO.", "UNIT PRICE", "AMOUNT"]] +
-    @table_data ||= @line_items.map { |e| [e.converted_quantity, e.stock.product.try(:name_and_description), e.stock.try(:serial_number), price(e.converted_price), price(e.total_cost)]}
+    @table_data ||= @line_items.map { |e| 
+      if e.class.name == "LineItem"
+        [e.converted_quantity, e.stock.product.try(:name_and_description), e.stock.try(:serial_number), price(e.converted_price), price(e.total_price)]
+      else
+        ["#{e.quantity} #{e.unit}", e.name, "", price(e.unit_cost), price(e.total_cost)]
+      end
+    }
   end
 
   def order_details

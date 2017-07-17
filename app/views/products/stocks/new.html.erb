@@ -10,12 +10,13 @@
         <%=simple_form_for [@product, @stock], url: :product_stocks  do |f| %>
           <%=f.error_notification %> 
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <%= f.input :reference_number %>
-              <%=f.input :serial_number, label: "Bar Code" %>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <%=f.input :date, as: :string, label: 'Date Purchased', input_html: {class: "datepicker"} %>
+            </div>
+            <div class="col-md-4">
               <%=f.input :expiry_date, as: :string, input_html: {class: "datepicker"} %>
             </div>
           </div>
@@ -63,6 +64,11 @@
             </div>
             <div class="col-md-4">
               <%=f.input :total_cost, input_html: { class: 'input-lg' }, label: 'Total Cost', readonly: true %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <%=f.input :serial_number, label: "Bar Code" %>
             </div>
           </div>
           <!-- <h4 class="text-muted">Merging Details</h4>

@@ -1,7 +1,7 @@
 class ProductsPdf < Prawn::Document
-  TABLE_WIDTHS = [150, 60, 80, 80, 80]
+  TABLE_WIDTHS = [150, 60, 80, 85, 82]
   def initialize(products, view_context)
-    super(margin: 40, page_size: [612, 1008], page_layout: :portrait)
+    super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
     @products = products
     @view_context = view_context
     heading
@@ -9,7 +9,7 @@ class ProductsPdf < Prawn::Document
   end
   
   def price(number)
-    @view_context.number_to_currency(number, :unit => "")
+    @view_context.number_to_currency(number, :unit => "P ")
   end
 
   def heading
@@ -28,23 +28,31 @@ class ProductsPdf < Prawn::Document
     else
       move_down 10
 
-      table(table_data, header: true, cell_style: { size: 10, font: "Helvetica"}, column_widths: TABLE_WIDTHS) do
+      header = [["PRODUCT", "RETAIL", "WHOLESALE", "DELIVERIES", "SOLD", "IN STOCK"]]
+      table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+        cells.borders = []
         row(0).font_style = :bold
-        row(0).background_color = 'DDDDDD'
         column(1).align = :right
         column(2).align = :right
         column(3).align = :right
         column(4).align = :right
         column(5).align = :right
+      end
+      stroke_horizontal_rule
 
-
+      header = ["", "", "", "", "", ""]
+      footer = ["", "", "", "", "", ""]
+      products_data = @products.map { |e| [e.name_and_description,  price(e.retail_price), price(e.converted_wholesale_price), e.converted_total_quantity, e.converted_sold_quantity, e.converted_in_stock_quantity]}
+      table_data = [header, *products_data, footer]
+      table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+        cells.borders = [:top]
+        row(0).font_style = :bold
+        column(1).align = :right
+        column(2).align = :right
+        column(3).align = :right
+        column(4).align = :right
+        column(5).align = :right
       end
     end
-  end
-
-  def table_data
-    move_down 5
-    [["PRODUCT", "RETAIL", "WHOLESALE", "DELIVERIES", "SOLD", "IN STOCK"]] +
-    @table_data ||= @products.map { |e| [e.name_and_description,  price(e.price), price(e.converted_wholesale_price), price(e.converted_total_quantity), price(e.converted_sold_quantity), price(e.converted_in_stock_quantity)]}
   end
 end

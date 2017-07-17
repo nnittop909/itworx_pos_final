@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <div class="box box-solid">
-      <div class="box-header">
-        <h4 class="title"> Payment Details </h4>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"> <h4>Payment Details </h4></div>
       </div>
-      <div class="box-body">
+      <div class="card-body">
         <span class="title">Total Remaining Balance: <%= number_to_currency @supplier.total_remaining_balance %></span>
         <hr>
         <%= simple_form_for @entry, url: :supplier_payments do |f| %>

@@ -1,5 +1,5 @@
 class EntriesPdf < Prawn::Document
-  TABLE_WIDTHS = [80, 170, 70, 80, 85, 85]
+  TABLE_WIDTHS = [80, 130, 60, 80, 110, 112]
 def initialize(entries, from_date, to_date, view_context)
   super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
   @entries = entries
@@ -35,18 +35,23 @@ def heading
     else
       move_down 10
 
-      table(table_data, header: true, cell_style: { size: 8, font: "Helvetica"}, column_widths: TABLE_WIDTHS) do
+      header = [["DATE", "DESCRIPTION", "EMPLOYEE", "AMOUNT", "DEBIT", "CREDIT"]]
+      table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+        cells.borders = []
         row(0).font_style = :bold
-        row(0).background_color = 'DDDDDD'
+        column(3).align = :right
+      end
+      stroke_horizontal_rule
+
+      header = ["", "", "", "", "", ""]
+      footer = ["", "", "", "", "", ""]
+      entries_data = @entries.map { |e| [e.date.strftime("%b %e, %Y \n %I:%M %p"), e.description, e.recorder.try(:name), price(e.debit_amounts.pluck(:amount).join("\n")), e.debit_accounts.pluck(:name).join("\n"), e.credit_accounts.pluck(:name).join("\n")]}
+      table_data = [header, *entries_data, footer]
+      table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+        cells.borders = [:top]
+        row(0).font_style = :bold
+        column(3).align = :right
       end
     end
-  end
-
-  def table_data
-    move_down 5
-    [["DATE", "DESCRIPTION", "AMOUNT", "EMPLOYEE", "DEBIT", "CREDIT"]] +
-    @table_data ||= @entries.map { |e| [e.date.strftime('%B %e, %Y'), e.description, price(e.debit_amounts.sum(:amount)), e.recorder.try(:name), e.debit_accounts.pluck(:name).join(', '), e.credit_accounts.pluck(:name).join(', ')
-
-]}
   end
 end

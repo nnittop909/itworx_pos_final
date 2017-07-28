@@ -52,7 +52,7 @@
                   <tr>
                     <td>
                       <h5><%=stock.product.name_and_description %></h5>
-                      <p class="text-muted">Remaining: <%=stock.converted_in_stock_quantity%></p>
+                      <p class="text-muted">Remaining: <%=stock.in_stock%> <%=stock.product.unit%></p>
                     </td>
                     <%=simple_form_for @line_item, url: :line_items do |f| %>
 
@@ -142,7 +142,7 @@
                     <%=f.input :pay_type, collection: Order.pay_types.keys.to_a.map{|a| [a.titleize, a]}, default: Order.pay_types.first%>
                   </div>
                   <div class="col-md-7">
-                    <%=f.input :date, as: :string, input_html: {class: 'datepicker', default: Time.zone.now.strftime("%Y-%m-%d %I:%M %p")} %>
+                    <%=f.input :date, as: :string, input_html: {class: 'datepicker', value: Time.zone.now.strftime("%Y-%m-%d %I:%M %p")} %>
                   </div>
                 </div>
                 <%=f.input :discounted, as: :boolean, input_html: { id: 'order_discount'} %>

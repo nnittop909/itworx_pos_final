@@ -80,7 +80,7 @@ class OrdersPdf < Prawn::Document
         column(2).align = :right
         column(3).align = :right
         column(4).align = :right
-        column(5).align = :right
+        column(5).align = :center
         column(6).align = :right
       end
       stroke_horizontal_rule

@@ -71,15 +71,21 @@ module Members
           column(5).align = :right
         end
         stroke_horizontal_rule
-        move_down 4
         @orders.cash.each do |order|
           header = ["", "", "", "", "", ""]
           footer = ["", "", "", "", "", ""]
-          line_items_data = order.line_items.map { |e| [e.created_at.strftime("%B %e, %Y"), e.converted_quantity, e.stock.product.name_and_description, e.stock.try(:serial_number), price(e.converted_price), price(e.total_price) ]}
+          line_items_data = order.line_items.map { |e| [
+            e.created_at.strftime("%B %e, %Y"), 
+            "#{e.quantity.to_i} #{e.stock.product.unit}", 
+            e.stock.product.name_and_description, 
+            e.stock.try(:serial_number), 
+            price(e.unit_price), 
+            price(e.total_price) 
+          ]}
 
           table_data = [header, *line_items_data, footer]
           table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
-            cells.borders = []
+            cells.borders = [:top]
             row(0).font_style = :bold
             row(0).align = :center
             column(2).align = :center
@@ -117,9 +123,23 @@ module Members
         @orders.credit.each do |order|
           line_items_data = ((order.line_items)+(order.catering_line_items)).map { |e| 
             if e.class.name == "LineItem"
-              [e.created_at.strftime("%B %e, %Y"), "#{e.quantity.to_i} #{e.stock.product.retail_unit}", e.stock.product.name_and_description, e.stock.try(:serial_number), price(e.converted_price), price(e.total_price) ]
+              [ 
+                e.created_at.strftime("%B %e, %Y"), 
+                "#{e.quantity.to_i} #{e.stock.product.unit}", 
+                e.stock.product.name_and_description, 
+                e.stock.try(:serial_number), 
+                price(e.unit_price), 
+                price(e.total_price) 
+              ]
             else
-              [e.created_at.strftime("%B %e, %Y"), "#{e.quantity} #{e.unit}", e.name, "", price(e.unit_cost), price(e.total_cost)]
+              [
+                e.created_at.strftime("%B %e, %Y"), 
+                "#{e.quantity} #{e.unit}", 
+                e.name, 
+                "", 
+                price(e.unit_cost), 
+                price(e.total_cost)
+              ]
             end
           }
 

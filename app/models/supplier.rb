@@ -4,6 +4,7 @@ class Supplier < ApplicationRecord
   pg_search_scope :search_by_name, :against => [:business_name, :owner]
 
 	has_many :stocks, dependent: :destroy
+  has_many :stock_transfers
   scope :by_total_credit, -> {with_credits.to_a.sort_by(&:total_credit).reverse }
 	validates :business_name, :owner, presence: true
   def to_s 

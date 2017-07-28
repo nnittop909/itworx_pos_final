@@ -13,6 +13,7 @@ class CreateOrders < ActiveRecord::Migration[5.1]
       t.boolean :discounted,           default: false
       t.string :reference_number
       t.integer :order_type
+      t.integer :payment_status
       t.integer :user_id
       t.integer :employee_id
       t.integer :entry_id, foreign_key: true

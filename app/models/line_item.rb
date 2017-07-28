@@ -3,6 +3,7 @@ class LineItem < ApplicationRecord
   belongs_to :cart
   belongs_to :order
   belongs_to :employee, foreign_key: 'user_id'
+  has_many :interest_programs
   enum pricing_type: [:retail, :wholesale, :catering]
   scope :by_total_price, -> { all.to_a.sort_by(&:total_price) }
   
@@ -30,55 +31,17 @@ class LineItem < ApplicationRecord
     all.select{|a| a.cash? }
   end
   def cash?
-     order.present? && order.cash?
+    order.present? && order.cash?
   end
   def self.credit
-      all.select{|a| a.credit? }
+    all.select{|a| a.credit? }
   end
   def credit?
-     order.present? && order.credit?
-  end
-
-  def wholesale_quantity
-    (quantity/self.stock.product.conversion_quantity).to_i
-  end
-
-  def retail_quantity
-    (((quantity/self.stock.product.conversion_quantity).modulo(1)) * self.stock.product.conversion_quantity).round
-  end
-
-  def converted_quantity
-    if (self.stock.product.conversion_quantity && self.stock.product.wholesale_unit).present?
-      if retail_quantity != 0
-        if wholesale_quantity != 0
-          "#{wholesale_quantity} #{self.stock.product.wholesale_unit}/s" + " & " + "#{retail_quantity} #{self.stock.product.retail_unit}"
-        else
-          "#{retail_quantity}  #{self.stock.product.retail_unit}"
-        end
-      else
-        "#{wholesale_quantity} #{self.stock.product.wholesale_unit}/s"
-      end
-    else
-      "#{quantity} #{self.stock.product.retail_unit}"
-    end
-  end
-
-  def converted_price
-    if (self.stock.product.conversion_quantity && self.stock.product.wholesale_unit).present?
-      if (retail_quantity != 0) && (retail_quantity > self.stock.product.conversion_quantity)
-        unit_price * quantity
-      elsif (retail_quantity != 0) && (retail_quantity < self.stock.product.conversion_quantity)
-        unit_price
-      elsif retail_quantity == 0
-        unit_price * quantity
-      end
-    else
-      unit_price
-    end
+    order.present? && order.credit?
   end
 
   def cost_of_goods_sold
-    stock.unit_cost * quantity
+    unit_price * quantity
   end
 
   def income
@@ -150,6 +113,25 @@ class LineItem < ApplicationRecord
 
   def compute_total_price
     self.total_price = self.unit_price * quantity
+  end
+
+  def create_entry_for_interest_program
+    @accounts_receivable = Accounting::Account.find_by(name: "Accounts Receivables Trade - Current")
+    @interest_income_from_credit_sales = Accounting::Account.find_by(name: "Interest Income from Credit Sales")
+
+    (LineItem.where(pricing_type: "wholesale").credit +  LineItem.where(pricing_type: "retail").credit).each do |line_item|
+      if line_item.stock.product.program_product? == true
+        Accounting::Entry.create(order_id: line_item.order.id, commercial_document_id: line_item.order.member.id, 
+        commercial_document_type: line_item.order.member.class, date: Time.zone.now, 
+        description: "Interest for credit order ##{self.reference_number}", 
+        debit_amounts_attributes: [{amount: self.stock_cost, account: @accounts_receivable}], 
+        credit_amounts_attributes:[{amount: self.stock_cost, account: @interest_income_from_credit_sales}],  
+        employee_id: line_item.order.employee_id)
+        
+        interest = (line_item.stock.product.program.amount / 100) * line_item.total_price
+        line_item.interest_programs.create!(line_item_id: line_item.id, amount: interest)
+      end
+    end
   end
 
   private

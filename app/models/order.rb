@@ -12,6 +12,7 @@ class Order < ApplicationRecord
   belongs_to :department, foreign_key: 'user_id'
   enum pay_type:[:cash, :credit]
   enum order_type: [:retail, :wholesale, :catering]
+  enum payment_status: [:paid, :unpaid]
   enum delivery_type: [:pick_up, :deliver, :to_go]
   has_many :line_items, dependent: :destroy
   has_many :catering_line_items, dependent: :destroy
@@ -20,12 +21,11 @@ class Order < ApplicationRecord
   belongs_to :tax
   before_save :set_date, :set_user
   accepts_nested_attributes_for :discount
-  scope :created_between, lambda {|start_date, end_date| where("date >= ? AND date <= ?", start_date, end_date )}
 
   def self.created_between(hash={})
     if hash[:from_date] && hash[:to_date]
-      from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : Time.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00'))
-      to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : Time.parse(hash[:to_date].strftime('%Y-%m-%d 12:59:59'))
+      from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00'))
+      to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date].strftime('%Y-%m-%d 12:59:59'))
       where('date' => from_date..to_date)
     else
       all
@@ -143,10 +143,8 @@ class Order < ApplicationRecord
   end
 
   def subscribe_to_program
-    if self.credit?
-      self.line_items do |line_item|
-        ProgramSubscription.create(member_id: self.member.id, program_id: self.line_item.stock.product.program.id)
-      end
+    self.line_items do |line_item|
+      ProgramSubscription.create(member_id: self.member.id, program_id: self.line_item.stock.product.program.id)
     end
   end
 
@@ -162,8 +160,8 @@ class Order < ApplicationRecord
       Accounting::Entry.create(order_id: self.id, commercial_document_id: self.member.id, 
         commercial_document_type: self.member.class, date: self.date, 
         description: "Payment for order ##{self.reference_number}", 
-        debit_amounts_attributes: [{amount: self.stock_cost, account: @cost_of_goods_sold}], 
-        credit_amounts_attributes:[{amount: self.stock_cost, account: @merchandise_inventory}],  
+        debit_amounts_attributes: [{amount: self.total_amount_without_discount, account: @cash_on_hand}, {amount: self.stock_cost, account: @cost_of_goods_sold}], 
+        credit_amounts_attributes:[{amount: self.total_amount_without_discount, account: @sales}, {amount: self.stock_cost, account: @merchandise_inventory}],  
         employee_id: self.employee_id)
 
     elsif self.credit? && !self.discounted? && !self.catering?
@@ -178,8 +176,8 @@ class Order < ApplicationRecord
       Accounting::Entry.create(order_id: self.id, commercial_document_id: self.member.id, 
         commercial_document_type: self.member.class, date: self.date, 
         description: "Payment for order ##{self.reference_number} with discount of #{self.total_discount}", 
-        debit_amounts_attributes: [{amount: self.stock_cost, account: @cost_of_goods_sold}], 
-        credit_amounts_attributes:[{amount: self.stock_cost, account: @merchandise_inventory}],  
+        debit_amounts_attributes: [{amount: self.total_amount_less_discount, account: @cash_on_hand}, {amount: self.stock_cost, account: @cost_of_goods_sold}], 
+        credit_amounts_attributes:[{amount: self.total_amount_less_discount, account: @sales}, {amount: self.stock_cost, account: @merchandise_inventory}],  
         employee_id: self.employee_id)
 
     elsif self.catering? && !self.discounted?

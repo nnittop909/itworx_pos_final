@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170624073930) do
+ActiveRecord::Schema.define(version: 20170722080029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,6 +127,14 @@ ActiveRecord::Schema.define(version: 20170624073930) do
     t.index ["user_id"], name: "index_entries_on_user_id"
   end
 
+  create_table "interest_programs", force: :cascade do |t|
+    t.integer "line_item_id"
+    t.decimal "amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["line_item_id"], name: "index_interest_programs_on_line_item_id"
+  end
+
   create_table "invoice_numbers", force: :cascade do |t|
     t.datetime "date"
     t.string "number"
@@ -187,6 +195,7 @@ ActiveRecord::Schema.define(version: 20170624073930) do
     t.datetime "deleted_at"
     t.boolean "discounted", default: false
     t.string "reference_number"
+    t.integer "payment_status"
     t.integer "user_id"
     t.integer "employee_id"
     t.integer "entry_id"
@@ -203,9 +212,7 @@ ActiveRecord::Schema.define(version: 20170624073930) do
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.string "retail_unit"
-    t.string "wholesale_unit"
-    t.integer "conversion_quantity"
+    t.string "unit"
     t.integer "category_id"
     t.string "bar_code"
     t.decimal "retail_price"
@@ -256,6 +263,19 @@ ActiveRecord::Schema.define(version: 20170624073930) do
     t.index ["stock_id"], name: "index_refunds_on_stock_id"
   end
 
+  create_table "stock_transfers", force: :cascade do |t|
+    t.integer "entry_id"
+    t.integer "stock_id"
+    t.integer "supplier_id"
+    t.integer "employee_id"
+    t.datetime "date"
+    t.decimal "amount"
+    t.decimal "quantity"
+    t.string "remarks"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stocks", force: :cascade do |t|
     t.string "name"
     t.datetime "date"
@@ -268,11 +288,11 @@ ActiveRecord::Schema.define(version: 20170624073930) do
     t.string "serial_number"
     t.string "reference_number"
     t.integer "payment_type", default: 0
-    t.boolean "merged", default: false
     t.boolean "discounted", default: false
     t.decimal "discount_amount", default: "0.0"
     t.boolean "has_freight", default: false
     t.decimal "freight_amount", default: "0.0"
+    t.boolean "received", default: false
     t.integer "stock_type"
     t.integer "product_id"
     t.integer "supplier_id"

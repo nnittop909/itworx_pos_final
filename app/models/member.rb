@@ -13,5 +13,4 @@ class Member < User
     full_name
   end
 
-  
 end

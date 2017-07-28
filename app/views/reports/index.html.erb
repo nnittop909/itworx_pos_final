@@ -52,7 +52,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-md-4">
-            <%=link_to scope_to_date_orders_path(from_date: Time.zone.now.beginning_of_day, to_date: Time.zone.now.end_of_day, format: 'pdf') do %>
+            <%=link_to scope_to_date_orders_path(from_date: DateTime.now.beginning_of_day, to_date: DateTime.now.end_of_day, format: 'pdf') do %>
               <h4> Daily Sales Report </h4>
               <p> Generate daily sales report for today. </p>
             <% end %>

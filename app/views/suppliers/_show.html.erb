@@ -4,17 +4,28 @@
       <div class="card-header">
         <div class="card-title">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <h4>
-                <br>
-                <%=@supplier.business_name.try(:upcase) %><br /><br>
-                <a href="#"><small><i class='fa fa-user'></i> &nbsp; <%=@supplier.owner %></small>
-                &nbsp; &nbsp; <small><i class='fa fa-map-marker'></i> &nbsp; <%=@supplier.address %></small>
-                 &nbsp; &nbsp; <small><i class='fa fa-phone'></i> &nbsp; <%=@supplier.mobile_number %></small>
+                <%=@supplier.business_name.try(:upcase) %><br />
+                <small><i class='fa fa-user'></i> &nbsp; <%=@supplier.owner %></small><br />
+                <small><i class='fa fa-map-marker'></i> &nbsp; <%=@supplier.address %></small><br />
+                <small><i class='fa fa-phone'></i> &nbsp; <%=@supplier.mobile_number %></small><br />
                 </a>
               </h4>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @supplier.total_credit %></h4>
+              <h5 class="text-muted text-center"> CREDITS </h5>
+            </div>
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @supplier.total_payment %></h4>
+              <h5 class="text-muted text-center"> PAYMENTS </h5>
+            </div>
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @supplier.total_remaining_balance %></h4>
+              <h5 class="text-muted text-center"> BALANCE </h5>
+            </div>
+            <div class="col-md-2">
               <span class='pull-right'><%=link_to 'Edit', edit_supplier_path(@supplier), class: 'btn btn-danger', remote: true %>
             </div>
           </div>

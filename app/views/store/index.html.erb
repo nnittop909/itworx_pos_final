@@ -51,7 +51,7 @@
                   <tr>
                     <td>
                       <h5><%=stock.product.name_and_description %></h5>
-                      <p class="text-muted">Remaining: <%=stock.converted_in_stock_quantity%></p>
+                      <p class="text-muted">Remaining: <%=stock.in_stock%> <%=stock.product.unit%></p>
                     </td>
                     <%=simple_form_for @line_item, url: :line_items do |f| %>
                     <%=f.error_notification %>

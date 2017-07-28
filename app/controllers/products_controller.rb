@@ -41,7 +41,7 @@ class ProductsController < ApplicationController
 
   def stock_histories
     @product = Product.find(params[:id])
-    @stocks = @product.stocks.order(merged: :asc).order(date: :desc).page(params[:page]).per(30)
+    @stocks = @product.stocks.order(date: :desc).page(params[:page]).per(30)
   end
 
   def cash_sales
@@ -75,6 +75,7 @@ class ProductsController < ApplicationController
     @sales = @product.line_items.credit
     @results = Kaminari.paginate_array(@sales).page(params[:page]).per(50)
   end
+  
   def scope_to_date_cash_sales
     @product = Product.find(params[:id])
     @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.now.yesterday.end_of_day
@@ -118,6 +119,6 @@ class ProductsController < ApplicationController
 
   private
   def product_params
-    params.require(:product).permit(:name, :description, :retail_unit, :conversion_quantity, :wholesale_unit, :retail_price, :wholesale_price, :stock_alert_count, :category_id, :program_product, :program_id)
+    params.require(:product).permit(:name, :description, :unit, :retail_price, :wholesale_price, :stock_alert_count, :category_id, :program_product, :program_id)
   end
 end

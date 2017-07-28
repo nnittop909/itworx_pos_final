@@ -70,18 +70,18 @@
                 <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
               <% end %>
               
-              <h4>Discount</h4>
-              <%=f.simple_fields_for :debit_amounts do |ff| %>
+              <!-- <h4>Discount</h4>
+              <%#=f.simple_fields_for :debit_amounts do |ff| %>
                 <div class="form-group has-warning">
-                  <%=ff.input :amount, input_html: { id: 'accounting_discount_debit_amounts_attributes_0_amount', class: 'input-lg', value: 0} %>
+                  <%#=ff.input :amount, input_html: { id: 'accounting_discount_debit_amounts_attributes_0_amount', class: 'input-lg', value: 0} %>
                 </div>
-                <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales Discounts").id}, readonly: true, as: :hidden %>
-              <% end %>
+                <%#=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales Discounts").id}, readonly: true, as: :hidden %>
+              <%# end %>
 
-              <%=f.simple_fields_for :credit_amounts do |ff| %>
-                <%=ff.input :amount, input_html: { id: 'accounting_discount_credit_amounts_attributes_0_amount', value: 0}, as: :hidden %>
-                <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
-              <% end %>
+              <%#=f.simple_fields_for :credit_amounts do |ff| %>
+                <%#=ff.input :amount, input_html: { id: 'accounting_discount_credit_amounts_attributes_0_amount', value: 0}, as: :hidden %>
+                <%#=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
+              <%# end %> -->
               <div class="modal-footer">
                 <%= f.submit 'Save Payment', class: "btn btn-primary" %>
                 <span class="pull-left">

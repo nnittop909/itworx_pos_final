@@ -4,11 +4,10 @@
       <tr>
         <th>Purchase Date</th>
         <th></th>
-        <th>QTY </th>
-        <!-- <th> QTY (Merged) </th> -->
-        <!-- <th> Total Qty </th> -->
+        <th>Qty </th>
+        <th>Unit</th>
         <th> Sold </th>
-        <th> IN STOCK </th>
+        <th> In Stock </th>
         <th> S/N </th>
         <th> Unit Cost </th>
         <th> Discount </th>
@@ -18,30 +17,26 @@
       </tr>
     </thead>
     <tbody>
-      <%@stocks.to_a.sort_by(&:date).reverse.each do |stock| %>
+      <%@stocks.each do |stock| %>
         <tr>
-          <!-- <td><%# if stock.merged? %>
-            <btn class="btn-danger btn-xs"> Merged </btn>
-            <%# end %>
-          </td> -->
           <td><%=stock.date.strftime('%B %e, %Y')%></td>
           <td>
             <small class='label label-<%="danger" if stock.out_of_stock?%><%= "warning" if stock.low_stock? && !stock.expired?%><%= "danger" if !stock.low_stock? && stock.expired?%><%= "danger" if stock.expired_and_low_stock?%>'><%=stock.status %></small>
           </td>
-          <td><%=stock.converted_total_quantity %></td>
-          <!-- <td><%#=stock.total_merged_stocks if !stock.merged?  %></td> -->
-          <!-- <td><%#= stock.total_merged_stocks + stock.quantity if !stock.merged?  %></td> -->
-          <td><%=stock.converted_sold_quantity %></td>
-           <td><%=stock.converted_in_stock_quantity %></td>
+          <td><%=stock.quantity %></td>
+          <td><%=stock.product.unit %></td>
+          <td><%=stock.sold %></td>
+           <td><%=stock.in_stock %></td>
           <td><%=stock.serial_number %></td>
           <td><%= number_to_currency stock.unit_cost %></td>
           <td><%= number_to_currency stock.discount_amount %></td>
           <td><%= number_to_currency stock.freight_amount %></td>
           <td><%=number_to_currency stock.total_cost %></td>
-          <td><%= link_to stock_path(stock), method: :delete, title: 'Delete Stock', data: {confirm: 'Are you sure you want to delete this stock? This action can not be undone.'} do %>
-            <span class="text-danger" title="Delete Stock" data-toggle='tooltip'><i class="fa fa-trash"></i></span>
-          <% end %></td>
-          <!-- <td><%#=link_to 'Merge', merge_stock_path(stock), class: 'btn btn-sm btn-warning', method: :post, data: {confirm: "Are you sure you want to merge this stock? THIS ACTION CANNOT BE UNDONE!"} if !stock.merged? && stock.total_merged_stocks == 0 && stock.product.stocks.count > 1%></td> -->
+          <td>
+            <%= link_to stock_path(stock), method: :delete, title: 'Delete Stock', data: {confirm: 'Are you sure you want to delete this stock? This action can not be undone.'} do %>
+              <span class="text-danger" title="Delete Stock" data-toggle='tooltip'><i class="fa fa-trash"></i></span>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>

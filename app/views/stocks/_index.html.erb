@@ -35,17 +35,27 @@
             </li>
             <li class="<%='active' if current_page? out_of_stock_stocks_path %>">
               <%= link_to out_of_stock_stocks_path do %>
-                <span class="text-danger"><i class="fa fa-minus-circle"></i> Out of Stock: <%=Stock.out_of_stock.count %></span>
+                <span class="text-danger"><i class="fa fa-cart-arrow-down"></i> Out of Stock: <%=Stock.out_of_stock.count %></span>
               <% end %>
               </li>
             <li class="<%='active' if current_page? expired_stocks_path %>">
               <%= link_to expired_stocks_path do %>
-                <span class="text-danger"><i class="fa fa-exclamation-circle"></i> Expired: <%=Stock.expired.count %></span>
+                <span class="text-danger"><i class="fa fa-warning"></i> Expired: <%=Stock.expired.count %></span>
+              <% end %>
+            </li>
+            <li class="<%='active' if current_page? returned_stocks_path %>">
+              <%= link_to returned_stocks_path do %>
+                <span class="text-danger"><i class="fa fa-reply"></i> Returned: <%=Refund.count %></span>
+              <% end %>
+            </li>
+            <li class="<%='active' if current_page? forwarded_stocks_path %>">
+              <%= link_to forwarded_stocks_path do %>
+                <span class="text-danger"><i class="fa fa-share"></i> Forwarded: <%=StockTransfer.count %></span>
               <% end %>
             </li>
             <li class="<%='active' if current_page? discontinued_stocks_path %>">
               <%= link_to discontinued_stocks_path do %>
-                <span class="text-danger"><i class="fa fa-exchange"></i> Discontinued: <%=Stock.discontinued.count %></span>
+                <span class="text-danger"><i class="fa fa-lock"></i> Discontinued: <%=Stock.discontinued.count %></span>
               <% end %>
             </li>
           </ul>
@@ -57,13 +67,27 @@
                 <thead>
                   <tr>
                     <th>Date </th>
-                    <th> Product </th>
-                    <th> Supplier </th>
-                    <th><span class='pull-right'> Purchase Qty.</span> </th>
-                    <th><span class='pull-right'> Unit Cost </span></th>
-                    <th><span class='pull-right'> Discount </span></th>
-                    <th><span class='pull-right'> Freight In </span></th>
-                    <th><span class='pull-right'> Total Cost </span></th>
+                    <th>Product </th>
+                    <% if current_page? forwarded_stocks_path %>
+                      <th>Forwarded To </th>
+                    <% else %>
+                      <th>Supplier</th>
+                    <% end %>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">In Stock</th>
+                    <th>Unit</th>
+                    <th class="text-right">Unit Cost </th>
+                    <% if current_page? forwarded_stocks_path %>
+                      <th></th>
+                      <th></th>
+                    <% elsif current_page? returned_stocks_path %>
+                      <th></th>
+                      <th></th>
+                    <% else %>
+                      <th class="text-right">Discount </th>
+                      <th class="text-right">Freight In </th>
+                    <% end %>
+                    <th class="text-right">Total Cost </th>
                     <th></th>
                   </tr>
                 </thead>
@@ -72,15 +96,59 @@
                     <tr>
                       <td><%= stock.date.strftime('%B %e, %Y') %></td>
                       <td>
-                        <%=link_to stock.product.try(:name_and_description), stock %>
-                        <small class='text-right label <%= "label-danger" if stock.out_of_stock? || stock.expired_and_low_stock? %><%= "label-warning" if stock.low_stock? %>'><%= stock.status %></small>
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+                          <%=stock.stock.product.try(:name_and_description) %>
+                        <% else %>
+                          <%=link_to stock.product.try(:name_and_description), stock %>
+                          <small class='text-right label <%= "label-danger" if stock.out_of_stock? || stock.expired_and_low_stock? %><%= "label-warning" if stock.low_stock? %>'><%= stock.status %></small>
+                        <% end %>
                       </td>
-                      <td><%= stock.supplier.try(:business_name) %></td>
-                      <td><span class='pull-right'> <%= stock.converted_total_quantity %></span></td>
-                      <td><span class='pull-right'> <%= number_to_currency stock.unit_cost %></span></td>
-                      <td><span class='pull-right'> <%= number_to_currency stock.discount_amount %></span></td>
-                      <td><span class='pull-right'> <%= number_to_currency stock.freight_amount %></span></td>
-                      <td><span class='pull-right'> <%= number_to_currency stock.total_cost %></span></td>
+                      <td>
+                        <% if stock.class.name == "Refund" %>
+                          <%= stock.stock.supplier.try(:business_name) %>
+                        <% elsif stock.class.name == "StockTransfer" %>
+                          <%= stock.supplier.try(:business_name) %>
+                        <% else %>
+                          <%= stock.supplier.try(:business_name) %>
+                        <% end %> 
+                      </td>
+                      <td class="text-right"><%= stock.quantity %></td>
+                      <td class="text-right"><%= stock.in_stock %></td>
+                      <td>
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+                          <%= stock.stock.product.unit %>
+                        <% else %>
+                          <%= stock.product.unit %>
+                        <% end %> 
+                      </td>
+                      <td class="text-right">
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+                          <%= number_to_currency (stock.amount / stock.quantity) %>
+                        <% else %>
+                          <%= number_to_currency stock.unit_cost %>
+                        <% end %>
+                      </td>
+                      <td class="text-right">
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+
+                        <% else %>
+                          <%= number_to_currency stock.discount_amount %>
+                        <% end %>
+                      </td>
+                      <td class="text-right">
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+                          
+                        <% else %>
+                          <%= number_to_currency stock.freight_amount %>
+                        <% end %>
+                      </td>
+                      <td class="text-right">
+                        <% if stock.class.name == "Refund" || stock.class.name == "StockTransfer" %>
+                          <%= number_to_currency stock.amount %>
+                        <% else %>
+                          <%= number_to_currency stock.total_cost %>
+                        <% end %>
+                      </td>
 
                     </tr>
                   <% end %>

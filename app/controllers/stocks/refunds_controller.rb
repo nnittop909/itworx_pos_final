@@ -19,7 +19,7 @@ module Stocks
 
     private
     def refund_params
-      params.require(:refund).permit(:stock_id, :amount, :remarks, :quantity, :date)
+      params.require(:refund).permit(:stock_id, :employee_id, :amount, :remarks, :quantity, :date)
     end
   end
 end

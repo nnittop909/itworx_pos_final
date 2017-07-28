@@ -20,7 +20,7 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-4">
-            Supplier
+            Supplier:
           </div>
           <div class="col-md-8">
             <%=@stock.supplier %>
@@ -29,25 +29,25 @@
         <br>
         <div class="row">
           <div class="col-md-4">
-            Purchase Quantity
+            Purchase Quantity:
           </div>
           <div class="col-md-8">
-            <%=@stock.converted_total_quantity %>
+            <%=@stock.quantity %> <%=@stock.product.unit %>
           </div>
         </div>
         <br>
         <div class="row">
           <div class="col-md-4">
-            In Stock
+            In Stock:
           </div>
           <div class="col-md-8">
-            <%=@stock.converted_in_stock_quantity %>
+            <%=@stock.in_stock %> <%=@stock.product.unit %>
           </div>
         </div>
         <br>
         <div class="row">
           <div class="col-md-4">
-            Purchase Price
+            Purchase Price:
           </div>
           <div class="col-md-8">
             <%=number_to_currency @stock.unit_cost %>
@@ -56,7 +56,7 @@
         <br>
         <div class="row">
           <div class="col-md-4">
-            Total Cost
+            Total Cost:
           </div>
           <div class="col-md-8">
             <%=number_to_currency @stock.total_cost %>
@@ -65,7 +65,7 @@
         <br>
         <div class="row">
           <div class="col-md-4">
-            Expiry Date
+            Expiry Date:
           </div>
           <div class="col-md-8">
             <%= @stock.expiry_date.strftime("%B %e,%Y") %>
@@ -74,7 +74,7 @@
         <br>
         <div class="row">
           <div class="col-md-4">
-            Transaction Type
+            Transaction Type:
           </div>
           <div class="col-md-8">
             <%= @stock.payment_type %>
@@ -88,6 +88,7 @@
             <% if @stock.discontinued? %>
               <%= link_to "Active", stock_continue_path(@stock), class: 'btn btn-warning', data: {confirm: "You are about to set this stock to 'active'. By doing so will remove this expense from entries. Do you wish to continue? "} %>
             <% else %>
+              <%= link_to "Transfer Stock", new_stock_stock_transfer_path(@stock), class: 'btn btn-warning', data: {confirm: "You are about to transfer this stock to another branch store. Do you wish to continue? "} %>
               <%= link_to "Return Stock", new_stock_refund_path(@stock), class: 'btn btn-warning', data: {confirm: "You are about to return this stock. By doing so will refund the amount you have entered. Do you wish to continue? "} %>
               <%= link_to "Discontinue", stock_discontinue_path(@stock), class: 'btn btn-danger', data: {confirm: "You are trying to discontinue selling this stock. By doing so will be listed to entries as an expense. Do you wish to continue? "} %>
             <% end %>

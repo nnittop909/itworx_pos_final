@@ -1,26 +1,4 @@
 <div class="tab-pane <%='active' if current_page? credit_stocks_supplier_path %>" >
-  <div class="row">
-    <div class="col-md-3">
-      <h4 class="title"><center class="text-muted"><%=number_to_currency @supplier.total_credit %></center></h4>
-        <center> CREDITS </center>
-    </div>
-    <div class="col-md-3">
-      <h4 class="title"><center class="text-muted"><%=number_to_currency @supplier.total_payment %></center></h4>
-      <center> PAYMENTS </center>
-      </h4>
-    </div>
-    <div class="col-md-2">
-      <h4 class="title"> <center class="text-muted"><%=number_to_currency @supplier.total_remaining_balance %></center></h4>
-        <center> BALANCE </center>
-      </h4>
-    </div>
-    <div class="col-md-4">
-      <% if @supplier.has_credit? %>
-        <span class='pull-right'><%=link_to 'New Payment', new_supplier_payment_path(@supplier), class: 'btn btn-danger' %></span>
-      <% end %></span>
-    </div>
-  </div>
-  <hr />
   <table class="table table-striped">
     <thead>
       <tr>

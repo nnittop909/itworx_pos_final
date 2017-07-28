@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_one :address, dependent: :destroy
   has_many :orders, foreign_key: 'user_id'
   has_many :sales, foreign_key: 'employee_id', class_name: 'Order'
+  has_many :stock_tansfers, foreign_key: 'employee_id'
+  has_many :refunds, foreign_key: 'employee_id'
   has_many :entries, class_name: "Accounting::Entry", foreign_key: 'commercial_document_id'
 
   has_many :line_items, through: :orders

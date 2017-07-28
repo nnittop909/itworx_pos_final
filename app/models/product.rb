@@ -14,7 +14,7 @@ class Product < ApplicationRecord
   has_many :refunds, through: :stocks
   has_many :line_items, through: :stocks
   has_many :orders, through: :line_items
-  validates :name, :stock_alert_count, :retail_price, :wholesale_price, :retail_unit, presence: true
+  validates :name, :stock_alert_count, :retail_price, :wholesale_price, :unit, presence: true
 
   before_destroy :ensure_not_referenced_by_any_line_item
   before_save :set_name_description
@@ -33,70 +33,18 @@ class Product < ApplicationRecord
     end
   end
 
-  def set_wholesale_price
-    if self.conversion_quantity.present? && self.wholesale_unit.present?
-      wholesale_price = self.wholesale_price / self.conversion_quantity
-    else
-      wholesale_price
-    end
-  end
-
   def self.by_category(category)
     all.where(category: category)
   end
   def quantity
-    stocks.all.sum(:quantity)
-  end
-
-  def total_wholesale_quantity
-    (quantity/self.conversion_quantity).to_i
-  end
-
-  def total_retail_quantity
-    (((quantity/self.conversion_quantity).modulo(1)) * self.conversion_quantity).round
-  end
-
-  def converted_total_quantity
-    if (self.conversion_quantity && self.wholesale_unit).present?
-      if total_retail_quantity != 0
-        if total_wholesale_quantity != 0
-          "#{total_wholesale_quantity} #{self.wholesale_unit}/s" + " & " + "#{total_retail_quantity} #{self.retail_unit}"
-        else
-          "#{total_retail_quantity} #{self.retail_unit}"
-        end
-      else
-        "#{total_wholesale_quantity}  #{self.wholesale_unit}/s"
-      end
-    else
-      "#{quantity} #{self.retail_unit}"
-    end
+    stocks.purchased.sum(:quantity)
   end
 
   def in_stock
-    stocks.sum(:quantity) - line_items.sum(:quantity)
-  end
-
-  def in_stock_wholesale_quantity
-    (in_stock/self.conversion_quantity).to_i
-  end
-
-  def in_stock_retail_quantity
-    (((in_stock/self.conversion_quantity).modulo(1)) * self.conversion_quantity).round
-  end
-
-  def converted_in_stock_quantity
-    if (self.conversion_quantity && self.wholesale_unit).present?
-      if in_stock_retail_quantity != 0
-        if in_stock_wholesale_quantity != 0
-          "#{in_stock_wholesale_quantity} #{self.wholesale_unit}/s" + " & " + "#{in_stock_retail_quantity} #{self.retail_unit}"
-        else
-          "#{in_stock_retail_quantity} #{self.retail_unit}"
-        end
-      else
-        "#{in_stock_wholesale_quantity}  #{self.wholesale_unit}/s"
-      end
+    if stocks.purchased.sum(:quantity) <= 0
+      0
     else
-      "#{quantity} #{self.retail_unit}"
+      stocks.purchased.sum(:quantity) - line_items.sum(:quantity)
     end
   end
 
@@ -104,40 +52,8 @@ class Product < ApplicationRecord
     line_items.sum(:quantity)
   end
 
-  def sold_wholesale_quantity
-    (sold/self.conversion_quantity).to_i
-  end
-
-  def sold_retail_quantity
-    (((sold/self.conversion_quantity).modulo(1)) * self.conversion_quantity).round
-  end
-
-  def converted_sold_quantity
-    if (self.conversion_quantity && self.wholesale_unit).present?
-      if sold_retail_quantity != 0
-        if sold_wholesale_quantity != 0
-          "#{sold_wholesale_quantity} #{self.wholesale_unit}/s" + " & " + "#{sold_retail_quantity} #{self.retail_unit}"
-        else
-          "#{sold_retail_quantity} #{self.retail_unit}"
-        end
-      else
-        "#{sold_wholesale_quantity}  #{self.wholesale_unit}/s"
-      end
-    else
-      "#{quantity} #{self.retail_unit}/s"
-    end
-  end
-
-  def converted_wholesale_price
-    if self.conversion_quantity.present?
-      (wholesale_price * in_stock) / (in_stock / conversion_quantity)
-    else
-      wholesale_price
-    end
-  end
-
   def quantity_and_unit
-    "#{quantity} #{unit_retail}"
+    "#{quantity} #{unit}"
   end
 
   def name_description

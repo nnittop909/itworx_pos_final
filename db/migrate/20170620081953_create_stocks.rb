@@ -12,11 +12,11 @@ class CreateStocks < ActiveRecord::Migration[5.1]
       t.string :serial_number
       t.string :reference_number
       t.integer :payment_type,        default: 0
-      t.boolean :merged,              default: false
       t.boolean :discounted,          default: false
       t.decimal :discount_amount,     default: "0.0"
       t.boolean :has_freight,         default: false
       t.decimal :freight_amount,      default: "0.0"
+      t.boolean :received,         default: false
       t.integer :stock_type
       t.integer :product_id, foreign_key: true
       t.integer :supplier_id

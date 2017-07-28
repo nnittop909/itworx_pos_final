@@ -23,7 +23,10 @@
           <div class="no-padding"><hr></div>
           <h4 class="text-muted">Supplier Details</h4>
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-2">
+              <%=f.input :received, label: "Forwarded", input_html: { id: 'stock-received' } %>
+            </div>
+            <div class="col-md-6">
               <span class="pull-right"><%= link_to "New Supplier?", new_supplier_path, remote: true %></span>
               <%=f.input :supplier_id, collection: Supplier.all.map{ |a| [a.business_name, a.id]} %>
             </div>
@@ -32,7 +35,7 @@
             </div>
           </div>
           <div class="no-padding"><hr></div>
-          <div class="row">
+          <div class="row" id="discount-and-freight">
             <div class="col-md-6">
               <h4 class="text-muted">Discount Details </h4>
               <%=f.input :discounted, input_html: { id: 'stock-discount' } %>
@@ -55,11 +58,11 @@
           <br>
           <div class="row">
             <div class="col-md-4">
-              <label>Quantity in <%= @stock.product.retail_unit%></label>
+              <label>Quantity in <%= @stock.product.unit%></label>
               <%=f.input :quantity, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">
-              <label>Unit Cost / <%= @stock.product.retail_unit%></label>
+              <label>Unit Cost / <%= @stock.product.unit%></label>
               <%=f.input :unit_cost, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">
@@ -71,14 +74,6 @@
               <%=f.input :serial_number, label: "Bar Code" %>
             </div>
           </div>
-          <!-- <h4 class="text-muted">Merging Details</h4>
-          <div class="row">
-          <div class="col-md-12">
-             <%#=f.input :merged, label: 'Merge this stock?' %>
-              <span class="help-block"> Please ensure the product has previous stocks if this checkcard is clicked! </span>
-              <hr>
-            </div>
-            </div> -->
           <div class="modal-footer">
             <%=f.submit "Save Stock", class: "btn btn-primary" %>
             <span class='pull-left'><%=link_to 'Cancel', stocks_path, class: 'btn btn-default' %></span>
@@ -119,6 +114,21 @@
        freight_div.style['display'] = 'block';
      } else {
        freight_div.style['display'] = 'none';
+     }
+  };
+</script>
+
+<script>
+  var checkcard = document.getElementById('stock-received');
+  var discount_and_freight_div = document.getElementById('discount-and-freight');
+  var pay_type_div = document.getElementById('pay-type');
+  checkcard.onchange = function() {
+     if(this.checked) {
+       discount_and_freight_div.style['display'] = 'none';
+       pay_type_div.style['display'] = 'none';
+     } else {
+       discount_and_freight_div.style['display'] = 'block';
+       pay_type_div.style['display'] = 'block';
      }
   };
 </script>

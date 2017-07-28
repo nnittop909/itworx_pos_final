@@ -2,10 +2,11 @@ class StocksController < ApplicationController
   autocomplete :stock, :name_and_description, full: true
   def index
     if params[:name_and_description]
-      @stocks = Stock.search_by_name(params[:name_and_description]).page(params[:page]).per(50)
+      @available = Stock.purchased.search_by_name(params[:name_and_description])
+      @stocks = Kaminari.paginate_array(@available).page(params[:page]).per(50)
     else
-      @stocks = Stock.purchased.includes(:product).order('date DESC').all.page(params[:page]).per(50)
-      authorize @stocks
+      @available = Stock.available
+      @stocks = Kaminari.paginate_array(@available).page(params[:page]).per(50)
     end
   end
 
@@ -20,8 +21,13 @@ class StocksController < ApplicationController
   end
 
   def returned
-    @returned = Stock.returned
+    @returned = Refund.all
     @stocks = Kaminari.paginate_array(@returned).page(params[:page]).per(50)
+  end
+
+  def forwarded
+    @forwarded = StockTransfer.all
+    @stocks = Kaminari.paginate_array(@forwarded).page(params[:page]).per(50)
   end
 
   def discontinued
@@ -52,9 +58,14 @@ class StocksController < ApplicationController
     @stock.employee = current_user
     if @stock.save
       redirect_to stocks_url, notice: "New stock saved successfully."
-      @stock.create_entry
-      @stock.set_stock_status_to_product
-      @stock.purchased!
+      if @stock.received?
+        @stock.set_stock_status_to_product
+        @stock.purchased!
+      elsif !@stock.received?
+        @stock.create_entry
+        @stock.set_stock_status_to_product
+        @stock.purchased!
+      end
     else
       render :new
     end
@@ -80,12 +91,17 @@ class StocksController < ApplicationController
   def destroy 
     @stock = Stock.find(params[:id])
     @stock.employee = current_user
-    @stock.destroy
-    redirect_to stocks_url, alert: 'Stock deleted successfully.'
+    if @stock.line_items.blank?
+      @stock.destroy
+      @stock.entry.destroy
+      redirect_to stocks_url, alert: 'Stock deleted successfully.'
+    else
+      redirect_to stock_path(@stock), alert: "Unable to delete stock because there are orders associated with it. Discontinue instead!"
+    end
   end
 
   private
   def stock_params
-    params.require(:stock).permit(:has_freight, :freight_amount, :discounted, :discount_amount, :payment_type, :supplier_id, :reference_number, :product_id, :quantity, :date, :unit_cost, :serial_number, :expiry_date, :total_cost, :retail_price, :wholesale_price)
+    params.require(:stock).permit(:received, :has_freight, :freight_amount, :discounted, :discount_amount, :payment_type, :supplier_id, :reference_number, :product_id, :quantity, :date, :unit_cost, :serial_number, :expiry_date, :total_cost, :retail_price, :wholesale_price)
   end
 end

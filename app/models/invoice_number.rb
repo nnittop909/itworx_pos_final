@@ -9,6 +9,7 @@ class InvoiceNumber < ApplicationRecord
       return false
     end
   end
+  
   def invoice_number
     if InvoiceNumber.last.present?
       "#{InvoiceNumber.last.number.succ.rjust(8, '0')}"

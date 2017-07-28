@@ -2,20 +2,21 @@
   <div class="card card-danger">
     <div class="card-header">
       <div class="card-title">
-        <h4> Refund Details</h4>
+        <h4> Stock Transfer Details</h4>
         <span class="text-muted">Product: &nbsp&nbsp&nbsp</span> <span class="text-danger"><%= @stock.product.name_and_description%></span><br>
-        <span class="text-muted">Remaining Stock: &nbsp&nbsp&nbsp</span> <span class="text-danger"><%= @refund.stock.in_stock%> <%= @refund.stock.product.unit%></span>
+        <span class="text-muted">Remaining Stock: &nbsp&nbsp&nbsp</span> <span class="text-danger"><%= @stock.in_stock%> <%= @stock.product.unit%></span>
       </div>
     </div>
     <div class="card-body">
-      <%=simple_form_for [@stock, @refund] do |f| %>
+      <%=simple_form_for [@stock, @stock_transfer] do |f| %>
         <%=f.error_notification %>
         <%= f.input :date, as: :string, input_html: { class: 'datepicker'} %>
         <%= f.input :employee_id, input_html: {value: current_user.id }, as: :hidden %>
+        <%= f.association :supplier, label: "Forwarded to", collection: Supplier.all.map {|s| [s.business_name, s.id]} %>
         <label>Quantity(<%= @stock.product.unit%>)</label>
         <%= f.input :quantity, label: false, input_html: {oninput: 'calculateStockAmount()', id: "quantity", value: @stock.in_stock} %>
         <input type="number" id="price" value="<%= @stock.unit_cost %>" hidden=hidden >
-        <%= f.input :amount, label: "Refund Amount", input_html: {id: "total"} %>
+        <%= f.input :amount, label: "Stock Amount", input_html: {id: "total"} %>
         <%= f.input :remarks, as: :text %>
         <div class="modal-footer">
           <%=link_to 'Cancel', stock_path(@stock), class: 'btn btn-default pull-left' %>
@@ -27,7 +28,7 @@
 </div>
 <script>
   $(document).ready(function() {
-    $("#refund_stock_id").select2({
+    $("#stock_transfer_supplier_id").select2({
       theme: "bootstrap"
     });
   });

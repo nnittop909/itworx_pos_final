@@ -42,7 +42,7 @@
             <% ((order.line_items) + (order.catering_line_items)).each do |line_item| %>
               <p>
                 <% if line_item.class.name == "LineItem" %>
-                  <%= line_item.converted_quantity %>
+                  <%= line_item.quantity %> <%= line_item.stock.product.unit %>
                 <% else %>
                   <%= line_item.quantity %> <%= line_item.unit %>
                 <% end %>

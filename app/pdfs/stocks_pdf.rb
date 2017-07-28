@@ -1,5 +1,5 @@
 class StocksPdf < Prawn::Document
-  TABLE_WIDTHS = [80, 60, 250, 90, 92]
+  TABLE_WIDTHS = [80, 60, 40, 250, 70, 72]
   def initialize(stocks, from_date, to_date, view_context)
     super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
     @stocks = stocks
@@ -29,30 +29,36 @@ class StocksPdf < Prawn::Document
 
   end
   def display_stocks_table
-    if @stocks.blank?
+    if @stocks.where.not("received").blank?
       move_down 10
       text "No stocks data.", align: :center
     else
       move_down 10
-      header = [["DATE", "QTY", "PRODUCT", "PRICE", "COST"]]
+      header = [["DATE", "QTY", "UNIT", "PRODUCT", "PRICE", "COST"]]
       table(header, :cell_style => {size: 9, :padding => [1, 4, 1, 4]}, column_widths: TABLE_WIDTHS) do
         cells.borders = []
         row(0).font_style = :bold
+        column(3).align = :center
       end
 
       stroke_horizontal_rule
 
-      header = ["", "", "", "", ""]
-      footer = ["", "", "", "", ""]
-      stocks_data = @stocks.map { |e| [e.date.strftime('%B %e, %Y'), 
-      e.converted_total_quantity, e.product.name_and_description, 
-      "#{price(e.product.retail_price)} / #{e.product.retail_unit}", 
-      "#{price(e.unit_cost)} / #{e.product.retail_unit}"]}
+      header = ["", "", "", "", "", ""]
+      footer = ["", "", "", "", "", ""]
+      stocks_data = @stocks.where.not("received").map { |e| 
+        [e.date.strftime('%B %e, %Y'), 
+        e.quantity, 
+        e.product.unit, 
+        e.product.name_and_description, 
+        "#{price(e.product.retail_price)}", 
+        "#{price(e.unit_cost)}"]
+      }
       table_data = [header, *stocks_data, footer]
 
       table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
         cells.borders = [:top]
         row(0).font_style = :bold
+        column(3).align = :center
       end
     end
   end

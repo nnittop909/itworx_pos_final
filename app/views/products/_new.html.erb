@@ -20,21 +20,13 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-3">
-                <%= f.input :conversion_quantity, label: 'Bigger Ratio' %>
+              <div class="col-md-6">
+                <%= f.input :unit, label: 'Unit' %>
               </div>
-              <div class="col-md-4">
-                <%= f.input :retail_unit, label: 'Unit(Retail)', placeholder: 'kgs' %>
-              </div>
-              <div class="col-md-1"><h2 class="text-muted">/</h2></div>
-              <div class="col-md-4">
-                <%= f.input :wholesale_unit, label: 'Unit(Wholesale)', placeholder: 'bag' %>
-              </div>
-              <div class="col-md-12">
-                <p class="text-muted">*Enter the value for "Bigger Ratio" if you want to set the value for "Unit(Wholesale)", or leave it as default value. This values will be used during conversion.</p>
+              <div class="col-md-6">
+                <%=f.input :stock_alert_count %>
               </div>
             </div>
-            <%=f.input :stock_alert_count, placeholder: 'Enter quantity based on Unit(Retail)...' %>
             <div class="row">
               <div class="col-md-6">
                 <%=f.input :retail_price, label: 'Retail Price' %>

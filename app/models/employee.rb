@@ -1,4 +1,5 @@
 class Employee < User
+
   def to_s 
     full_name
   end

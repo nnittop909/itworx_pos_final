@@ -49,20 +49,12 @@
           <%@order.line_items.each do |line_item| %>
             <tr>
               <td><%=line_item.stock.try(:name)%></td>
-              <td><%=line_item.converted_quantity %></td>
+              <td><%=line_item.quantity %> <%= line_item.stock.product.unit%></td>
               <td class="text-right">
-                <% if line_item.retail? %>
-                  <%=number_to_currency line_item.converted_price %>
-                <% else %>
-                  <%=number_to_currency line_item.converted_price %>
-                <% end %>
+                <%=number_to_currency line_item.unit_price %>
               </td>
               <td class="text-right">
-                <% if line_item.retail? %>
-                  <%=number_to_currency line_item.total_price %>
-                <% else %>
-                  <%=number_to_currency line_item.total_wholesale_price %>
-                <% end %>
+                <%=number_to_currency line_item.total_price %>
               </td>
               <% if @order.line_items.count > 1 %>
                 <td>
@@ -75,19 +67,32 @@
               <% end %>
             </tr>
           <% end %>
-        </table>
-        <table class="table">
           <tr>
-            <td width="150px"><b>SubTotal: </b></td>
-            <td><%=number_to_currency @order.total_amount_without_discount %></td>
+            <td></td>
+            <td></td>
+            <% if @order.line_items.count > 1 %>
+              <td></td>
+            <% end %>
+            <td width="60px" class="text-right"><b>SubTotal: </b></td>
+            <td class="text-right"><%=number_to_currency @order.total_amount_without_discount %></td>
           </tr>
           <tr>
-            <td width="150px"><b class="text-danger">Discount: </b></td>
-            <td><span class='text-danger'><%= number_to_currency @order.total_discount%></span></td>
+            <td></td>
+            <td></td>
+            <% if @order.line_items.count > 1 %>
+              <td></td>
+            <% end %>
+            <td width="60px" class="text-right"><b class="text-danger">Discount: </b></td>
+            <td class="text-right"><span class='text-danger'><%= number_to_currency @order.total_discount%></span></td>
           </tr>
           <tr>
-            <td width="150px"><h4><b>Total:</b></h4></td>
-            <td><h4><%=number_to_currency @order.total_amount_less_discount %></h4></td>
+            <td></td>
+            <td></td>
+            <% if @order.line_items.count > 1 %>
+              <td></td>
+            <% end %>
+            <td width="60px" class="text-right"><h4><b>Total:</b></h4></td>
+            <td class="text-right"><h4><%=number_to_currency @order.total_amount_less_discount %></h4></td>
           </tr>
         </table>
       </div>

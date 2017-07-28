@@ -37,8 +37,13 @@ class OrdersController < ApplicationController
         session[:cart_id] = nil
         format.html do
           if @order.credit?
+            @order.unpaid!
+            if @order.retail? || @order.wholesale?
+              @order.subscribe_to_program
+            end
             redirect_to print_order_url(@order), notice: 'Credit transaction saved successfully.'
           else
+            @order.paid!
             redirect_to print_order_url(@order), notice: 'Thank you for your order.'
           end
         end
@@ -88,8 +93,8 @@ class OrdersController < ApplicationController
   end
 
   def scope_to_date
-    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.now.beginning_of_day
-    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.now.end_of_day
+    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : DateTime.now.beginning_of_day
+    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : DateTime.now.end_of_day
     @orders = Order.created_between({from_date: @from_date.yesterday.end_of_day, to_date: @to_date})
     respond_to do |format|
       format.html
@@ -122,6 +127,7 @@ class OrdersController < ApplicationController
     redirect_to store_url, notice:
     'Thank you for your order.'
   end
+
   def print_invoice
     @order = Order.find(params[:id])
     @line_items = @order.line_items + @order.catering_line_items
@@ -133,6 +139,7 @@ class OrdersController < ApplicationController
       end
     end
   end
+
   def print_official_receipt
     @order = Order.find(params[:id])
     @line_items = @order.line_items

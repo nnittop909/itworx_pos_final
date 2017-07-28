@@ -2,7 +2,7 @@ class Stock < ApplicationRecord
   include PgSearch
   pg_search_scope :search_by_name, :against => [:name, :serial_number], :associated_against => {
     :product => [:name_and_description]}
-  enum stock_type:[:purchased, :returned, :discontinued]
+  enum stock_type:[:purchased, :returned, :discontinued, :forwarded]
   enum payment_type: [:cash, :credit]
   belongs_to :product
   belongs_to :employee
@@ -11,6 +11,7 @@ class Stock < ApplicationRecord
   has_many :line_items
   has_many :orders, through: :line_items
   has_many :refunds
+  has_many :stock_transfers
   before_update :set_prices
   scope :created_between, lambda {|start_date, end_date| where("date >= ? AND date <= ?", start_date, end_date )}
 
@@ -21,20 +22,20 @@ class Stock < ApplicationRecord
     name
   end
 
-  def self.not_merged 
-    all.select{ |a| !a.merged?}
-  end
-
   def self.returned
-    all.where(stock_type: 1)
+    all.order(date: :desc).where(stock_type: 1)
   end
 
   def self.discontinued
-    all.where(stock_type: 2)
+    all.order(date: :desc).where(stock_type: 2)
+  end
+
+  def self.forwarded
+    all.order(date: :desc).where(stock_type: 3)
   end
 
   def self.total_cost_of_purchase
-    all.sum(:total_cost)
+    all.order(date: :desc).where.not("received").sum(:total_cost)
   end
 
   def self.entered_on(hash={})
@@ -47,88 +48,16 @@ class Stock < ApplicationRecord
     end
   end
 
-  def total_wholesale_quantity
-    (quantity/self.product.conversion_quantity).to_i
-  end
-
-  def total_retail_quantity
-    (((quantity/self.product.conversion_quantity).modulo(1)) * self.product.conversion_quantity).to_i
-  end
-
-  def converted_total_quantity
-    if (self.product.conversion_quantity && self.product.wholesale_unit).present?
-      if total_retail_quantity != 0
-        if total_wholesale_quantity != 0
-          "#{total_wholesale_quantity} #{self.product.wholesale_unit}/s" + " & " + "#{total_retail_quantity} #{self.product.retail_unit}"
-        else
-          "#{total_retail_quantity} #{self.product.retail_unit}"
-        end
-      else
-        "#{total_wholesale_quantity}  #{self.product.wholesale_unit}/s"
-      end
-    else
-      "#{quantity} #{self.product.retail_unit}"
-    end
-  end
-
   def in_stock
-    quantity -  sold
-  end
-
-  def wholesale_quantity
-    (in_stock/self.product.conversion_quantity).to_i
-  end
-
-  def retail_quantity
-    (((in_stock/self.product.conversion_quantity).modulo(1)) * self.product.conversion_quantity).to_i
-  end
-
-  def converted_in_stock_quantity
-    if (self.product.conversion_quantity && self.product.wholesale_unit).present?
-      if retail_quantity != 0
-        if wholesale_quantity != 0
-          "#{wholesale_quantity} #{self.product.wholesale_unit}/s" + " & " + "#{retail_quantity} #{self.product.retail_unit}"
-        else
-          "#{retail_quantity} #{self.product.retail_unit}"
-        end
-      else
-        "#{wholesale_quantity}  #{self.product.wholesale_unit}/s"
-      end
+    if self.returned? || self.discontinued? || self.forwarded?
+      0
     else
-      "#{quantity} #{self.product.retail_unit}"
+      quantity - sold
     end
   end
 
   def sold
     line_items.sum(:quantity)
-  end
-
-  def sold_wholesale_quantity
-    (sold/self.product.conversion_quantity).to_i
-  end
-
-  def sold_retail_quantity
-    (((sold/self.product.conversion_quantity).modulo(1)) * self.product.conversion_quantity).to_i
-  end
-
-  def converted_sold_quantity
-    if (self.product.conversion_quantity && self.product.wholesale_unit).present?
-      if sold_retail_quantity != 0
-        if sold_wholesale_quantity != 0
-          "#{sold_wholesale_quantity} #{self.product.wholesale_unit}/s" + " & " + "#{sold_retail_quantity} #{self.product.retail_unit}"
-        else
-          "#{sold_retail_quantity} #{self.product.retail_unit}"
-        end
-      else
-        "#{sold_wholesale_quantity}  #{self.product.wholesale_unit}/s"
-      end
-    else
-      "#{quantity} #{self.product.retail_unit}"
-    end
-  end
-
-  def total_merged_stocks
-    stocks_merged.sum(:quantity)
   end
 
   def total_cost_less_discount
@@ -152,11 +81,15 @@ class Stock < ApplicationRecord
   end
 
   def self.expired
-    all.select{ |a| a.expired?}
+    all.order(date: :desc).select{ |a| a.expired?}
+  end
+
+  def self.available
+    all.order(date: :desc).where.not(stock_type: [1,2,3]).select{ |a| !a.out_of_stock?}
   end
 
   def self.out_of_stock
-    all.select{ |a| a.out_of_stock?}
+    all.order(date: :desc).where.not(stock_type: [1,2,3]).select{ |a| a.out_of_stock?}
   end
 
   def expired?
@@ -183,6 +116,10 @@ class Stock < ApplicationRecord
     self.stock_type == "returned"
   end
 
+  def forwarded?
+    self.stock_type == "forwarded"
+  end
+
   def out_of_stock?
     in_stock.zero? || in_stock.negative?
   end
@@ -202,6 +139,8 @@ class Stock < ApplicationRecord
       "Discontinued"
     elsif returned?
       "Returned"
+    elsif forwarded?
+      "Forwarded"
     end
   end
 
@@ -224,14 +163,14 @@ class Stock < ApplicationRecord
     @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
 
     Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.id, 
-      commercial_document_type: self.class, date: Time.zone.now, description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.converted_in_stock_quantity}", 
+      commercial_document_type: self.class, date: Time.zone.now, description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}", 
       debit_amounts_attributes: [amount: self.in_stock_amount, account: @spoilage_breakage_and_loses], 
       credit_amounts_attributes:[amount: self.in_stock_amount, account: @merchandise_inventory], 
       employee_id: self.employee_id)
   end
 
   def remove_expense_from_expired_stock
-    @entry = Accounting::Entry.where(stock_id: self.id).where(commercial_document_id: self.id).where(commercial_document_type: self.class).where(description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.converted_in_stock_quantity}").last
+    @entry = Accounting::Entry.where(stock_id: self.id).where(commercial_document_id: self.id).where(commercial_document_type: self.class).where(description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}").last
     if @entry.present?
       @entry.destroy
     else

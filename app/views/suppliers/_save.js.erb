@@ -5,7 +5,7 @@ $("ul.errors").html("")
   <% end %>
 <% else %>
   $("#supplier-modal").modal("hide")
-  <% if current_page? new_supplier_path %>
+  <% if request.referer ==  suppliers_url %>
   	window.location.reload();
   <% else %>
   	$("#stock_supplier_id").load(location.href + " #stock_supplier_id>*", "");

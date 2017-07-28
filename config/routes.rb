@@ -106,9 +106,11 @@ Rails.application.routes.draw do
     resources :merge_stocks, only: [:new, :create], module: :stocks
     match "/scope_to_date" => "stocks#scope_to_date",  via: [:get], on: :collection
     resources :refunds, only: [:new, :create], module: :stocks
+    resources :stock_transfers, only: [:new, :create], module: :stocks
     match "/expired" => "stocks#expired", via: [:get], on: :collection
     match "/out_of_stock" => "stocks#out_of_stock", via: [:get], on: :collection
     match "/returned" => "stocks#returned", via: [:get], on: :collection
+    match "/forwarded" => "stocks#forwarded", via: [:get], on: :collection
     match "/discontinued" => "stocks#discontinued", via: [:get], on: :collection
     match "/discontinue" => "stocks#discontinue", as: :discontinue, via: [:get, :post]
     match "/continue" => "stocks#continue", as: :continue, via: [:get, :post]

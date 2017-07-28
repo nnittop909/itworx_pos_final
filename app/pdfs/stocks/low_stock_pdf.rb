@@ -1,6 +1,6 @@
 module Stocks
   class LowStockPdf < Prawn::Document
-    TABLE_WIDTHS = [200, 100, 232 ]
+    TABLE_WIDTHS = [200, 70, 150, 152 ]
     def initialize(products, view_context)
       super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
       @products = products
@@ -24,23 +24,23 @@ module Stocks
     def display_products_table
       if @products.blank?
         move_down 10
-        text "No stocks data.", align: :center
+        text "No products data.", align: :center
       else
         move_down 10
-        header = [["STOCK", "IN STOCK", "SOLD"]]
+        header = [["STOCK", "UNIT", "IN STOCK", "SOLD"]]
         table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
-          cells.borders = [:top]
+          cells.borders = []
           row(0).font_style = :bold
         end
 
         stroke_horizontal_rule
 
-        header = ["", "", ""]
-        footer = ["", "", ""]
-        products_data = @products.map { |e| [e.name_and_description, e.converted_total_quantity, e.sold]}
+        header = ["", "", "", ""]
+        footer = ["", "", "", ""]
+        products_data = @products.map { |e| [e.name_and_description, e.unit, e.quantity, e.sold]}
         table_data = [header, *products_data, footer]
         table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
-          cells.borders = []
+          cells.borders = [:top]
           row(0).font_style = :bold
         end
       end

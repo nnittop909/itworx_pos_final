@@ -14,7 +14,7 @@
               <%=f.input :product_id, collection: Product.all.map { |p| [p.name_and_description, p.id]} %>
             </div>
             <div class="col-md-4">
-             <%=f.input :date, as: :datetime_picker, label: 'Date Purchased', input_html: {class: "datepicker"} %>
+             <%=f.input :date, as: :string, label: 'Date Purchased', input_html: {class: "datepicker"} %>
             </div>
           </div>
           <div class="row">
@@ -22,28 +22,31 @@
               <%= f.input :reference_number %>
             </div>
             <div class="col-md-4">
-              <%=f.input :expiry_date, as: :datetime_picker, input_html: {class: "datepicker"} %>
+              <%=f.input :expiry_date, as: :string, input_html: {class: "datepicker"} %>
             </div>
           </div>
           <div class="no-padding"><hr></div>
           <h4 class="text-muted">Supplier Details</h4>
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-2">
+              <%=f.input :received, label: "Forwarded", input_html: { id: 'stock-received' } %>
+            </div>
+            <div class="col-md-6">
               <span class="pull-right"><%= link_to "New Supplier?", new_supplier_path, remote: true %></span>
               <%=f.input :supplier_id, collection: Supplier.all.map{ |a| [a.business_name, a.id]} %>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4" id="pay-type">
               <%=f.input :payment_type, collection: Stock.payment_types.keys.to_a.map { |s| [s.titleize, s] }%>
             </div>
           </div>
           <div class="no-padding"><hr></div>
-          <div class="row">
+          <div class="row" id="discount-and-freight">
             <div class="col-md-6">
               <h4 class="text-muted">Discount Details </h4>
               <%=f.input :discounted, input_html: { id: 'stock-discount' } %>
               <div class="col-md-12" id='discount-details' style="display:none;">
-              <div class="form-group has-warning">
-                <%=f.input :discount_amount, input_html: {id: 'discount-amount', oninput: 'calculateTotalPurchase()'}%>
+                <div class="form-group has-warning">
+                  <%=f.input :discount_amount, input_html: {id: 'discount-amount', oninput: 'calculateTotalPurchase()'}%>
                 </div>
               </div>
             </div>
@@ -51,8 +54,8 @@
               <h4 class="text-muted">Freight In Details </h4>
               <%=f.input :has_freight ,input_html: { id: 'has-freight' } %>
               <div class="col-md-12" id='freight-details' style="display:none;">
-              <div class="form-group has-warning">
-                <%=f.input :freight_amount, input_html: {id: 'freight-amount', oninput: 'calculateTotalPurchase()'}%>
+                <div class="form-group has-warning">
+                  <%=f.input :freight_amount, input_html: {id: 'freight-amount', oninput: 'calculateTotalPurchase()'}%>
                 </div>
               </div>
             </div>
@@ -60,11 +63,11 @@
           <br>
           <div class="row">
             <div class="col-md-4">
-              <label>Quantity based on Unit(Retail)</label>
+              <label>Quantity</label>
               <%=f.input :quantity, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">
-              <label>Unit Cost / Unit(Retail)</label>
+              <label>Unit Cost</label>
               <%=f.input :unit_cost, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">
@@ -76,14 +79,6 @@
               <%=f.input :serial_number, label: "Bar Code" %>
             </div>
           </div>
-         <!--  <h4 class="text-muted">Merging Details</h4>
-          <div class="row">
-          <div class="col-md-12">
-             <%#=f.input :merged, label: 'Merge this stock?' %>
-              <span class="help-block"> Please ensure the product has previous stocks if this checkcard is clicked! </span>
-              <hr>
-            </div>
-            </div> -->
           <div class="modal-footer">
             <%=f.submit "Save Stock", class: "btn btn-primary" %>
             <span class='pull-left'><%=link_to 'Cancel', stocks_path, class: 'btn btn-default' %></span>
@@ -132,6 +127,21 @@
        freight_div.style['display'] = 'block';
      } else {
        freight_div.style['display'] = 'none';
+     }
+  };
+</script>
+
+<script>
+  var checkcard = document.getElementById('stock-received');
+  var discount_and_freight_div = document.getElementById('discount-and-freight');
+  var pay_type_div = document.getElementById('pay-type');
+  checkcard.onchange = function() {
+     if(this.checked) {
+       discount_and_freight_div.style['display'] = 'none';
+       pay_type_div.style['display'] = 'none';
+     } else {
+       discount_and_freight_div.style['display'] = 'block';
+       pay_type_div.style['display'] = 'block';
      }
   };
 </script>

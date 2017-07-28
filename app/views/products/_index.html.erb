@@ -45,6 +45,7 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Unit</th>
                 <th><span class='pull-right'> Retail</span></th>
                 <th><span class='pull-right'> Wholesale</span> </th>
                 <th><span class='pull-right'> Deliveries </span> </th>
@@ -62,12 +63,13 @@
                       <%= product.stock_alert %>
                     </small>
                   </td>
+                  <td><%= product.unit %></td>
                   <td><span class='pull-right'><%=number_to_currency product.retail_price%></span></td>
                   <td><span class='pull-right'><%=number_to_currency product.wholesale_price%></span></td>
-                  <td><span class='pull-right'><%=product.converted_total_quantity%></span></td>
-                  <td><span class='pull-right'><%=product.converted_in_stock_quantity%></span></td>
-                  <td><span class="pull-right"><%=product.converted_sold_quantity %></span></td>
-                  <td><%=link_to new_product_stock_path(product) do %>
+                  <td><span class='pull-right'><%=product.quantity%></span></td>
+                  <td><span class='pull-right'><%=product.in_stock%></span></td>
+                  <td><span class="pull-right"><%=product.sold %></span></td>
+                  <td class="text-right"><%=link_to new_product_stock_path(product) do %>
                     <span class="text-primary"><i class="fa fa-plus-circle" title="New Stock" data-toggle='tooltip'></i>
                     <% end %> &nbsp; &nbsp;
                     <%=link_to edit_product_path(product), remote: true do %>

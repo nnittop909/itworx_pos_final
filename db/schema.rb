@@ -99,6 +99,12 @@ ActiveRecord::Schema.define(version: 20170722080029) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "departments", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "discounts", force: :cascade do |t|
     t.decimal "amount", default: "0.0"
     t.integer "discount_type"

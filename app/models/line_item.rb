@@ -25,7 +25,9 @@ class LineItem < ApplicationRecord
     end
   end
   def stock_quantity
-    self.stock.in_stock
+    if stock
+      self.stock.in_stock
+    end
   end
   def self.cash
     all.select{|a| a.cash? }
@@ -57,7 +59,7 @@ class LineItem < ApplicationRecord
   end
 
   def total_retail_price
-    self.unit_price * quantity
+    unit_price * quantity
   end
 
   def self.total_wholesale_price

@@ -4,11 +4,11 @@ class Cart < ApplicationRecord
   has_many :stocks, through: :line_items
 
   def total_retail_price
-    self.line_items.to_a.sum { |item| item.total_retail_price }
+    line_items.map { |item| item.total_retail_price }.sum
   end
 
   def total_wholesale_price
-    self.line_items.to_a.sum { |item| item.total_wholesale_price }
+    line_items.map { |item| item.total_wholesale_price }.sum
   end
 
   def add_line_item(line_item)

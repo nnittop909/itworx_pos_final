@@ -6,7 +6,7 @@ class Stock < ApplicationRecord
   enum payment_type: [:cash, :credit]
   belongs_to :product
   belongs_to :employee
-  belongs_to :supplier
+  belongs_to :supplier, optional: true
   has_one :entry, class_name: "Accounting::Entry", foreign_key: 'stock_id', dependent: :destroy
   has_many :line_items
   has_many :orders, through: :line_items
@@ -16,7 +16,7 @@ class Stock < ApplicationRecord
   scope :created_between, lambda {|start_date, end_date| where("date >= ? AND date <= ?", start_date, end_date )}
 
   validates :quantity, :supplier_id, :unit_cost, :total_cost,  presence: true, numericality: true
-  before_save :set_date, :set_prices, :set_name
+  # before_save :set_date, :set_prices, :set_name
 
   def to_s
     name

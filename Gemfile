@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.4.0'
+ruby '2.4.1'
 
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
@@ -47,7 +47,7 @@ group :production do
 end
 group :development, :test do
   gem 'byebug', platform: :mri
-  gem "rspec-rails", "3.5.0"
+  gem "rspec-rails"
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'faker'

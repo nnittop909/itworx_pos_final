@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Cart do 
+RSpec.describe Cart, :type => :model do
 	describe 'associations' do 
 		it { is_expected.to belong_to :employee }
 		it { is_expected.to have_many :line_items }
@@ -14,7 +14,7 @@ describe Cart do
 		line_item_1 = create(:line_item, cart: cart, unit_price: 10, quantity: 1)
 		line_item_2 = create(:line_item, cart: cart, unit_price: 10, quantity: 1)
      
-     expect(cart.total_retail_price).to eql(20)
+    expect(cart.total_retail_price).to eql(20)
 	end
 
 	it '#total_wholesale_price' do 
@@ -23,6 +23,6 @@ describe Cart do
 		line_item_1 = create(:line_item, cart: cart, stock: stock, unit_price: 10, quantity: 1)
 		line_item_2 = create(:line_item, cart: cart, stock: stock, unit_price: 10, quantity: 1)
      
-     expect(cart.total_wholesale_price).to eql(20)
+    expect(cart.total_wholesale_price).to eql(20)
 	end
 end 

@@ -16,7 +16,7 @@ class Stock < ApplicationRecord
   scope :created_between, lambda {|start_date, end_date| where("date >= ? AND date <= ?", start_date, end_date )}
 
   validates :quantity, :supplier_id, :unit_cost, :total_cost,  presence: true, numericality: true
-  # before_save :set_date, :set_prices, :set_name
+  before_save :set_date, :set_name
 
   def to_s
     name

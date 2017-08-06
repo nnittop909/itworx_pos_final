@@ -43,7 +43,7 @@ class LineItem < ApplicationRecord
   end
 
   def cost_of_goods_sold
-    unit_price * quantity
+    stock.unit_cost * quantity
   end
 
   def income
@@ -67,7 +67,7 @@ class LineItem < ApplicationRecord
   end
 
   def total_wholesale_price
-    stock.wholesale_price * quantity
+    unit_price * quantity
   end
 
   def self.total_wholesale_price

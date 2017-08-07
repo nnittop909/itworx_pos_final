@@ -85,7 +85,7 @@ class Stock < ApplicationRecord
   end
 
   def self.available
-    all.order(date: :desc).where.not(stock_type: [1,2,3]).select{ |a| !a.out_of_stock?}
+    all.order(date: :desc).where.not(stock_type: [1,2,3]).select{ |a| !a.out_of_stock? && !a.expired?}
   end
 
   def self.out_of_stock

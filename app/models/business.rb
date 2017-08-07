@@ -1,4 +1,5 @@
 class Business < ApplicationRecord
+  validates :name, presence: true
   has_attached_file :logo,
   styles: { large: "120x120>",
             medium: "70x70>",

@@ -97,7 +97,7 @@
         <div class="card-title">
           <h4>Business Settings
             <span class="pull-right">
-              <%=link_to 'Update', edit_business_path(Business.last), class: 'btn btn-primary' %>
+              <%=link_to 'Update', edit_business_path(Business.last), class: 'btn btn-primary', remote: true %>
             </span>
           </h4>
         </div>
@@ -158,15 +158,16 @@
               <h4>Warranty</h4>
             </div>
             <div class="col-md-6">
-              <%=link_to 'Set', new_warranty_path, class: 'btn btn-warning pull-right' %>
+              <%=link_to 'Set', new_warranty_path, class: 'btn btn-warning pull-right', remote: true %>
             </div>
           </div>
         </div>
       </div>
       <div class="card-body">
+        <p><justify><%= Warranty.last.description %></justify></p>
       </div>
     </div>
-    <div class="card">
+    <!-- <div class="card">
       <div class="card-header">
         <div class="card-title">
           <div class="row">
@@ -174,14 +175,14 @@
               <h4>Taxes</h4>
             </div>
             <div class="col-md-6">
-              <%=link_to 'New Tax', new_tax_path, class: 'btn btn-danger pull-right' %>
+              <%#=link_to 'New Tax', new_tax_path, class: 'btn btn-danger pull-right' %>
             </div>
           </div>
         </div>
       </div>
       <div class="card-body">
       </div>
-    </div>
+    </div> -->
     <div class="card">
       <div class="card-header">
         <div class="card-title">
@@ -205,5 +206,7 @@
 </div>
 <div id="category-modal" class="modal fade"></div>
 <div id="program-modal" class="modal fade"></div>
+<div id="business-modal" class="modal fade"></div>
+<div id="warranty-modal" class="modal fade"></div>
 <div id="regular-rate-modal" class="modal fade"></div>
 <div id="irregular-rate-modal" class="modal fade"></div>

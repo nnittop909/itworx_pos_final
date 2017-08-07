@@ -1,0 +1,20 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Warranty Details</h4>
+    </div>
+    <%=simple_form_for @warranty, remote: true do |f| %>
+    <%= f.error_notification %>
+      <div class="modal-body">
+        <ul class="errors text-danger">
+        </ul>
+        <%=f.input :description, as: :text %>
+
+        <div class="modal-footer">
+          <%= link_to "Cancel", "#", class: "btn btn-default pull-left", data: {dismiss: "modal"} %>
+          <%=f.submit "Save", class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

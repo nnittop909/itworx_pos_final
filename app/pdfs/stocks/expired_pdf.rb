@@ -6,7 +6,7 @@ module Stocks
       @stocks = stocks
       @view_context = view_context
       heading
-      display_stocks_table
+      display_products_table
 
     end
     def price(number)

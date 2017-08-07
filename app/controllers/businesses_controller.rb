@@ -5,11 +5,6 @@ class BusinessesController < ApplicationController
 
   def create
     @business = Business.create(business_params)
-    if @business.save
-      redirect_to settings_url, notice: "Business information saved successfully."
-    else
-      render :new
-    end
   end
 
   def edit
@@ -19,11 +14,6 @@ class BusinessesController < ApplicationController
   def update
     @business = Business.find(params[:id])
     @business.update(business_params)
-    if @business.save
-      redirect_to settings_url, notice: 'Business information updated successfully.'
-    else
-      render :edit
-    end
   end
 
   private

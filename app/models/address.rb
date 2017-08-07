@@ -1,13 +1,14 @@
 class Address < ApplicationRecord
   belongs_to :user
-
+  
+  validates :municipality, :province, presence: true
   def to_s
   	details
   end
 
   def details
   	if self.street.present? && self.barangay.present?
-    	"#{street} #{barangay}, #{municipality}, #{province}"
+    	"#{street}, #{barangay}, #{municipality}, #{province}"
     elsif self.street.blank? && self.barangay.present?
     	"#{barangay}, #{municipality}, #{province}"
     elsif self.street.blank? && self.barangay.blank?

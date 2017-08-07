@@ -9,6 +9,15 @@ class MembersController < ApplicationController
     end
   end
 
+  def import
+    begin
+      Member.import(params[:file])
+      redirect_to settings_url, notice: 'Members Imported'
+    rescue
+      redirect_to settings_url, notice: 'Invalid CSV File.'
+    end
+  end
+
   def autocomplete
     @members = User.customer.all
     @names = @members.map { |m| m.full_name }

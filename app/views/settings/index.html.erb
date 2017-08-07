@@ -202,6 +202,25 @@
         <p class="text-muted">*To import products in "csv" format, you need to match the header of the csv file to the following: <b>name</b>, <b>description</b>, <b>unit</b>, <b>retail_price</b>, <b>wholesale_price</b>, <b>stock_alert_count</b>.</p>
       </div>
     </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4>Import Members</h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <%= form_tag import_members_path, multipart: true do %>
+          <div class="input-group stylish-input-group">
+            <%= file_field_tag :file, class: 'form-control' %>
+            <span class="input-group-btn">
+              <%= submit_tag 'Import', class: 'form-control btn btn-primary' %>
+            </span>
+          </div>
+        <% end %>
+        <br>
+        <p class="text-muted">*To import members in "csv" format, you need to match the header of the csv file to the following: <b>last_name</b>, <b>first_name</b></p>
+      </div>
+    </div>
   </div> 
 </div>
 <div id="category-modal" class="modal fade"></div>

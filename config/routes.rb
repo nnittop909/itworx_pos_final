@@ -71,7 +71,9 @@ Rails.application.routes.draw do
     resources :line_items, only: [:index], module: :members do
       match "/scope_to_date" => "line_items#scope_to_date",  via: [:get], on: :collection, module: :members
     end
+    collection { post :import}
   end
+  
   resources :payables, only: [:index]
   resources :suppliers, :except => [:destroy] do
     get :autocomplete_supplier_owner, on: :collection

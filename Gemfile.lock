@@ -52,7 +52,7 @@ GEM
     animate-rails (1.0.10)
       rails
     arel (8.0.0)
-    autoprefixer-rails (7.1.2.3)
+    autoprefixer-rails (7.1.2.4)
       execjs
     barby (0.6.5)
     bcrypt (3.1.11)

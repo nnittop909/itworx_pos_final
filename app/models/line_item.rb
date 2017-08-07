@@ -1,4 +1,5 @@
 class LineItem < ApplicationRecord
+  belongs_to :itemable, polymorphic:true 
   belongs_to :stock, foreign_key: 'stock_id'
   belongs_to :cart
   belongs_to :order

@@ -3,9 +3,9 @@ class Order < ApplicationRecord
   pg_search_scope :text_search, :against => [:reference_number],
                   :associated_against => {:member => [:full_name], :invoice_number => [:number]}
 
-  has_one :official_receipt_number, dependent: :destroy
+  has_one :official_receipt, as: :receiptable
   has_one :invoice_number, dependent: :destroy
-  has_one :entry, class_name: "Accounting::Entry", foreign_key: 'order_id', dependent: :destroy
+  has_one :entry, class_name: "Accounting::Entry", as: :commercial_document, dependent: :destroy
 
   belongs_to :employee, foreign_key: 'employee_id'
   belongs_to :member, foreign_key: 'user_id'

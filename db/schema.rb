@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807060947) do
+ActiveRecord::Schema.define(version: 20170807071929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -189,6 +189,18 @@ ActiveRecord::Schema.define(version: 20170807060947) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_official_receipt_numbers_on_order_id"
+  end
+
+  create_table "official_receipts", force: :cascade do |t|
+    t.integer "receiptable_id"
+    t.string "receiptable_type"
+    t.datetime "date"
+    t.string "number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["number"], name: "index_official_receipts_on_number", unique: true
+    t.index ["receiptable_id"], name: "index_official_receipts_on_receiptable_id"
+    t.index ["receiptable_type"], name: "index_official_receipts_on_receiptable_type"
   end
 
   create_table "orders", force: :cascade do |t|

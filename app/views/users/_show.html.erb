@@ -1,31 +1,33 @@
 <div class="row">
   <div class="col-md-12">
-    <div class="box box-solid">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-md-1">
-          <p></p>
-            <%= image_tag @user.profile_photo.url(:small), class: "img-circle"%>
-          </div>
-          <div class="col-md-10">
-            <h4 class="panel-title">
-              <br>
-              <%=@user.full_name.try(:upcase) %><br />
-              <small><i class="fa fa-circle"></i> <%=@user.role.try(:titleize) %></small>
-              <a href="#"><small></small></a>
-            </h4>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-1">
+            <p></p>
+              <%= image_tag @user.profile_photo.url(:small), class: "img-circle"%>
+            </div>
+            <div class="col-md-10">
+              <h4 class="panel-title">
+                <br>
+                <%=@user.full_name.try(:upcase) %><br />
+                <small><i class="fa fa-circle"></i> <%=@user.role.try(:titleize) %></small>
+                <a href="#"><small></small></a>
+              </h4>
+            </div>
           </div>
         </div>
       </div>
-      <div class="panel-body">
+      <div class="card-body">
       <div class="nav-tabs-navigation">
         <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
           <li class="<%='active' if current_page? info_user_path %>">
             <%= link_to 'Info', info_user_path %>
           </li>
-          <li class="<%='active' if current_page? activities_user_path %>">
-            <%= link_to 'Activities', activities_user_path %>
-          </li>
+          <!-- <li class="<#%='active' if current_page? activities_user_path %>">
+            <%#= link_to 'Activities', activities_user_path %>
+          </li> -->
         </ul>
       </div>
       <div class="content">

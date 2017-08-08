@@ -121,3 +121,6 @@
 #       mail.to = 'john.smith@email.com'
 #     end
 #   end
+Dir[File.join(File.dirname(Config.config_file), "models", "*.rb")].each do |model|
+ instance_eval(File.read(model))
+end

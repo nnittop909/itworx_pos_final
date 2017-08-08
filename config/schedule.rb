@@ -17,8 +17,8 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-every 1.day do
-	runner "Stock.find_and_set_expired"
+every :reboot do
+	command "backup perform --trigger daily_backup --config_file /var/www/itworx_pos_final/shared/backup/config.rb"
 end
 
 # Learn more: http://github.com/javan/whenever

@@ -186,15 +186,6 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.index ["user_id"], name: "index_line_items_on_user_id"
   end
 
-  create_table "official_receipt_numbers", force: :cascade do |t|
-    t.date "date"
-    t.string "number"
-    t.integer "order_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_official_receipt_numbers_on_order_id"
-  end
-
   create_table "official_receipts", force: :cascade do |t|
     t.integer "receiptable_id"
     t.string "receiptable_type"
@@ -348,6 +339,10 @@ ActiveRecord::Schema.define(version: 20170807072901) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "last_name"
+    t.string "first_name"
+    t.integer "role"
+    t.string "middle_name"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -358,11 +353,7 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.string "first_name"
-    t.string "middle_name"
-    t.string "last_name"
     t.string "full_name"
-    t.integer "role"
     t.string "type"
     t.string "mobile"
     t.integer "member_type"

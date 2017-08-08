@@ -71,6 +71,6 @@ class MembersController < ApplicationController
 
   private
   def member_params
-    params.require(:member).permit(:member_type, :first_name, :last_name, :email, :password, :password_confirmation, :role, :mobile, address_attributes:[:id, :house_number, :street, :barangay, :municipality, :province, :id ])
+    params.require(:member).permit(:last_name, :first_name, :role, :email, :member_type, :password, :password_confirmation, :mobile, address_attributes:[:id, :house_number, :street, :barangay, :municipality, :province, :id ])
   end
 end

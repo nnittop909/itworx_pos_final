@@ -31,6 +31,7 @@ gem 'pundit'
 gem "select2-rails"
 gem 'public_activity'
 gem 'prawn'
+gem 'roo'
 gem 'prawn-table'
 gem 'prawn-icon'
 gem 'mina-puma', :require => false

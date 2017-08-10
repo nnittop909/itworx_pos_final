@@ -1,7 +1,7 @@
 module Members
   class LineItemsController < ApplicationController
     def scope_to_date
-      @member = User.customer.find(params[:member_id])
+      @member = Member.find(params[:member_id])
       @orders = @member.orders.order(date: :desc).all
       @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.now.beginning_of_day
       @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.now.end_of_day

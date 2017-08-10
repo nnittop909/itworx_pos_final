@@ -8,8 +8,8 @@ class Order < ApplicationRecord
   has_one :entry, class_name: "Accounting::Entry", as: :commercial_document, dependent: :destroy
 
   belongs_to :employee, foreign_key: 'employee_id'
-  belongs_to :member, foreign_key: 'user_id'
-  belongs_to :department, foreign_key: 'user_id'
+  belongs_to :member
+  belongs_to :department, class_name: "member", foreign_key: 'member_id'
   enum pay_type:[:cash, :credit]
   enum order_type: [:retail, :wholesale, :catering]
   enum payment_status: [:paid, :unpaid]

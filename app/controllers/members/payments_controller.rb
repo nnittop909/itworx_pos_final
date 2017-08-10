@@ -1,7 +1,7 @@
 module Members
   class PaymentsController < ApplicationController
     def new
-      @member = User.customer.find(params[:member_id])
+      @member = Member.find(params[:member_id])
       @entry = Accounting::Entry.new
       authorize @entry
       @entry.debit_amounts.build
@@ -9,7 +9,7 @@ module Members
     end
 
     def create
-      @member = User.customer.find(params[:member_id])
+      @member = Member.find(params[:member_id])
       @entry = Accounting::Entry.create(entry_params)
       @entry.commercial_document = @member
       @entry.recorder = current_user

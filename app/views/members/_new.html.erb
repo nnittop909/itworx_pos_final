@@ -9,24 +9,17 @@
         <ul class="errors text-danger">
         </ul>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <%=f.input :first_name %>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <%=f.input :last_name %>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <%=f.input :mobile %>
-          </div>
-          <div class="col-md-6">
-            <%=f.input :email, input_html:{ value: "#{rand(1_000_000)}#{rand(1_000_000)}#{rand(1_000_000)}@#{rand(99999)}itworx.com"}, as: :hidden %>
+          <div class="col-md-4">
+            <%=f.input :middle_name %>
           </div>
         </div>
-        <%=f.input :password, input_html: { value: '111111' },as: :hidden %>
-        <%=f.input :password_confirmation,  input_html: { value: '111111' }, as: :hidden  %>
-        <%=f.input :role, as: :string, input_html: { value: 'customer' }, as: :hidden %>
+        <%=f.input :mobile %>
         <%=f.input :member_type, collection: Member.member_types.keys.to_a.map{|a| [a.titleize, a]}, as: :radio_buttons, checked: Member.member_types.keys.to_a.first %>
         <hr>
         <p class="category"> Address Details </p>
@@ -41,7 +34,7 @@
           </div>
           <div class="row">
             <div class="col-md-6">
-              <%=a.input :municipality, input_html: { value: "Lagawe" } %>
+              <%=a.input :municipality, input_html: { value: "Asipulo" } %>
             </div>
             <div class="col-md-6">
               <%=a.input :province, input_html: { value: "Ifugao" } %>

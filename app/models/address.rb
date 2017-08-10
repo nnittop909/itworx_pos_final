@@ -1,5 +1,6 @@
 class Address < ApplicationRecord
   belongs_to :user
+  belongs_to :member
   
   validates :municipality, :province, presence: true
   def to_s

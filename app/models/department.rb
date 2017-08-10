@@ -1,4 +1,4 @@
-class Department < User
+class Department < Member
 	include PgSearch
   pg_search_scope :search_by_name, :against => [:full_name]
 

@@ -14,7 +14,7 @@ class Product < ApplicationRecord
   has_many :refunds, through: :stocks
   has_many :line_items, through: :stocks
   has_many :orders, through: :line_items
-  validates :name, :stock_alert_count, :retail_price, :wholesale_price, :unit, presence: true
+  validates :name, :retail_price, :wholesale_price, :unit, presence: true
 
   before_destroy :ensure_not_referenced_by_any_line_item
   before_save :set_name_description

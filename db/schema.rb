@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807072901) do
+ActiveRecord::Schema.define(version: 20170808150442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "member_id"
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
@@ -99,6 +100,7 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "member_id"
   end
 
   create_table "departments", force: :cascade do |t|
@@ -178,12 +180,28 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.datetime "updated_at", null: false
     t.integer "itemable_id"
     t.string "itemable_type"
+    t.integer "member_id"
     t.index ["cart_id"], name: "index_line_items_on_cart_id"
     t.index ["deleted_at"], name: "index_line_items_on_deleted_at"
     t.index ["itemable_id"], name: "index_line_items_on_itemable_id"
     t.index ["itemable_type"], name: "index_line_items_on_itemable_type"
     t.index ["stock_id"], name: "index_line_items_on_stock_id"
     t.index ["user_id"], name: "index_line_items_on_user_id"
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "full_name"
+    t.integer "member_type"
+    t.string "mobile"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "profile_photo_file_name"
+    t.string "profile_photo_content_type"
+    t.integer "profile_photo_file_size"
+    t.datetime "profile_photo_updated_at"
   end
 
   create_table "official_receipts", force: :cascade do |t|
@@ -217,6 +235,7 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.integer "tax_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "member_id"
     t.index ["deleted_at"], name: "index_orders_on_deleted_at"
     t.index ["employee_id"], name: "index_orders_on_employee_id"
     t.index ["entry_id"], name: "index_orders_on_entry_id"
@@ -228,10 +247,9 @@ ActiveRecord::Schema.define(version: 20170807072901) do
     t.string "name"
     t.string "description"
     t.string "unit"
-    t.integer "category_id"
-    t.string "bar_code"
     t.decimal "retail_price"
     t.decimal "wholesale_price"
+    t.integer "category_id"
     t.string "name_and_description"
     t.decimal "stock_alert_count", default: "1.0"
     t.integer "stock_status"

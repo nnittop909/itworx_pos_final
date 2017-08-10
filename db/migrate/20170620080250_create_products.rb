@@ -4,10 +4,9 @@ class CreateProducts < ActiveRecord::Migration[5.1]
       t.string :name
       t.string :description
       t.string :unit
-      t.integer :category_id, index: true
-      t.string :bar_code
       t.decimal :retail_price
       t.decimal :wholesale_price
+      t.integer :category_id, index: true
       t.string :name_and_description
       t.decimal :stock_alert_count, default: 1
       t.integer :stock_status

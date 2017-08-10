@@ -4,6 +4,7 @@ class LineItem < ApplicationRecord
   belongs_to :cart
   belongs_to :order
   belongs_to :employee, foreign_key: 'user_id'
+  belongs_to :member
   has_many :interest_programs
   enum pricing_type: [:retail, :wholesale, :catering]
   scope :by_total_price, -> { all.to_a.sort_by(&:total_price) }

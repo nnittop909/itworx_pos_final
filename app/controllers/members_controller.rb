@@ -3,9 +3,9 @@ class MembersController < ApplicationController
 
   def index
     if params[:full_name].present?
-      @members = User.customer.search_by_name(params[:full_name]).page(params[:page]).per(30)
+      @members = Member.search_by_name(params[:full_name]).page(params[:page]).per(30)
     else
-      @members = User.customer.all.page(params[:page]).per(30)
+      @members = Member.all.page(params[:page]).per(30)
     end
   end
 
@@ -19,7 +19,7 @@ class MembersController < ApplicationController
   end
 
   def autocomplete
-    @members = User.customer.all
+    @members = Member.all
     @names = @members.map { |m| m.full_name }
     render json: @names
   end
@@ -35,30 +35,30 @@ class MembersController < ApplicationController
   end
 
   def edit
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
     @address = @member.address
   end
 
   def update
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
     @member.update_attributes(member_params)
   end
 
   def show
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
   end
 
   def info
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
   end
 
   def purchases
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
     @cash_transactions = @member.orders.order(date: :desc).page(params[:page]).per(50)
   end
 
   def account_details
-    @member = User.customer.find(params[:id])
+    @member = Member.find(params[:id])
     @credit_payments = @member.credit_payments
     respond_to do |format|
       format.html
@@ -71,6 +71,6 @@ class MembersController < ApplicationController
 
   private
   def member_params
-    params.require(:member).permit(:last_name, :first_name, :role, :email, :member_type, :password, :password_confirmation, :mobile, address_attributes:[:id, :house_number, :street, :barangay, :municipality, :province, :id ])
+    params.require(:member).permit(:last_name, :first_name, :middle_name, :member_type, :mobile, :profile_photo, address_attributes:[:id, :house_number, :street, :barangay, :municipality, :province, :id ])
   end
 end

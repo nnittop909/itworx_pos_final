@@ -13,15 +13,15 @@ class CateringLineItem < ApplicationRecord
   end
 
   def cash?
-     order.present? && order.cash?
+    order.present? && order.cash?
   end
 
   def self.credit
-      all.select{|a| a.credit? }
+    all.select{|a| a.credit? }
   end
   
   def credit?
-     order.present? && order.credit?
+    order.present? && order.credit?
   end
 
   def compute_unit_price

@@ -103,7 +103,7 @@ Rails.application.routes.draw do
   resources :categories
   resources :wholesales
   resources :stocks, only: [:index, :show, :new, :create, :destroy] do
-    get :autocomplete_stock_name_and_description, on: :collection
+    get :autocomplete_stock_name, on: :collection
     match "/merge" => "stocks#merge",  via: [:post], on: :member
     resources :merge_stocks, only: [:new, :create], module: :stocks
     match "/scope_to_date" => "stocks#scope_to_date",  via: [:get], on: :collection

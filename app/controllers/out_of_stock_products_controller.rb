@@ -1,6 +1,6 @@
 class OutOfStockProductsController < ApplicationController
   def index
-    @products = Product.out_of_stock.all.page(params[:page]).per(30)
+    @products = Product.out_of_stock
     respond_to do |format|
       format.html
       format.pdf do

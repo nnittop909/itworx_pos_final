@@ -34,14 +34,19 @@ module Stocks
         end
 
         stroke_horizontal_rule
-
-        header = ["", "", "", ""]
-        footer = ["", "", "", ""]
-        products_data = @products.map { |e| [e.name_and_description, e.unit, e.quantity, e.sold]}
-        table_data = [header, *products_data, footer]
-        table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
-          cells.borders = [:top]
-          row(0).font_style = :bold
+        Category.order(:name).all.each do |category|
+          if category.products.present?
+            header = [category.name, "", "", ""]
+          else
+            header = ["", "", "", ""]
+          end
+          footer = ["", "", "", ""]
+          products_data = category.products.map { |e| [e.name_and_description, e.unit, e.quantity, e.sold]}
+          table_data = [header, *products_data, footer]
+          table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+            cells.borders = [:top]
+            row(0).font_style = :bold
+          end
         end
       end
     end

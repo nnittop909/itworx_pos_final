@@ -5,7 +5,7 @@ class Product < ApplicationRecord
 
   enum stock_status: [:available, :low_stock, :out_of_stock, :discontinued]
   pg_search_scope( :search_by_name, 
-                    against: [:name_and_description, :name, :bar_code, :description],
+                    against: [:name_and_description, :name, :description],
                     using: { tsearch: { prefix: true }} )
 
   belongs_to :category
@@ -70,6 +70,10 @@ class Product < ApplicationRecord
 
   def out_of_stock?
     in_stock.zero? || in_stock.negative? || stocks.blank?
+  end
+
+  def self.out_of_stock
+    all.order(:name).select{ |a| a.out_of_stock?}
   end
 
   def low_stock?

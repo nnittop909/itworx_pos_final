@@ -1,7 +1,6 @@
 class Stock < ApplicationRecord
   include PgSearch
-  pg_search_scope :search_by_name, :against => [:name, :serial_number], :associated_against => {
-    :product => [:name_and_description]}
+  pg_search_scope :search_by_name, :against => [:name, :serial_number]
   enum stock_type:[:purchased, :returned, :discontinued, :forwarded]
   enum payment_type: [:cash, :credit]
   belongs_to :product

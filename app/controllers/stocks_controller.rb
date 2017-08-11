@@ -1,9 +1,9 @@
 class StocksController < ApplicationController
-  autocomplete :stock, :name_and_description, full: true
+  autocomplete :stock, :name, full: true
   def index
-    if params[:name_and_description]
-      @available = Stock.available.search_by_name(params[:name_and_description])
-      @stocks = Kaminari.paginate_array(@available).page(params[:page]).per(50)
+    if params[:name]
+      @stocks = Stock.search_by_name(params[:name]).page(params[:page]).per(50)
+      #@stocks = Kaminari.paginate_array(@available).page(params[:page]).per(50)
     else
       @available = Stock.available
       @stocks = Kaminari.paginate_array(@available).page(params[:page]).per(50)

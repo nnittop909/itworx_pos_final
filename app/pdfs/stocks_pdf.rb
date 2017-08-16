@@ -18,7 +18,11 @@ class StocksPdf < Prawn::Document
     text "#{Business.last.address}", size: 10, align: :center
     move_down 15
     text 'STOCK PURCHASE REPORT', align: :center, style: :bold
-    text "#{@from_date.strftime("%B %e, %Y")} - #{@to_date.strftime("%B %e, %Y")}", size: 9, align: :center
+    if @from_date.strftime("%B %e, %Y") == @to_date.strftime("%B %e, %Y")
+      text "#{@from_date.strftime("%B %e, %Y")}", size: 9, align: :center
+    else
+      text "#{@from_date.strftime("%B %e, %Y")} - #{@to_date.strftime("%B %e, %Y")}", size: 9, align: :center
+    end
     move_down 5
     stroke_horizontal_rule
     move_down 5

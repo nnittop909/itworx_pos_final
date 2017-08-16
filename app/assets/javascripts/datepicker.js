@@ -8,3 +8,14 @@ $(document).ready(function() {
       }
   });
 });
+
+$(document).ready(function() {
+  $('.datepicker-reporting').datetimepicker({
+  	format: 'YYYY-MM-DD',
+  	showClose: true,
+      widgetPositioning: {
+            horizontal: 'auto',
+            vertical: 'auto'
+      }
+  });
+});

@@ -19,8 +19,8 @@
         <tr>
         <% if line_item.order.present? %>
           <td><%=line_item.order.date.strftime("%B %e, %Y") %></td>
-          <td><%=line_item.order.try(:member) || line_item.order.try(:department)%></td>
-          <td><%=line_item.quantity %></td>
+          <td><%=line_item.order.try(:customer)%></td>
+          <td><%=line_item.quantity %> <%=line_item.stock.product.unit %></td>
           <td><%=line_item.stock.serial_number %></td>
           <td><%=number_to_currency line_item.unit_price %></td>
           <td><%=number_to_currency line_item.total_price %></td>

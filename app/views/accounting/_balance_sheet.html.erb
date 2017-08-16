@@ -10,7 +10,7 @@
             <label>Report Filter:</label>
             <%= form_tag({:action => 'index'}, {:method => :get}) do%>
               <div class="col-md-4">
-                <%= text_field_tag :date, @to_date, :class => 'datetimepicker form-control border-input' %>
+                <%= text_field_tag :date, @to_date, :class => 'datepicker-reporting form-control border-input' %>
               </div>
               <div class="col-md-8">
                 <button type="submit" class="btn btn-primary">Get Report</button>

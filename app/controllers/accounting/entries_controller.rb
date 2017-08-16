@@ -5,17 +5,30 @@ module Accounting
 
     def index
       if params[:description].present?
-      @entries = Accounting::Entry.search_by_name(params[:description]).order(:date).page(params[:page]).per(30)
+      @entries = Accounting::Entry.search_by_name(params[:description]).order(date: :desc).page(params[:page]).per(30)
 
       else
-        @entries = Accounting::Entry.includes(:commercial_document, :recorder).all.order('date DESC').page(params[:page]).per(30)
-        @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.now.beginning_of_day
-        @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.now.end_of_day
-        respond_to do |format|
-          format.html
-          format.pdf do
-            pdf = EntriesPdf.new(@entries, @from_date, @to_date, view_context)
-              send_data pdf.render, type: "application/pdf", disposition: 'inline', file_name: "Entries Report.pdf"
+        if (params[:from_date] && params[:to_date]).present?
+          @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.zone.now
+          @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.zone.now
+          @entries = Accounting::Entry.created_between({from_date: @from_date, to_date: @to_date.end_of_day}).order(date: :desc).page(params[:page]).per(50)
+          respond_to do |format|
+            format.html
+            format.pdf do
+              pdf = EntriesPdf.new(@entries, @from_date, @to_date, view_context)
+                send_data pdf.render, type: "application/pdf", disposition: 'inline', file_name: "Entries Report.pdf"
+            end
+          end
+        else
+          @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.zone.now
+          @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.zone.now
+          @entries = Accounting::Entry.includes(:commercial_document, :recorder).all.order('date DESC').page(params[:page]).per(50)
+          respond_to do |format|
+            format.html
+            format.pdf do
+              pdf = EntriesPdf.new(@entries, @from_date, @to_date, view_context)
+                send_data pdf.render, type: "application/pdf", disposition: 'inline', file_name: "Entries Report.pdf"
+            end
           end
         end
       end
@@ -52,9 +65,9 @@ module Accounting
     end
 
     def scope_to_date
-      @entries = Accounting::Entry.created_between(params[:from_date], params[:to_date])
-      @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.now.beginning_of_day
-      @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.now.end_of_day
+      @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.zone.now
+      @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.zone.now
+      @entries = Accounting::Entry.created_between({from_date: @from_date, to_date: @to_date.end_of_day}).order(date: :desc)
       respond_to do |format|
         format.html
         format.pdf do

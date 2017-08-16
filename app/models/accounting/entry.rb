@@ -9,14 +9,13 @@ module Accounting
     has_many :debit_amounts, :extend => AmountsExtension, :class_name => 'Accounting::DebitAmount', :inverse_of => :entry, dependent: :destroy
     has_many :credit_accounts, :through => :credit_amounts, :source => :account, :class_name => 'Accounting::Account'
     has_many :debit_accounts, :through => :debit_amounts, :source => :account, :class_name => 'Accounting::Account'
-
+    enum :entry_type => [:cash_order, :credit_order, :cash_stock, :credit_stock]
 
     validates_presence_of :description
     validate :has_credit_amounts?
     validate :has_debit_amounts?
     validate :amounts_cancel?
 
-    scope :created_between, lambda {|from_date, to_date| where("date >= ? AND date <= ?", from_date, to_date )}
       # Support construction using 'credits' and 'debits' keys
     accepts_nested_attributes_for :credit_amounts, :debit_amounts, allow_destroy: true
     alias_method :credits=, :credit_amounts_attributes=
@@ -26,23 +25,23 @@ module Accounting
     # Support the deprecated .build method
     def self.entered_on(hash={})
       if hash[:from_date] && hash[:to_date]
-        from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date])
-        to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date])
+      from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00 AM'))
+      to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date].strftime('%Y-%m-%d 23:59:59 PM'))
         where('date' => from_date..to_date)
       else
         all
       end
     end
 
-    # def self.created_between(hash={})
-    #   if hash[:from_date] && hash[:to_date]
-    #     from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date])
-    #     to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date])
-    #     where('date' => from_date..to_date)
-    #   else
-    #     all
-    #   end
-    # end
+    def self.created_between(hash={})
+      if hash[:from_date] && hash[:to_date]
+        from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00 AM'))
+        to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date].strftime('%Y-%m-%d 23:59:59 PM'))
+        where('date' => from_date..to_date)
+      else
+        all
+      end
+    end
     
     def self.build(hash)
       ActiveSupport::Deprecation.warn('Plutus::Transaction.build() is deprecated (use new instead)', caller)

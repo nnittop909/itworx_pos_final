@@ -2,8 +2,8 @@ module Accounting
   module AmountsExtension
     def balance(hash={})
       if hash[:from_date] && hash[:to_date]
-        from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : Time.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00'))
-        to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : Time.parse(hash[:to_date].strftime('%Y-%m-%d 12:59:59'))
+        from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : Time.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00 AM'))
+        to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : Time.parse(hash[:to_date].strftime('%Y-%m-%d 23:59:59 PM'))
         joins(:entry, :account).where('entries.date' => from_date..to_date).sum(:amount)
       else
         joins(:entry, :account).sum(:amount)

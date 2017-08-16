@@ -33,7 +33,7 @@
               <% if current_page? retail_orders_path %>
                 <%=form_tag retail_orders_path, method: :get do %>
                   <div class="input-group stylish-input-group" id="product-prefetch">
-                    <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_member_full_name_members_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
+                    <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_customer_full_name_customers_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
                     <span class="input-group-btn">
                       <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
                         <i class="fa fa-search"></i>
@@ -44,7 +44,7 @@
               <% elsif current_page? wholesale_orders_path %>
                 <%=form_tag wholesale_orders_path, method: :get do %>
                   <div class="input-group stylish-input-group" id="product-prefetch">
-                    <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_member_full_name_members_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
+                    <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_customer_full_name_customers_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
                     <span class="input-group-btn">
                       <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
                         <i class="fa fa-search"></i>
@@ -64,6 +64,9 @@
           </li>
           <li role="presentation" class="<%='active' if current_page? wholesale_orders_path %>">
             <%= link_to 'Wholesale', wholesale_orders_path %>
+          </li>
+          <li role="presentation" class="<%='active' if current_page? catering_orders_path %>">
+            <%= link_to 'Catering', catering_orders_path %>
           </li>
         </ul>
         <div class="tab-content">
@@ -86,13 +89,13 @@
                             <th>Total Sales </th>
                             <th>Cost of Goods Sold </th>
                             <th> Income </th>
-                            <th>Type </th>
+                            <th> </th>
                           </tr>
                         </thead>
                         <tbody>
                           <% @orders.each do |order| %>
                             <tr>
-                              <td><%= link_to order.member.try(:full_name) || 'Guest', order %></td>
+                              <td><%= link_to order.customer.try(:full_name) || 'Guest', order %></td>
                               <td><%= order.invoice_number.try(:number) %></td>
                               <td><%= order.date.strftime('%B %e, %Y') %></td>
                               <td><%= number_to_currency order.total_amount_without_discount %></td>

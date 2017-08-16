@@ -1,5 +1,5 @@
 class ProductsPdf < Prawn::Document
-  TABLE_WIDTHS = [150, 60, 80, 80, 80, 60, 60]
+  TABLE_WIDTHS = [150, 40, 70, 80, 70, 70, 92]
   def initialize(products, view_context)
     super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
     @products = Product.all
@@ -19,6 +19,17 @@ class ProductsPdf < Prawn::Document
     text 'CURRENT INVENTORY REPORT', size: 12, align: :center
     move_down 5
     stroke_horizontal_rule
+    move_down 2
+    table(total_inventory_cost_data, header: true, cell_style: { size: 10, font: "Helvetica", :padding => [1,4,1,4]}, column_widths: [180, 100, 70, 100, 100]) do
+      cells.borders = []
+      row(0).font_style = :bold
+    end
+    move_down 2
+    stroke_horizontal_rule
+  end
+
+  def total_inventory_cost_data
+    [["Total Inventory Cost: ", price(Product.total_inventory_cost), "", "", ""]]
   end
   
   def display_products_table
@@ -28,7 +39,7 @@ class ProductsPdf < Prawn::Document
     else
       move_down 10
 
-      header = [["PRODUCT", "UNIT", "RETAIL", "WHOLESALE", "DELIVERIES", "SOLD", "IN STOCK"]]
+      header = [["PRODUCT", "UNIT", "RETAIL", "WHOLESALE", "DELIVERIES", "IN STOCK", "TOTAL"]]
       table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
         cells.borders = []
         row(0).font_style = :bold
@@ -38,16 +49,18 @@ class ProductsPdf < Prawn::Document
         column(4).align = :right
         column(5).align = :right
         column(6).align = :right
+        column(7).align = :right
       end
       stroke_horizontal_rule
       Category.order(:name).all.each do |category|
         if category.products.present?
           header = [category.name, "", "", "", "", "", ""]
+          footer = ["", "", "", "", "", "SUB-TOTAL:", price(category.products.total_inventory_cost)]
         else
           header = ["", "", "", "", "", "", ""]
+          footer = ["", "", "", "", "", "", ""]
         end
-        footer = ["", "", "", "", "", "", ""]
-        products_data = category.products.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.sold, e.in_stock]}
+        products_data = category.products.available.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
         table_data = [header, *products_data, footer]
         table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
           cells.borders = [:top]
@@ -58,6 +71,7 @@ class ProductsPdf < Prawn::Document
           column(4).align = :right
           column(5).align = :right
           column(6).align = :right
+          column(7).align = :right
         end
       end
     end

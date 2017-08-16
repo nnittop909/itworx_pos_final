@@ -42,7 +42,7 @@
               </tr>
             </thead>
             <tbody>
-              <% @stocks.each do |stock| %>
+              <% @stocks.available.each do |stock| %>
                 <% if stock.out_of_stock? %>
                   <tr><td colspan="4" class="text-center text-muted"><h3>Out of Stock!</h3></td></tr>
                 <% elsif stock.expired? %>
@@ -133,8 +133,8 @@
                 <% elsif current_page? wholesales_path %>
                   <%= f.input :order_type, input_html: {value: 'wholesale'}, as: :hidden %>
                 <% end %>
-                <span><label>Customer</label> <span class="pull-right"><%= link_to 'New Customer', new_member_path, remote: true %></span></span>
-                <%=f.input :user_id, label: false, collection: Member.all.map{|a| [a.full_name, a.id] } || 'Guest', input_html: {id: 'order_user_id', default: Member.find_by(first_name: "Guest")} %>
+                <span><label>Customer</label> <span class="pull-right"><%= link_to 'New Customer', new_customer_path, remote: true %></span></span>
+                <%=f.input :customer_id, label: false, collection: Customer.all.map{|a| [a.full_name, a.id] }, default: Customer.find_by(first_name: "Guest"), input_html: {id: 'order_user_id'} %>
                 <input type="hidden" name="total" id="total" value="<%= @cart.total_retail_price %>" oninput="calculateChange()">
                 <div class="row">
                   <div class="col-md-5">

@@ -68,7 +68,7 @@
             Expiry Date:
           </div>
           <div class="col-md-8">
-            <%= @stock.expiry_date.strftime("%B %e,%Y") %>
+            <%= @stock.expiry_date.strftime("%B %e,%Y") if @stock.expiry_date.present? %>
           </div>
         </div>
         <br>

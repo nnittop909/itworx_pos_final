@@ -1,7 +1,7 @@
 class Accounting::IncomeStatementController < ApplicationController
   def index
-    @from_date = params[:from_date] ? Date.parse(params[:from_date]) : Date.today.at_beginning_of_month
-    @to_date = params[:to_date] ? Date.parse(params[:to_date]) : Date.today
+    @from_date = params[:from_date] ? Date.parse(params[:from_date]) : Time.zone.now.at_beginning_of_month
+    @to_date = params[:to_date] ? Date.parse(params[:to_date]) : Time.zone.now
     @revenues = Accounting::Revenue.all
     @expenses = Accounting::Expense.all
 

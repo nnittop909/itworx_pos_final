@@ -35,13 +35,13 @@ module Stocks
 
         stroke_horizontal_rule
         Category.order(:name).all.each do |category|
-          if category.products.present?
+          if category.products.out_of_stock.present?
             header = [category.name, "", "", ""]
           else
             header = ["", "", "", ""]
           end
           footer = ["", "", "", ""]
-          products_data = category.products.map { |e| [e.name_and_description, e.unit, e.quantity, e.sold]}
+          products_data = category.products.out_of_stock.map { |e| [e.name_and_description, e.unit, e.quantity, e.sold]}
           table_data = [header, *products_data, footer]
           table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
             cells.borders = [:top]

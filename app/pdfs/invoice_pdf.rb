@@ -33,10 +33,10 @@ class InvoicePdf < Prawn::Document
   end
   def business_details_data
       @business_details_data ||=  [["#{Business.last.try(:name)}"]] +
-                                  [["TIN   #{Business.last.try(:tin)}", ""]] +
-                                  [["Address  #{Business.last.try(:address)}"]] +
-                                  [["Contact #"]] +
-                                  [["Email #", "",  "No. #{@order.invoice_number.try(:number)}"]]
+                                  [["TIN:   #{Business.last.try(:tin)}", ""]] +
+                                  [["Address:  #{Business.last.try(:address)}"]] +
+                                  [["Contact#:  #{Business.last.try(:mobile)}"]] +
+                                  [["Email:  #{Business.last.try(:email)}", "",  "No. #{@order.invoice_number.try(:number)}"]]
 
 
     end
@@ -72,9 +72,9 @@ end
 
   end
   def customer_details_data
-    @customer_details_data ||=  [["<b>Sold To:</b>      #{@order.member.try(:full_name)}", "", "<b>Date: </b> #{@order.date.strftime("%B %e, %Y")}"]] +
-                                [["<b>Address</b>      #{@order.member.try(:address_details)}","", "<b>CRM #: </b>"]] +
-                                [["<b>Mobile #</b>      #{@order.member.try(:mobile)}", "", "<b>Sold By:</b> #{@order.employee.try(:full_name)}"]]
+    @customer_details_data ||=  [["<b>Sold To:</b>      #{@order.customer.try(:full_name)}", "", "<b>Date: </b> #{@order.date.strftime("%B %e, %Y")}"]] +
+                                [["<b>Address</b>      #{@order.customer.try(:address_details)}","", "<b>CRM #: </b>"]] +
+                                [["<b>Mobile #</b>      #{@order.customer.try(:mobile)}", "", "<b>Sold By:</b> #{@order.employee.try(:full_name)}"]]
   end
   def display_orders_table
     if @line_items.blank?
@@ -104,7 +104,7 @@ end
     [["QTY", "DESCRIPTION", "SERIAL NO.", "UNIT PRICE", "AMOUNT"]] +
     @table_data ||= @line_items.map { |e| 
       if e.class.name == "LineItem"
-        [e.converted_quantity, e.stock.product.try(:name_and_description), e.stock.try(:serial_number), price(e.converted_price), price(e.total_price)]
+        [e.quantity, e.stock.product.try(:name_and_description), e.stock.try(:serial_number), price(e.unit_price), price(e.total_price)]
       else
         ["#{e.quantity} #{e.unit}", e.name, "", price(e.unit_cost), price(e.total_cost)]
       end
@@ -133,7 +133,7 @@ end
                               [["Received in Good order and Condition:"]] +
                               [[""]] +
                               [["_______________________________"]] +
-                              [["#{@order.member.try(:full_name)}","TOTAL AMOUNT DUE", "#{price(@order.total_amount_less_discount)}"]]
+                              [["#{@order.customer.try(:full_name)}","TOTAL AMOUNT DUE", "#{price(@order.total_amount_less_discount)}"]]
   end
   def footer_for_warranty
     bounding_box([10, 80], :width => 530, :height => 110) do

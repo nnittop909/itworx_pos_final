@@ -6,6 +6,8 @@ class CreateBusinesses < ActiveRecord::Migration[5.1]
       t.boolean :vat
       t.string :address
       t.string :proprietor
+      t.string :mobile
+      t.string :address
       
       t.timestamps
     end

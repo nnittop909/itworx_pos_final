@@ -63,11 +63,12 @@ class ProductsController < ApplicationController
   def update
     @product = Product.find(params[:id])
     @product.update(product_params)
+    @product.check_stock_status
     @product.update_prices
   end
 
   def scope_to_category
-    @products = Product.by_category(params[:category]).page(params[:page]).per(50)
+    @products = Product.by_category(params[:category]).page(params[:page]).per(80)
   end
 
   def reports
@@ -91,9 +92,9 @@ class ProductsController < ApplicationController
   end
   def scope_to_date_sales
     @product = Product.find(params[:id])
-    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.now.yesterday.end_of_day
-    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.now.end_of_day
-    @line_items = @product.line_items.select{|a| a.created_at.between?(@from_date, @to_date) }
+    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.zone.now
+    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.zone.now
+    @line_items = @product.line_items.all.created_between({from_date: @from_date, to_date: @to_date})
     respond_to do |format|
       format.html
       format.pdf do

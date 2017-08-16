@@ -1,0 +1,69 @@
+<div id="member-modal" class="modal fade"></div>
+<div id="non-member-modal" class="modal fade"></div>
+<div class="row">
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="row">
+          <div class="col-md-3">
+            <h4 class="title"> Customers </h4>
+          </div>
+          <div class="col-md-6">
+            <%=form_tag customers_path, method: :get do %>
+              <div class="input-group stylish-input-group" id="product-prefetch">
+                <%= autocomplete_field_tag "full_name", params[:full_name], autocomplete_customer_full_name_customers_path, class: 'form-control', placeholder: 'Enter Customer Name...' %>
+                <span class="input-group-btn">
+                  <%= button_tag(type: 'submit', class: "btn btn-flat") do %>
+                    <i class="fa fa-search"></i>
+                  <% end %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+          <div class="col-md-3">
+            <span class="pull-right">
+              <%=link_to new_customer_path, remote: true do %>
+              <span class="btn btn-primary"><i class="fa fa-user-plus"></i> New Customer </span>
+              <% end %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th> Mobile Number</th>
+              <th> Address </th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @members.each do |member| %>
+              <tr>
+                <td><%= link_to member.full_name, info_customer_path(member) %></td>
+                <td><%= member.mobile %></td>
+                <td><%= member.address_details %></td>
+                <td>
+                  <% if member.class.name == "Member" %>
+                    <%= link_to 'Update Info', edit_member_path(member), remote: true, class: 'btn btn-xs btn-warning'%>
+                  <% elsif member.class.name == "Catering" %>
+                    <%= link_to 'Update Info', edit_catering_customer_path(member), remote: true, class: 'btn btn-xs btn-warning'%>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <div class="modal-footer">
+          <center><%= paginate @members, :window => 1 %></center>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

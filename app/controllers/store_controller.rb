@@ -1,4 +1,5 @@
 class StoreController < ApplicationController
+  
   def index
     if params[:name_and_description].present?
       @stocks = Stock.purchased.search_by_name(params[:name_and_description])

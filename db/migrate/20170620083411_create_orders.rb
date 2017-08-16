@@ -14,7 +14,7 @@ class CreateOrders < ActiveRecord::Migration[5.1]
       t.string :reference_number
       t.integer :order_type
       t.integer :payment_status
-      t.integer :user_id
+      t.integer :customer_id
       t.integer :employee_id
       t.integer :entry_id, foreign_key: true
       t.integer :tax_id
@@ -22,7 +22,7 @@ class CreateOrders < ActiveRecord::Migration[5.1]
       t.timestamps
     end
     add_index :orders, :deleted_at
-    add_index :orders, :user_id
+    add_index :orders, :customer_id
     add_index :orders, :employee_id
     add_index :orders, :entry_id
     add_index :orders, :tax_id

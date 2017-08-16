@@ -1,0 +1,3 @@
+class Guest < Customer
+	
+end

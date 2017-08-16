@@ -1,0 +1,42 @@
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Customer Details</h4>
+    </div>
+    <%=simple_form_for @catering_customer, url: catering_customers_url, remote: true do |f| %>
+    <%= f.error_notification %>
+      <div class="modal-body">
+        <ul class="errors text-danger">
+        </ul>
+        <%=f.input :first_name, label: "Name" %>
+        <%=f.input :last_name, input_html: {value: "."}, as: :hidden %>
+        <%=f.input :mobile %>
+        <hr>
+        <p class="category"> Address Details </p>
+        <%=f.simple_fields_for :address do |a| %>
+          <div class="row">
+            <div class="col-md-6">
+              <%=a.input :street %>
+            </div>
+            <div class="col-md-6">
+              <%=a.input :barangay %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <%=a.input :municipality, input_html: { value: "Asipulo" } %>
+            </div>
+            <div class="col-md-6">
+              <%=a.input :province, input_html: { value: "Ifugao" } %>
+            </div>
+          </div>
+        <% end %>
+
+      <div class="modal-footer">
+        <%#= link_to 'Cancel', monitoring_project_path(@project), class: 'btn btn-default pull-left' %>
+        <%= link_to "Cancel", "#", class: "btn btn-default pull-left", data: {dismiss: "modal"} %>
+        <%=f.submit "Save", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

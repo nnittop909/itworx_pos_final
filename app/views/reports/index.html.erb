@@ -1,50 +1,6 @@
 
 <div class="row">
   <div class="col-md-12">
-    <!-- <div class="panel panel-info">
-      <div class="panel-heading">
-        <h4>SUMMARY</h4>
-      </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-6">
-            <%#=link_to scope_to_date_summary_orders_path(from_date: Time.zone.now.beginning_of_week, to_date: Time.zone.now.end_of_week, format: 'pdf') do %>
-              <h4> Weekly Summary Report </h4>
-              <p> Generate summary report for this week. </p>
-            <%# end %>
-            <hr>
-          </div>
-          <div class="col-md-6">
-            <%#=link_to scope_to_date_summary_orders_path(from_date: Time.zone.now.beginning_of_month, to_date: Time.zone.now.end_of_month, format: 'pdf') do %>
-              <h4> Monthly Summary Report </h4>
-              <p> Generate summary report for this month. </p>
-            <%# end %>
-            <hr>
-          </div>
-          <div class="col-md-6 col-md-offset-3 ">
-            <h4> Custom Summary Report </h4>
-            <%#= form_tag({:action => "scope_to_date_summary", controller: "orders", format: 'pdf'}, {:method => :get})  do %>
-              <div class="row">
-                <div class="col-md-5">
-                  <div class="form-group">
-                    <%#= text_field_tag :from_date, @from_date, :class => 'datepicker form-control border-input', :placeholder => "From " %>
-                  </div>
-                </div>
-                <div class="col-md-5">
-                  <div class="form-group">
-                    <%#= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker', :placeholder => "To " %>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <button type="submit" class="btn btn-success active"> Go </button>
-                </div>
-              </div>
-            <%# end %>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
     <div class="panel panel-success fresh-color">
       <div class="panel-heading">
         <h4>SALES</h4>
@@ -52,7 +8,7 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-md-4">
-            <%=link_to scope_to_date_orders_path(from_date: DateTime.now.beginning_of_day, to_date: DateTime.now.end_of_day, format: 'pdf') do %>
+            <%=link_to scope_to_date_orders_path(from_date: Time.now.beginning_of_day, to_date: Time.now.end_of_day, format: 'pdf') do %>
               <h4> Daily Sales Report </h4>
               <p> Generate daily sales report for today. </p>
             <% end %>
@@ -78,12 +34,12 @@
               <div class="row">
                 <div class="col-md-5">
                   <div class="form-group">
-                    <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control border-input', :placeholder => "From " %>
+                    <%= text_field_tag :from_date, @from_date, :class => 'datepicker-reporting form-control border-input', :placeholder => "From " %>
                   </div>
                 </div>
                 <div class="col-md-5">
                   <div class="form-group">
-                    <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker', :placeholder => "To " %>
+                    <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker-reporting', :placeholder => "To " %>
                   </div>
                 </div>
                 <div class="col-md-2">
@@ -166,12 +122,12 @@
               <div class="row">
                 <div class="col-md-5">
                   <div class="form-group">
-                    <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control border-input', :placeholder => "From " %>
+                    <%= text_field_tag :from_date, @from_date, :class => 'datepicker-reporting form-control border-input', :placeholder => "From " %>
                   </div>
                 </div>
                 <div class="col-md-5">
                   <div class="form-group">
-                    <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker', :placeholder => "To " %>
+                    <%= text_field_tag :to_date, @to_date, :class => 'form-control border-input datepicker-reporting', :placeholder => "To " %>
                   </div>
                 </div>
                 <div class="col-md-2">

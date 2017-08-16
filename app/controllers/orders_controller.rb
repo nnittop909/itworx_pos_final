@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  autocomplete :member, :full_name, full: true
+  autocomplete :customer, :full_name, full: true
 
   def index 
     @orders = Order.all.page(params[:page]).per(50)
@@ -27,20 +27,21 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.new(order_params)
+    @order_expense_amount = params[:expense_amount]
     @order.employee = current_user
     @order.add_line_items_from_cart(current_cart)
-    @order.add_line_items_from_catering_cart(current_catering_cart)
     respond_to do |format|
       if @order.save
+        InvoiceNumber.new.generate_for(@order)
         @order.create_entry
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
         format.html do
           if @order.credit?
-            @order.unpaid!
-            if @order.retail? || @order.wholesale?
-              @order.subscribe_to_program
+            if (@order.retail? || @order.wholesale?)
+              @order.subscribe_to_program!
             end
+            @order.unpaid!
             redirect_to print_order_url(@order), notice: 'Credit transaction saved successfully.'
           else
             @order.paid!
@@ -54,7 +55,6 @@ class OrdersController < ApplicationController
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
-    InvoiceNumber.new.generate_for(@order)
   end
 
   def retail
@@ -64,7 +64,7 @@ class OrdersController < ApplicationController
     if params[:full_name].present?
       @orders = Order.retail.text_search(params[:full_name]).page(params[:page]).per(50)
     else
-      @orders = Order.retail.includes(:member, :invoice_number).order(id: :desc).all.page(params[:page]).per(50)
+      @orders = Order.retail.includes(:customer, :invoice_number).order(id: :desc).all.page(params[:page]).per(50)
     end
   end
 
@@ -75,7 +75,18 @@ class OrdersController < ApplicationController
     if params[:full_name].present?
       @orders = Order.wholesale.text_search(params[:full_name]).page(params[:page]).per(50)
     else
-      @orders = Order.wholesale.includes(:member, :invoice_number).order(id: :desc).all.page(params[:page]).per(50)
+      @orders = Order.wholesale.includes(:customer, :invoice_number).order(id: :desc).all.page(params[:page]).per(50)
+    end
+  end
+
+  def catering
+    @total_sales = Order.created_between({from_date: Time.now.beginning_of_day, to_date: Time.now.end_of_day}).sum(&:total_amount_less_discount)
+    @cash_sales = Order.created_between({from_date: Time.now.beginning_of_day, to_date: Time.now.end_of_day}).cash.sum(&:total_amount_less_discount)
+    @credit_sales = Order.created_between({from_date: Time.now.beginning_of_day, to_date: Time.now.end_of_day}).credit.sum(&:total_amount_less_discount)
+    if params[:full_name].present?
+      @orders = Order.catering.text_search(params[:full_name]).page(params[:page]).per(50)
+    else
+      @orders = Order.catering.includes(:customer, :invoice_number).order(id: :desc).all.page(params[:page]).per(50)
     end
   end
 
@@ -93,9 +104,9 @@ class OrdersController < ApplicationController
   end
 
   def scope_to_date
-    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : DateTime.now.beginning_of_day
-    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : DateTime.now.end_of_day
-    @orders = Order.created_between({from_date: @from_date.yesterday.end_of_day, to_date: @to_date})
+    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.zone.now
+    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.zone.now
+    @orders = Order.created_between({from_date: @from_date, to_date: @to_date})
     respond_to do |format|
       format.html
       format.pdf do
@@ -106,10 +117,10 @@ class OrdersController < ApplicationController
   end
 
   def scope_to_date_summary
-    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.now.beginning_of_day
-    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.now.end_of_day
+    @from_date = params[:from_date] ? DateTime.parse(params[:from_date]) : Time.zone.now.beginning_of_day
+    @to_date = params[:to_date] ? DateTime.parse(params[:to_date]) : Time.zone.now.end_of_day
     @stocks = Stock.created_between(params[:from_date], params[:to_date])
-    @orders = Order.created_between({from_date: @from_date.yesterday.end_of_day, to_date: @to_date.end_of_day})
+    @orders = Order.created_between({from_date: @from_date.yesterday.end_of_day, to_date: @to_date.tomorrow.beginning_of_day})
     respond_to do |format|
       format.html
       format.pdf do
@@ -169,6 +180,7 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:order_id])
     @order.employee = current_user
     @order.return_line_items_to_stock!
+    @order.remove_entry_for_return_order!
     @order.destroy
     redirect_to store_index_url, alert: 'Sales Return saved successfully.'
   end
@@ -185,6 +197,6 @@ class OrdersController < ApplicationController
   end
   private
   def order_params
-    params.require(:order).permit(:order_type, :user_id, :cash_tendered, :change, :pay_type, :delivery_type, :date, :discounted, discount_attributes:[:amount])
+    params.require(:order).permit(:order_type, :customer_id, :cash_tendered, :change, :pay_type, :delivery_type, :date, :discounted, discount_attributes:[:amount])
   end
 end

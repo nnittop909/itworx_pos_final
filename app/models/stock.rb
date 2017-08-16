@@ -12,7 +12,6 @@ class Stock < ApplicationRecord
   has_many :refunds
   has_many :stock_transfers
   before_update :set_prices
-  scope :created_between, lambda {|start_date, end_date| where("date >= ? AND date <= ?", start_date, end_date )}
 
   validates :quantity, :supplier_id, :unit_cost, :total_cost,  presence: true, numericality: true
   before_save :set_date, :set_name
@@ -37,10 +36,10 @@ class Stock < ApplicationRecord
     all.order(date: :desc).where.not("received").sum(:total_cost)
   end
 
-  def self.entered_on(hash={})
+  def self.created_between(hash={})
     if hash[:from_date] && hash[:to_date]
-      from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date])
-      to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date])
+      from_date = hash[:from_date].kind_of?(Time) ? hash[:from_date] : DateTime.parse(hash[:from_date].strftime('%Y-%m-%d 12:00:00 AM'))
+      to_date = hash[:to_date].kind_of?(Time) ? hash[:to_date] : DateTime.parse(hash[:to_date].strftime('%Y-%m-%d 23:59:59 PM'))
       where('date' => from_date..to_date)
     else
       all
@@ -187,7 +186,7 @@ class Stock < ApplicationRecord
     @accounts_receivable = Accounting::Account.find_by(name: "Accounts Receivables Trade - Current")
     #CASH PURCHASE ENTRY##
     if self.cash? && !discounted? && !has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "cash_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Cash Purchase of stocks", 
         debit_amounts_attributes: [amount: self.total_cost, account: @merchandise_inventory], 
@@ -195,7 +194,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.cash? && discounted? && !has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "cash_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Cash Purchase of stocks with discount of #{self.discount_amount}", 
         debit_amounts_attributes: [amount: self.total_cost, account: @merchandise_inventory], 
@@ -203,7 +202,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.cash? && !discounted? && has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "cash_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Cash Purchase of stocks with freight in of #{self.freight_amount}", 
         debit_amounts_attributes: [{amount: self.total_cost_less_freight_in, account: @merchandise_inventory}, {amount: self.freight_amount, account: @freight_in}], 
@@ -211,7 +210,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.cash? && discounted? && has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "cash_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Cash Purchase of stocks with discount of #{self.discount_amount} and freight in of #{self.freight_amount}", 
         debit_amounts_attributes: [{amount: self.total_cost_less_discount_less_freight_in, account: @merchandise_inventory}, {amount: self.freight_amount, account: @freight_in}], 
@@ -220,7 +219,7 @@ class Stock < ApplicationRecord
       
     #Cedit PURCHASE ENTRY##
     elsif self.credit? && !discounted? && !has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "credit_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Credit Purchase of stocks", 
         debit_amounts_attributes: [amount: self.total_cost, account: @merchandise_inventory], 
@@ -228,7 +227,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.credit? && discounted? && !has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "credit_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Credit Purchase of stocks with discount of #{self.discount_amount}", 
         debit_amounts_attributes: [amount: self.total_cost, account: @merchandise_inventory], 
@@ -236,7 +235,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.credit? && !discounted? && has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "credit_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Credit Purchase of stocks with freight in of #{self.freight_amount}", 
         debit_amounts_attributes: [{amount: self.total_cost_less_freight_in, account: @merchandise_inventory}, {amount: self.freight_amount, account: @freight_in}], 
@@ -244,7 +243,7 @@ class Stock < ApplicationRecord
         employee_id: self.employee_id)
 
     elsif self.credit? && discounted? && has_freight?
-      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.supplier.id, 
+      Accounting::Entry.create!(entry_type: "credit_stock", stock_id: self.id, commercial_document_id: self.supplier.id, 
         commercial_document_type: self.supplier.class, date: self.date, 
         description: "Credit Purchase of stocks with discount of #{self.discount_amount} and freight in of #{self.freight_amount}", 
         debit_amounts_attributes: [{amount: self.total_cost_less_discount_less_freight_in, account: @merchandise_inventory}, {amount: self.freight_amount, account: @freight_in}], 

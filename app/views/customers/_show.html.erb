@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="row">
+            <div class="col-md-1">
+              <br>
+              <center><%= image_tag @member.profile_photo.url(:small), class: "img-circle"%></center>
+            </div>
+            <div class="col-md-3">
+              <h4>
+                <%=@member.full_name.try(:upcase) %><br />
+                <small><i class="fa fa-map-marker"></i> <%=@member.address_details %></small><br>
+                <small><i class="fa fa-phone"></i> <%=@member.try(:mobile) || "N/A" %></small>
+              </h4>
+            </div>
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @member.total_cash_transactions %></h4>
+              <h5 class="text-muted text-center">CASH TRANSACTIONS</h5>
+            </div>
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @member.total_credit_transactions %></h4>
+              <h5 class="text-muted text-center">CREDIT TRANSACTIONS</h5>
+            </div>
+            <div class="col-md-2">
+              <h4 class="title text-center"><%=number_to_currency @member.total_remaining_balance %></h4>
+              <h5 class="text-muted text-center">BALANCE</h5>
+            </div>
+            <div class="col-md-2">
+              <% if @member.class.name == "Member" %>
+                <%= link_to 'Update Info', edit_member_path(@member), remote: true, class: 'btn pull-right btn-warning'%>
+              <% elsif @member.class.name == "Catering" %>
+                <%= link_to 'Update Info', edit_catering_customer_path(@member), remote: true, class: 'btn pull-right btn-warning'%>
+              <% elsif @member.class.name.nil? %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+      <div class="nav-tabs-navigation">
+        <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+          <li class="<%='active' if current_page? info_customer_path %>">
+            <%= link_to 'Info', info_customer_path %>
+          </li>
+          <li class="<%='active' if current_page? purchases_customer_path %>">
+            <%= link_to 'Purchases', purchases_customer_path %>
+          </li>
+          <li class="<%='active' if current_page? account_details_customer_path %>">
+            <%= link_to 'Account Details', account_details_customer_path %>
+          </li>
+        </ul>
+      </div>
+      <div class="content">
+        <div id="my-tab-content" class="tab-content">
+          <%= render '/customers/transactions/info' if current_page? info_customer_path %>
+          <%= render '/customers/transactions/purchases' if current_page? purchases_customer_path %>
+          <%= render '/customers/transactions/account_details' if current_page? account_details_customer_path %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="member-modal" class="modal fade"></div>
+<div id="catering-customer-modal" class="modal fade"></div>

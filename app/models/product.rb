@@ -52,6 +52,14 @@ class Product < ApplicationRecord
     line_items.sum(:quantity)
   end
 
+  def self.total_inventory_cost
+    all.sum { |t| t.total_stock_cost}
+  end
+
+  def total_stock_cost
+    self.stocks.sum(:total_cost)
+  end
+
   def quantity_and_unit
     "#{quantity} #{unit}"
   end
@@ -108,9 +116,10 @@ class Product < ApplicationRecord
     if !out_of_stock? && !low_stock?
       self.available!
     elsif low_stock?
-      self.low_stock!
+      self.stock_status = nil
     elsif out_of_stock?
-      self.out_of_stock!
+      self.stock_status = nil
+      self.save
     end
   end
 

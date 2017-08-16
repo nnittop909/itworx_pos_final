@@ -1,0 +1,48 @@
+
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4> New Catering Expense Details </h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <%= simple_form_for @entry, url: :customer_catering_expenses do |f| %>
+          <%= f.error_notification %>
+          <div class="row">
+            <div class="col-md-6">
+              <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+            </div>
+            <div class="col-md-6">
+              <%=f.input :reference_number %>
+            </div>
+          </div>
+          <%=f.input :description, as: :text %>
+
+          <h4>AMOUNT</h4>
+
+          <%=f.simple_fields_for :debit_amounts do |ff| %>
+            <div class="form-group has-success">
+              <%=ff.input :amount, input_html: {class: 'input-lg' } %>
+            </div>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
+          <% end %>
+
+          <%=f.simple_fields_for :credit_amounts do |ff| %>
+            <%=ff.input :amount, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Raw Material Purchases").id}, readonly: true, as: :hidden %>
+          <% end %>
+        
+          <div class="modal-footer">
+            <%= f.submit 'Save Expense', class: "btn btn-primary" %>
+            <span class="pull-left">
+              <%=link_to 'Cancel', purchases_customer_path(@member), class: 'btn btn-default' %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

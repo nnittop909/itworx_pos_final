@@ -49,14 +49,16 @@
 					    <%= form_tag({:action => 'index'}, {:method => :get})  do %>
 					      <div class="row">
 					        <div class="col-md-4">
-					          <%= text_field_tag :from_date, @from_date, :class => 'datepicker form-control'%>
+					          <%= text_field_tag :from_date, @from_date, :class => 'datepicker-reporting form-control'%>
 					        </div>
 					        <div class="col-md-4">
-					          <%= text_field_tag :to_date, @to_date, :class => 'form-control datepicker'%>
+					          <%= text_field_tag :to_date, @to_date, :class => 'form-control datepicker-reporting'%>
 					        </div>
 					        <div class="col-md-4">
 					        	<button type="submit" class="btn btn-success active"> Go </button>
-					          <%=link_to "PDF", accounting_entries_path(format: 'pdf', from_date: @from_date, to_date: @to_date), class: "btn btn-default active"%>
+					        	<% if (params[:from_date] && params[:to_date]).present? %>
+					          	<%=link_to "PDF", scope_to_date_accounting_entries_path(format: 'pdf', from_date: @from_date, to_date: @to_date), class: "btn btn-default active"%>
+					          <% end %>
 					        </div>
 					      </div>
 					    <% end %>
@@ -82,7 +84,9 @@
 						</tbody>
 					</table>
 					<div class="modal-footer">
-	          <center><%= paginate @entries, :window => 1 %></center>
+	          <center>
+	          		<%= paginate @entries, :window => 1 %>
+	          </center>
 	        </div>
 				</div>
 			</div>

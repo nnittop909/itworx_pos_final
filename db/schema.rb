@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808150442) do
+ActiveRecord::Schema.define(version: 20170812061704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,9 +35,10 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.string "municipality"
     t.string "province"
     t.bigint "user_id"
+    t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "member_id"
+    t.index ["customer_id"], name: "index_addresses_on_customer_id"
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
@@ -59,14 +60,13 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.boolean "vat"
     t.string "address"
     t.string "proprietor"
+    t.string "mobile"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "logo_file_name"
     t.string "logo_content_type"
     t.integer "logo_file_size"
     t.datetime "logo_updated_at"
-    t.string "mobile_number"
-    t.string "email"
   end
 
   create_table "carts", force: :cascade do |t|
@@ -97,16 +97,27 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.decimal "total_cost"
     t.integer "catering_cart_id"
     t.integer "order_id"
+    t.integer "customer_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "member_id"
+    t.index ["user_id"], name: "index_catering_line_items_on_user_id"
   end
 
-  create_table "departments", force: :cascade do |t|
-    t.string "name"
+  create_table "customers", force: :cascade do |t|
+    t.string "last_name"
+    t.string "first_name"
+    t.string "middle_name"
+    t.string "full_name"
+    t.integer "member_type"
+    t.string "mobile"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "profile_photo_file_name"
+    t.string "profile_photo_content_type"
+    t.integer "profile_photo_file_size"
+    t.datetime "profile_photo_updated_at"
+    t.string "type"
   end
 
   create_table "discounts", force: :cascade do |t|
@@ -124,17 +135,18 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.string "description"
     t.integer "commercial_document_id"
     t.string "commercial_document_type"
-    t.integer "user_id"
+    t.integer "customer_id"
     t.integer "order_id"
     t.integer "stock_id"
     t.integer "employee_id"
     t.string "reference_number"
+    t.integer "entry_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["commercial_document_id"], name: "index_entries_on_commercial_document_id"
     t.index ["commercial_document_type"], name: "index_entries_on_commercial_document_type"
+    t.index ["customer_id"], name: "index_entries_on_customer_id"
     t.index ["employee_id"], name: "index_entries_on_employee_id"
-    t.index ["user_id"], name: "index_entries_on_user_id"
   end
 
   create_table "interest_programs", force: :cascade do |t|
@@ -169,39 +181,25 @@ ActiveRecord::Schema.define(version: 20170808150442) do
   create_table "line_items", force: :cascade do |t|
     t.integer "cart_id"
     t.integer "order_id"
-    t.integer "user_id"
+    t.integer "customer_id"
     t.integer "stock_id"
     t.decimal "quantity", default: "1.0"
     t.decimal "unit_price"
     t.decimal "total_price"
     t.integer "pricing_type", default: 0
     t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "itemable_id"
     t.string "itemable_type"
-    t.integer "member_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["cart_id"], name: "index_line_items_on_cart_id"
+    t.index ["customer_id"], name: "index_line_items_on_customer_id"
     t.index ["deleted_at"], name: "index_line_items_on_deleted_at"
     t.index ["itemable_id"], name: "index_line_items_on_itemable_id"
     t.index ["itemable_type"], name: "index_line_items_on_itemable_type"
     t.index ["stock_id"], name: "index_line_items_on_stock_id"
     t.index ["user_id"], name: "index_line_items_on_user_id"
-  end
-
-  create_table "members", force: :cascade do |t|
-    t.string "last_name"
-    t.string "first_name"
-    t.string "middle_name"
-    t.string "full_name"
-    t.integer "member_type"
-    t.string "mobile"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "profile_photo_file_name"
-    t.string "profile_photo_content_type"
-    t.integer "profile_photo_file_size"
-    t.datetime "profile_photo_updated_at"
   end
 
   create_table "official_receipts", force: :cascade do |t|
@@ -229,18 +227,17 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.boolean "discounted", default: false
     t.string "reference_number"
     t.integer "payment_status"
-    t.integer "user_id"
+    t.integer "customer_id"
     t.integer "employee_id"
     t.integer "entry_id"
     t.integer "tax_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "member_id"
+    t.index ["customer_id"], name: "index_orders_on_customer_id"
     t.index ["deleted_at"], name: "index_orders_on_deleted_at"
     t.index ["employee_id"], name: "index_orders_on_employee_id"
     t.index ["entry_id"], name: "index_orders_on_entry_id"
     t.index ["tax_id"], name: "index_orders_on_tax_id"
-    t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -250,11 +247,11 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.decimal "retail_price"
     t.decimal "wholesale_price"
     t.integer "category_id"
+    t.boolean "program_product", default: false
+    t.integer "program_id"
     t.string "name_and_description"
     t.decimal "stock_alert_count", default: "1.0"
     t.integer "stock_status"
-    t.boolean "program_product", default: false
-    t.integer "program_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_products_on_category_id"
@@ -264,11 +261,11 @@ ActiveRecord::Schema.define(version: 20170808150442) do
   end
 
   create_table "program_subscriptions", force: :cascade do |t|
-    t.integer "member_id"
+    t.integer "customer_id"
     t.bigint "program_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["member_id"], name: "index_program_subscriptions_on_member_id"
+    t.index ["customer_id"], name: "index_program_subscriptions_on_customer_id"
     t.index ["program_id"], name: "index_program_subscriptions_on_program_id"
   end
 
@@ -394,6 +391,7 @@ ActiveRecord::Schema.define(version: 20170808150442) do
     t.index ["business_id"], name: "index_warranties_on_business_id"
   end
 
+  add_foreign_key "addresses", "customers"
   add_foreign_key "addresses", "users"
   add_foreign_key "amounts", "accounts"
   add_foreign_key "amounts", "entries"

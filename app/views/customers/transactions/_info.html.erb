@@ -1,0 +1,44 @@
+
+<div class="tab-pane <%='active' if current_page? info_customer_path %>">
+  <h4>Basic Info</h4>
+  <table class="table table-striped">
+    <tr>
+      <td style="width:120px">Full Name: </td>
+      <td><b><%=@member.full_name %></b></td>
+    </tr>
+    <tr>
+      <td style="width:120px">Mobile: </td>
+      <td><b><%=@member.mobile || "N/A" %></b></td>
+    </tr>
+    <tr>
+      <td style="width:120px">Address: </td>
+      <td><b><%=@member.address_details || "N/A"%></b></td>
+    </tr>
+  </table>
+  
+  <% Customer.has_program_subscriptions.each do |customer| %>
+    <% interest = 0 %>
+    <% if customer.credit_payments.present? %>
+      <% date_of_last_payment = customer.credit_payments.last.date %>
+      <% Program.all.each do |program| %>
+        <% program_line_items = customer.line_items.where("created_at" => date_of_last_payment..customer.line_items.last.created_at).select { |l| l.stock.product.program.id == program.id } %>
+        <% total = program_line_items.map {|l| l.unit_price}.sum %>
+        <% if total == customer.credit_payments.last.credit_amounts.last.amount %>
+          <% interest += (program.interest_rate/100) * total %>
+        <% else %>
+          <%= (program.interest_rate/100) %> * <%= (total %> - <%= customer.credit_payments.last.credit_amounts.last.amount) %>
+          <% less = (program.interest_rate/100) * (total - customer.credit_payments.last.credit_amounts.last.amount) %>
+          <% interest += less %>
+        <% end %>
+      <% end %>
+      <% interest %>
+    <% else %>
+      <% Program.all.each do |program| %>
+        <% program_line_items = customer.line_items.select { |l| l.stock.product.program.id == program.id } %>
+        <% total = (program.interest_rate/100) * program_line_items.map {|l| l.unit_price}.sum %>
+        <% interest += total %>
+      <% end %>
+      <% interest %>
+    <% end %>
+  <% end %>
+</div>

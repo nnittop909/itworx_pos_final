@@ -46,7 +46,7 @@ module Wholesales
 
     private
     def order_params
-    params.require(:order).permit(:order_type, :user_id, :cash_tendered, :change, :pay_type, :delivery_type, :date, :discounted, discount_attributes:[:amount])
+    params.require(:order).permit(:order_type, :customer_id, :cash_tendered, :change, :pay_type, :delivery_type, :date, :discounted, discount_attributes:[:amount])
   end
   end
 end

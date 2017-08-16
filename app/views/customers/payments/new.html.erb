@@ -1,0 +1,97 @@
+
+
+<div class="row">
+  <div class="col-md-9 col-md-offset-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <h4> New Payment Details </h4>
+        </div>
+      </div>
+      <div class="card-body">
+       <div class="row">
+         <div class="col-md-5">
+           <center><%=image_tag(@member.profile_photo.url(:thumb), class: 'img-circle') %></center>
+           <br>
+           <center><b><%=@member.full_name %></b></center>
+           <center><i class="fa fa-map-marker"></i> <%=@member.address_details  %> </center><center> <i class="fa fa-phone"></i> <%=@member.mobile %></center>
+            <hr>
+            <div class="row">
+              <div class="col-md-6">
+                AMOUNT
+              </div>
+              <div class="col-md-6">
+                <span class='pull-right'><%=number_to_currency @member.total_credit %></span>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-6">
+                PAYMENTS
+              </div>
+              <div class="col-md-6">
+                <span class='pull-right'><%=number_to_currency @member.total_payment %></span>
+              </div>
+            </div>
+            <hr>
+             <div class="row">
+              <div class="col-md-6">
+                BALANCE
+              </div>
+              <div class="col-md-6">
+                <span class='pull-right'><%=number_to_currency @member.total_remaining_balance %></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5 col-md-offset-1 border-left"> 
+            <%= simple_form_for @entry, url: :customer_payments do |f| %>
+              <%= f.error_notification %>
+              <div class="row">
+                <div class="col-md-6">
+                  <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+                </div>
+                <div class="col-md-6">
+                  <%=f.input :reference_number %>
+                </div>
+              </div>
+              <%=f.input :description, as: :text %>
+
+              <h4>AMOUNT</h4>
+
+              <%=f.simple_fields_for :debit_amounts do |ff| %>
+                <div class="form-group has-success">
+                  <%=ff.input :amount, as: :string, input_html: {value: @member.total_remaining_balance, class: 'input-lg' } %>
+                </div>
+                <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand").id}, readonly: true, as: :hidden %>
+              <% end %>
+
+              <%=f.simple_fields_for :credit_amounts do |ff| %>
+                <%=ff.input :amount, input_html: { value: @member.total_remaining_balance }, readonly: true, as: :hidden %>
+                <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
+              <% end %>
+              
+              <!-- <h4>Discount</h4>
+              <%#=f.simple_fields_for :debit_amounts do |ff| %>
+                <div class="form-group has-warning">
+                  <%#=ff.input :amount, input_html: { id: 'accounting_discount_debit_amounts_attributes_0_amount', class: 'input-lg', value: 0} %>
+                </div>
+                <%#=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales Discounts").id}, readonly: true, as: :hidden %>
+              <%# end %>
+
+              <%#=f.simple_fields_for :credit_amounts do |ff| %>
+                <%#=ff.input :amount, input_html: { id: 'accounting_discount_credit_amounts_attributes_0_amount', value: 0}, as: :hidden %>
+                <%#=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
+              <%# end %> -->
+              <div class="modal-footer">
+                <%= f.submit 'Save Payment', class: "btn btn-primary" %>
+                <span class="pull-left">
+                  <%=link_to 'Cancel', account_details_customer_path(@member), class: 'btn btn-default' %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

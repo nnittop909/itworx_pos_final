@@ -25,19 +25,6 @@ Rails.application.routes.draw do
   end
 
   resources :caterings
-  resources :catering_line_items
-  resources :catering_carts
-
-  resources :departments do
-    resources :payments, only: [:new, :create], module: :departments
-    match "/info" => "departments#info", as: :info, via: [:get], on: :member
-    match "/purchases" => "departments#purchases", as: :purchases, via: [:get], on: :member
-    match "/account_details" => "departments#account_details", as: :account_details, via: [:get], on: :member
-
-    resources :line_items, only: [:index], module: :departments do
-      match "/scope_to_date" => "line_items#scope_to_date",  via: [:get], on: :collection, module: :departments
-    end
-  end
 
   resources :line_items do
     resources :credit_payments, only: [:new, :create], module: :accounting
@@ -55,23 +42,27 @@ Rails.application.routes.draw do
     match "/scope_to_date_summary" => "orders#scope_to_date_summary",  via: [:get], on: :collection
     match "/retail" => "orders#retail", as: :retail, via: [:get], on: :collection
     match "/wholesale" => "orders#wholesale", as: :wholesale, via: [:get], on: :collection
+    match "/catering" => "orders#catering", as: :catering, via: [:get], on: :collection
     match "/sales_returns" => "orders#sales_returns", as: :sales_returns, via: [:get], on: :collection
     match "/return_order" => "orders#return_order", as: :return_order, via: [:get, :post]
   end
 
-  resources :members do
-    get :autocomplete_member_full_name, on: :collection
-    resources :payments, only: [:new, :create], module: :members
-    resources :interests, only: [:new, :create], module: :members
-
-    match "/info" => "members#info", as: :info, via: [:get], on: :member
-    match "/purchases" => "members#purchases", as: :purchases, via: [:get], on: :member
-    match "/account_details" => "members#account_details", as: :account_details, via: [:get], on: :member
-
-    resources :line_items, only: [:index], module: :members do
-      match "/scope_to_date" => "line_items#scope_to_date",  via: [:get], on: :collection, module: :members
-    end
+  resources :members, only: [:new, :create, :edit, :update]
+  resources :catering_customers, only: [:new, :create, :edit, :update]
+  resources :customers do
     collection { post :import}
+    get :autocomplete_customer_full_name, on: :collection
+    resources :payments, only: [:new, :create], module: :customers
+    resources :interests, only: [:new, :create], module: :customers
+    resources :catering_expenses, only: [:new, :create], module: :customers
+
+    match "/info" => "customers#info", as: :info, via: [:get], on: :member
+    match "/purchases" => "customers#purchases", as: :purchases, via: [:get], on: :member
+    match "/account_details" => "customers#account_details", as: :account_details, via: [:get], on: :member
+
+    resources :line_items, only: [:index], module: :customers do
+      match "/scope_to_date" => "line_items#scope_to_date",  via: [:get], on: :collection, module: :customers
+    end
   end
   
   resources :payables, only: [:index]

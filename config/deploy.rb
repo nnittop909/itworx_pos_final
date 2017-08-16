@@ -4,7 +4,7 @@ require 'mina/git'
 require 'mina/rbenv'
 require 'mina/deploy'
 
-set :domain, '192.168.254.109'
+set :domain, '192.168.254.105'
 set :deploy_to, '/var/www/itworx_pos_final'
 set :repository, 'https://github.com/nnittop909/itworx_pos_final.git'
 set :branch, 'master'

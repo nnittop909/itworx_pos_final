@@ -8,6 +8,7 @@
         <li>
           <%= "Retail Section" if current_page? store_index_path %>
           <%= "Wholesale Section" if current_page? wholesales_path %>
+          <%= "Catering" if current_page? caterings_path %>
           <%= "Products" if current_page? products_path %>
 
           <%= "Stocks > Available" if current_page? stocks_path %>
@@ -20,10 +21,10 @@
 
           <%= "Credits" if current_page? credits_path %>
 
-          <%= "Members" if current_page? members_path %>
-          <%= "Members > Information" if current_page? info_member_path(1) %>
-          <%= "Members > Purchases" if current_page? purchases_member_path(1) %>
-          <%= "Members > Account Details" if current_page? account_details_member_path(1) %>
+          <%= "Members" if current_page? customers_path %>
+          <%= "Members > Information" if current_page? info_customer_path(1) %>
+          <%= "Members > Purchases" if current_page? purchases_customer_path(1) %>
+          <%= "Members > Account Details" if current_page? account_details_customer_path(1) %>
 
           <%= "Suppliers" if current_page? suppliers_path %>
           <%= "Reports" if current_page? reports_path %>
@@ -88,7 +89,11 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.full_name.titleize %> <span class="caret"></span></a>
         <ul class="dropdown-menu animated fadeInDown">
           <li class="profile-img">
-            <%=image_tag("profile-1.jpg", class: 'profile-img') %>
+            <% if current_user.profile_photo.present? %>
+              <%=image_tag(current_user.profile_photo, class: 'profile-img') %>
+            <% else %>
+              <%=image_tag("default.png", class: 'profile-img') %>
+            <% end %>
           </li>
           <li>
             <div class="profile-info">

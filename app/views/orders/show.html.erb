@@ -31,15 +31,15 @@
         <table class="table">
           <tr>
             <td width="150px"><b>Name: </b></td>
-            <td><%=@order.member.try(:full_name) || 'Guest'%></td>
+            <td><%=@order.customer.try(:full_name) || 'Guest'%></td>
           </tr>
           <tr>
             <td width="150px"><b>Address: </b></td>
-            <td><%=@order.member.try(:address_details) || 'N/A' %></td>
+            <td><%=@order.customer.try(:address_details) || 'N/A' %></td>
           </tr>
           <tr>
             <td width="150px"><b>Mobile Number:</b></td>
-            <td><%=@order.member.try(:mobile_number) || 'N/A' %></td>
+            <td><%=@order.customer.try(:mobile_number) || 'N/A' %></td>
           </tr>
         </table>
         <hr>

@@ -1,9 +1,9 @@
 module Accounting
   class DueFromCustomersPdf < Prawn::Document
-    TABLE_WIDTHS = [140, 190, 90, 112]
+    TABLE_WIDTHS = [140, 220, 90, 122]
     def initialize(members, view_context)
       super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
-      @members = members
+      @members = Customer.with_credits
       @view_context = view_context
       heading
       display_products_table
@@ -20,6 +20,8 @@ module Accounting
       text "#{Business.last.address}", size: 10, align: :center
       move_down 15
       text 'DUE FROM CUSTOMERS', size: 12, align: :center, style: :bold
+      move_down 3
+      text "As of #{Time.zone.now.strftime("%B %e, %Y")}", size: 10, align: :center
       move_down 5
       stroke_horizontal_rule
     end
@@ -48,7 +50,7 @@ module Accounting
         end
 
         stroke_horizontal_rule
-        footer = [["TOTAL","","", "#{price(Member.total_remaining_balance + Department.total_remaining_balance)}"]]
+        footer = [["TOTAL","","", "#{price(Customer.total_remaining_balance)}"]]
         table(footer, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
           cells.borders = []
           row(0).font_style = :bold

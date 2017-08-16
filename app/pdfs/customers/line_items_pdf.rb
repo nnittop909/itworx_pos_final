@@ -20,12 +20,12 @@ module Customers
       @view_context.number_to_currency(number, :unit => "P ")
     end
     def heading
-      text "#{Business.last.try(:name)}", size: 8, align: :center, style: :bold
-      text "Proprietor: #{Business.last.try(:proprietor)}", size: 8, align: :center
-      text "TIN: #{Business.last.try(:tin)}", size: 8, align: :center
+      text "#{Business.last.try(:name)}", size: 11, align: :center, style: :bold
+      text "#{Business.last.address}", size: 9, align: :center
+      text "TIN: #{Business.last.try(:tin)}", size: 9, align: :center
       text "#{Business.last.try(:mobile_number)}  #{Business.last.try(:email)}", size: 8, align: :center
       move_down 10
-      text "CUSTOMER TRANSACTION REPORT", align: :center, style: :bold
+      text "CUSTOMER TRANSACTION REPORT", size: 11, align: :center, style: :bold
       move_down 1
       text "#{@from_date.strftime('%B')} - #{@to_date.strftime('%B')}, #{@to_date.strftime('%Y')}", align: :center, size: 10
       stroke_horizontal_rule

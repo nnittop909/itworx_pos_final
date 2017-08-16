@@ -13,10 +13,10 @@ class ProductsPdf < Prawn::Document
   end
 
   def heading
-    text "#{Business.last.name}", style: :bold, size: 10, align: :center
+    text "#{Business.last.name}", style: :bold, size: 11, align: :center
     text "#{Business.last.address}", size: 10, align: :center
     move_down 15
-    text 'CURRENT INVENTORY REPORT', size: 12, align: :center
+    text 'CURRENT INVENTORY REPORT', style: :bold, size: 11, align: :center
     move_down 5
     stroke_horizontal_rule
     move_down 2
@@ -55,7 +55,7 @@ class ProductsPdf < Prawn::Document
       Category.order(:name).all.each do |category|
         if category.products.present?
           header = [category.name, "", "", "", "", "", ""]
-          footer = ["", "", "", "", "", "SUB-TOTAL:", price(category.products.total_inventory_cost)]
+          footer = ["", "", "", "", "", "", ""]
         else
           header = ["", "", "", "", "", "", ""]
           footer = ["", "", "", "", "", "", ""]

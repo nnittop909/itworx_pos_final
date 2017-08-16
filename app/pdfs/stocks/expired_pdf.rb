@@ -13,10 +13,10 @@ module Stocks
       @view_context.number_to_currency(number, :unit => "P ")
     end
     def heading
-      text "#{Business.last.name}", style: :bold, size: 10, align: :center
+      text "#{Business.last.name}", style: :bold, size: 11, align: :center
       text "#{Business.last.address}", size: 10, align: :center
-      move_down 15
-      text 'Expired Stocks Report', size: 12, align: :center, style: :bold
+      move_down 10
+      text 'Expired Stocks Report', size: 11, align: :center, style: :bold
       move_down 10
       stroke_horizontal_rule
       move_down 5

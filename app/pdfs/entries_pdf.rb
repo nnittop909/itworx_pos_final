@@ -17,12 +17,16 @@ end
 
 
 def heading
-  text "#{Business.last.name}", style: :bold, size: 10, align: :center
+  text "#{Business.last.name}", style: :bold, size: 11, align: :center
   text "#{Business.last.address}", size: 10, align: :center
   move_down 15
-  text "JOURNAL ENTRIES", style: :bold, size: 10, align: :center
+  text "JOURNAL ENTRIES", style: :bold, size: 11, align: :center
   move_down 3
-  text "#{@from_date.strftime("%B %e, %Y")} - #{@to_date.strftime("%B %e, %Y")}", size: 9, align: :center
+  if @from_date.strftime("%B %e, %Y") == @to_date.strftime("%B %e, %Y")
+    text "#{@from_date.strftime("%B %e, %Y")}", size: 9, align: :center
+  else
+    text "#{@from_date.strftime("%B %e, %Y")} - #{@to_date.strftime("%B %e, %Y")}", size: 9, align: :center
+  end
   move_down 5
   stroke_horizontal_rule
   end

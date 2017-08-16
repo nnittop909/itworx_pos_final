@@ -16,10 +16,10 @@ module Accounting
       @view_context.time_ago_in_words(time)
     end
     def heading
-      text "#{Business.last.name}", style: :bold, size: 10, align: :center
+      text "#{Business.last.name}", style: :bold, size: 11, align: :center
       text "#{Business.last.address}", size: 10, align: :center
       move_down 15
-      text 'DUE FROM CUSTOMERS', size: 12, align: :center, style: :bold
+      text 'DUE FROM CUSTOMERS', size: 11, align: :center, style: :bold
       move_down 3
       text "As of #{Time.zone.now.strftime("%B %e, %Y")}", size: 10, align: :center
       move_down 5

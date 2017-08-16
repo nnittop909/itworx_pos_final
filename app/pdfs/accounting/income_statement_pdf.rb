@@ -22,10 +22,10 @@ module Accounting
 
 
   def heading
-    text "#{Business.last.name}", style: :bold, size: 10, align: :center
+    text "#{Business.last.name}", style: :bold, size: 11, align: :center
     text "#{Business.last.address}", size: 10, align: :center
     move_down 15
-    text 'INCOME STATEMENT', align: :center, style: :bold
+    text 'INCOME STATEMENT', size: 11, align: :center, style: :bold
     text "#{@from_date.strftime("%B %e, %Y")} - #{@to_date.strftime("%B %e, %Y")}", size: 10, align: :center
     move_down 5
     stroke_horizontal_rule

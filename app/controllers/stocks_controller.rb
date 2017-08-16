@@ -78,7 +78,7 @@ class StocksController < ApplicationController
   def scope_to_date
     @from_date = params[:from_date] ? Time.parse(params[:from_date]) : Time.zone.now
     @to_date = params[:to_date] ? Time.parse(params[:to_date]) : Time.zone.now
-    @stocks = Stock.created_between({ftrom_date: @from_date, to_date: @to_date})
+    @stocks = Stock.created_between({from_date: @from_date, to_date: @to_date})
     respond_to do |format|
       format.html
       format.pdf do

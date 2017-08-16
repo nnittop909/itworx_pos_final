@@ -14,10 +14,10 @@ class StocksPdf < Prawn::Document
     @view_context.number_to_currency(number, :unit => "P ")
   end
   def heading
-    text "#{Business.last.name}", style: :bold, size: 10, align: :center
+    text "#{Business.last.name}", style: :bold, size: 11, align: :center
     text "#{Business.last.address}", size: 10, align: :center
     move_down 15
-    text 'STOCK PURCHASE REPORT', align: :center, style: :bold
+    text 'STOCK PURCHASE REPORT', size: 11, align: :center, style: :bold
     if @from_date.strftime("%B %e, %Y") == @to_date.strftime("%B %e, %Y")
       text "#{@from_date.strftime("%B %e, %Y")}", size: 9, align: :center
     else

@@ -14,12 +14,10 @@ class OrdersPdf < Prawn::Document
     @view_context.number_to_currency(number, :unit => "P ")
   end
   def heading
-    text "#{Business.last.try(:name)}", align: :center, size: 8
-    text "#{Business.last.try(:proprietor)}", align: :center, size: 8
-    text "TIN: #{Business.last.try(:tin)}", align: :center, size: 8
-    text "#{Business.last.try(:address)}", align: :center, size: 8
-    move_down 5
-    text 'SALES REPORT', size: 12, align: :center, style: :bold
+    text "#{Business.last.try(:name)}", align: :center, size: 11, style: :bold
+    text "#{Business.last.address}", align: :center, size: 10
+    move_down 10
+    text 'SALES REPORT', size: 11, align: :center, style: :bold
     move_down 2
     if @from_date.strftime("%B %e, %Y") == @to_date.strftime("%B %e, %Y")
       text "#{@from_date.strftime("%B %e, %Y")}", size: 9, align: :center

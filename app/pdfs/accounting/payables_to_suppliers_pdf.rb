@@ -16,10 +16,10 @@ module Accounting
       @view_context.time_ago_in_words(time)
     end
     def heading
-      text "#{Business.last.name}", style: :bold, size: 10, align: :center
+      text "#{Business.last.name}", style: :bold, size: 11, align: :center
       text "#{Business.last.address}", size: 10, align: :center
       move_down 15
-      text 'ACCOUNTS PAYABLE TO SUPPLIERS', size: 12, align: :center, style: :bold
+      text 'ACCOUNTS PAYABLE TO SUPPLIERS', size: 11, align: :center, style: :bold
       move_down 5
       stroke_horizontal_rule
     end

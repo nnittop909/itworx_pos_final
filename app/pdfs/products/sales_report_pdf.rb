@@ -17,16 +17,13 @@ module Products
       @view_context.number_to_currency(number, :unit => "P ")
     end
     def logo
-      text "#{Business.last.try(:name)}", size: 10, align: :center, style: :bold
-      text "#{Business.last.try(:proprietor)}", size: 10, align: :center
-      text "TIN: #{Business.last.try(:tin)}", size: 10, align: :center
-      text "Contact #: #{Business.last.try(:mobile_number)}", size: 10, align: :center
-      text "Email: #{Business.last.try(:email)}", size: 10, align: :center
+      text "#{Business.last.try(:name)}", size: 11, align: :center, style: :bold
+      text "#{Business.last.address}", size: 10, align: :center
     end
     def heading
       move_down 10
-      text "PRODUCT SALES REPORT", align: :center, style: :bold
-      text "(#{@product.name.upcase})", align: :center, style: :bold
+      text "PRODUCT SALES REPORT", size: 11, align: :center, style: :bold
+      text "(#{@product.name.upcase})", size: 11, align: :center, style: :bold
       move_down 2
       if @from_date.strftime("%B %e, %Y") == @to_date.strftime("%B %e, %Y")
         text "#{@from_date.strftime("%B %e, %Y")}", size: 9, align: :center

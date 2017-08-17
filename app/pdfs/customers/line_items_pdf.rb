@@ -10,7 +10,11 @@ module Customers
       @to_date = to_date
       @view_context = view_context
       heading
-      display_cash_line_items_table
+      if @member.catering_expenses.present?
+        display_raw_material_purchases_table
+      else
+        display_cash_line_items_table
+      end
       display_credit_line_items_table
       footer_for_itworx
 
@@ -45,6 +49,42 @@ module Customers
       [["", "", "Total Discount:", "#{price(@member.total_discount)}" ]] +
       [["", "", "", "" ]]
 
+    end
+
+    def display_raw_material_purchases_table
+      move_down 10
+      text "RAW MATERIAL PURCHASES", size: 10, style: :bold
+      move_down 5
+      if @member.catering_expenses.blank?
+        text "No raw material purchases.", align: :center
+      else
+        header = [["DATE", "DESCRIPTION", "REFERENCE", "AMOUNT"]]
+        table(header, :cell_style => {size: 9, :padding => [2, 4, 2, 4]}, column_widths: [100, 232, 100, 100]) do
+          cells.borders = []
+          row(0).font_style = :bold
+          column(2).align = :center
+          column(3).align = :right
+        end
+        header = ["", "", "", ""]
+        footer = ["", "", "", ""]
+        catering_expenses_data = @member.catering_expenses.map { |e| [
+          e.created_at.strftime("%B %e, %Y"), 
+          e.description, 
+          e.reference_number, 
+          price(e.debit_amounts.sum(:amount)) 
+        ]}
+
+        table_data = [header, *catering_expenses_data, footer]
+        table(table_data, cell_style: { size: 9, font: "Helvetica", :padding => [2, 4, 2, 4]}, column_widths: [100, 232, 100, 100]) do
+          cells.borders = [:top]
+          row(0).font_style = :bold
+          column(2).align = :center
+          column(3).align = :right
+        end
+        move_down 25
+      end
+      move_down 10
+      stroke_horizontal_rule
     end
 
     def display_cash_line_items_table

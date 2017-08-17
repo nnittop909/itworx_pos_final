@@ -4,7 +4,7 @@
     </div>
     <div class="col-md-6">
       <span class='pull-right'>
-        <% if @catering_expenses.present? %>
+        <% if @member.orders.catering.present? %>
           <%=link_to 'New Catering Expense', new_customer_catering_expense_path(@member), class: 'btn btn-primary' %>
         <% end %>
         <%=link_to scope_to_date_customer_line_items_path(@member, :from_date => Time.zone.now.beginning_of_year, :to_date => Time.zone.now.end_of_year, format: 'pdf')  do %>
@@ -14,13 +14,12 @@
     </div>
   </div>
   <table class="table table-striped table-responsive">
-    <h4>Purchases from stock</h4>
     <thead>
       <tr>
         <th> Date </th>
-        <th> Item </th>
+        <th> Items </th>
         <th> Qty </th>
-        <th>Unit Cost </span></th>
+        <th>  Unit Cost </span></th>
         <th> Sub Total </th>
         <th>Discount </span></th>
         <th><span class="pull-right"> Total Cost </span></th>
@@ -29,75 +28,48 @@
     </thead>
     <tbody>
       <% @cash_transactions.each do |order| %>
-      <tr>
-        <td><%=order.date.strftime("%B %e, %Y") %></td>
-        <td><% order.line_items.each do |line_item| %>
-          <p>
-            <% if line_item.class.name == "LineItem" %>
-              <%= line_item.stock.product.name_and_description %>
-            <% else %>
-              <%= line_item.name %>
-            <% end %>              
-          </p>
-          <% end %>
-        </td>
-        <td>
-          <% order.line_items.each do |line_item| %>
+        <tr>
+          <td><%=order.date.strftime("%B %e, %Y") %></td>
+          <td><% order.line_items.each do |line_item| %>
             <p>
-              <% if line_item.class.name == "LineItem" %>
+              <%= line_item.stock.product.name_and_description %>             
+            </p>
+            <% end %>
+          </td>
+          <td>
+            <% order.line_items.each do |line_item| %>
+              <p>
                 <%= line_item.quantity %> <%= line_item.stock.product.unit %>
-              <% else %>
-                <%= line_item.quantity %> <%= line_item.unit %>
-              <% end %>
-            </p>
-          <% end %>
-        </td>
-        <td>
-          <% order.line_items.each do |line_item| %>
-            <p>
-              <% if line_item.class.name == "LineItem" %>
+              </p>
+            <% end %>
+          </td>
+          <td>
+            <% order.line_items.each do |line_item| %>
+              <p>
                 <%= number_to_currency line_item.unit_price %>
-              <% else %>
-                <%= number_to_currency line_item.unit_cost %>
-              <% end %>
-            </p>
-          <% end %>
-        </td>
-        <td><%=number_to_currency order.total_amount_without_discount %></td>
-        <td><%=number_to_currency order.discount.try(:amount) %></td>
-        <td><span class='pull-right'><%=number_to_currency order.total_amount_less_discount %></span></td>
-        <td><%=order.pay_type.try(:titleize) %></td>
+              </p>
+            <% end %>
+          </td>
+          <td><%=number_to_currency order.total_amount_without_discount %></td>
+          <td><%=number_to_currency order.discount.try(:amount) %></td>
+          <td><span class='pull-right'><%=number_to_currency order.total_amount_less_discount %></span></td>
+          <td><%=order.pay_type.try(:titleize) %></td>
 
-      </tr>
+        </tr>
+      <% end %>
+      <% if @catering_expenses.present? %>
+        <% @catering_expenses.each do |expense| %>
+          <tr>
+            <td><%=expense.date.strftime("%B %e, %Y") %></td>
+            <td colspan="4"><%=expense.description %></td>
+            <td><%=expense.reference_number %></td>
+
+            <td class="text-right"><%=number_to_currency expense.debit_amounts.sum(:amount) %></td>
+            <td></td>
+
+          </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>
-  <% if @catering_expenses.present? %>
-  <hr>
-    <table class="table table-striped table-responsive">
-      <h4>Raw material purchases for catering</h4>
-      <thead>
-        <tr>
-          <th> Date </th>
-          <th> Description </th>
-          <th> Reference Number </th>
-          <th> Amount </th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @catering_expenses.each do |expense| %>
-        <tr>
-          <td><%=expense.date.strftime("%B %e, %Y") %></td>
-          <td><%=expense.description %></td>
-          <td><%=expense.reference_number %></td>
-
-          <td><%=number_to_currency expense.debit_amounts.sum(:amount) %></td>
-
-
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
 </div>

@@ -15,7 +15,7 @@ module Customers
       @entry.commercial_document_type = @member.class.name
       @entry.recorder = current_user
       if @entry.save
-        redirect_to account_details_customer_path(@member), notice: "Catering expenses saved successfully."
+        redirect_to purchases_customer_path(@member), notice: "Catering expenses saved successfully."
       else
         render :new
       end

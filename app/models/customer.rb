@@ -76,11 +76,11 @@ class Customer < ApplicationRecord
   end
 
   def total_catering_expenses
-    Accounting::Account.find_by_name('Raw Material Purchases').credit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
   end
 
   def catering_expenses
-    Accounting::Account.find_by_name('Raw Material Purchases').credit_entries.where(commercial_document_id: self.id).distinct
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct
   end
 
   def total_payment

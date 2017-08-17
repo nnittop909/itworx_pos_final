@@ -1,13 +1,11 @@
 <div class="tab-pane <%='active' if current_page? account_details_customer_path %>">
-  <h4 class="title">Credit Details 
+  <div class="row">
     <% if @member.with_credits? %>
       <span class='pull-right'><%=link_to 'New Payment', new_customer_payment_path(@member), class: 'btn btn-primary' %> </span>
     <% end %>
-  </h4>
-  <hr>
-<h4> Payments <span class="pull-right">Total: <%=number_to_currency @member.total_payment %></span></h4>
-<div class="table table-responsive">
+  </div>
   <table class="table table-striped">
+  <h4> Payments <span class="pull-right">Total: <%=number_to_currency @member.total_payment %></span></h4>
     <thead>
       <tr>
         <th> Date </th>
@@ -31,7 +29,4 @@
       <% end %>
     </tbody>
   </table>
-</div>
-</div>
-
 </div>

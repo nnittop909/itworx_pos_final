@@ -51,7 +51,9 @@ class ProductsPdf < Prawn::Document
         column(6).align = :right
         column(7).align = :right
       end
+
       stroke_horizontal_rule
+      
       Category.order(:name).all.each do |category|
         if category.products.present?
           header = [category.name, "", "", "", "", "", ""]
@@ -63,7 +65,11 @@ class ProductsPdf < Prawn::Document
         products_data = category.products.available.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
         table_data = [header, *products_data, footer]
         table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
-          cells.borders = [:top]
+          if category.products.present?
+            cells.borders = [:top]
+          else
+            cells.borders = []
+          end
           row(0).font_style = :bold
           column(1).align = :right
           column(2).align = :right

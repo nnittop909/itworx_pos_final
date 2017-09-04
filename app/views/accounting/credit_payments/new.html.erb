@@ -19,7 +19,7 @@
 
     <%=f.simple_fields_for :debit_amounts do |ff| %>
     <%=ff.input :amount, input_html: {value: @line_item.unit_cost }, as: :hidden %>
-    <%=ff.input :account, input_html: { value: "Cash on Hand"}%>
+    <%=ff.input :account, input_html: { value: "Cash on Hand - Teller"}%>
     <% end %>
     <%=f.simple_fields_for :credit_amounts do |ff| %>
     <%=ff.input :amount, input_html: {value: @line_item.unit_cost } %>

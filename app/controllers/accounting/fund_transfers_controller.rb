@@ -1,5 +1,5 @@
 module Accounting 
-  class EmployeeEntriesController < ApplicationController 
+  class FundTransfersController < ApplicationController 
     def new
       @entry = Accounting::Entry.new
       authorize @entry

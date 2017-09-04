@@ -38,6 +38,7 @@ class OrdersController < ApplicationController
         session[:cart_id] = nil
         format.html do
           if @order.credit?
+            @order.set_customer_has_credit_to_true!
             if (@order.retail? || @order.wholesale?)
               @order.subscribe_to_program!
             end

@@ -25,7 +25,7 @@ class StockTransfer < ApplicationRecord
   end
 
   def create_entry_for_stock_transfer
-    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand")
+    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand - Teller")
     @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
 
   	if self.quantity == in_stock

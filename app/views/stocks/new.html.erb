@@ -11,7 +11,7 @@
           <%=f.error_notification %>
           <div class="row">
             <div class="col-md-8">
-              <%=f.input :product_id, collection: Product.all.map { |p| [p.name_and_description, p.id]} %>
+              <%=f.input :product_id, label: "Select Product", collection: Product.all.map { |p| [p.name_and_description, p.id]} %>
             </div>
             <div class="col-md-4">
              <%=f.input :date, as: :string, label: 'Date Purchased', input_html: {class: "datepicker"} %>
@@ -63,11 +63,11 @@
           <br>
           <div class="row">
             <div class="col-md-4">
-              <label>Quantity</label>
+              <label>Purchase Quantity</label>
               <%=f.input :quantity, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">
-              <label>Unit Cost</label>
+              <label>Purchase Price</label>
               <%=f.input :unit_cost, label: false, input_html: { class: 'input-lg', oninput: 'calculateTotalPurchase()'}  %>
             </div>
             <div class="col-md-4">

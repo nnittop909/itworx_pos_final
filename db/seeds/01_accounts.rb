@@ -1,5 +1,7 @@
 Accounting::Asset.create(code: 11100, name: "Cash and Cash Equivalents")
 Accounting::Asset.create(code: 11110, name: "Cash on Hand")
+Accounting::Asset.create(code: 11111, name: "Cash on Hand - Teller")
+Accounting::Asset.create(code: 11112, name: "Cash on Hand - Main Office")
 Accounting::Asset.create(code: 11120, name: "Checks and Other Cash Items (COCI)")
 Accounting::Asset.create(code: 11130, name: "Cash in Bank")
 Accounting::Asset.create(code: 11140, name: "Cash in Cooperative Federation")

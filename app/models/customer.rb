@@ -31,7 +31,7 @@ class Customer < ApplicationRecord
   delegate :details, to: :address, prefix: true, allow_nil: true
 
   def self.types
-    %w(Member Guest Catering)
+    %w(Member Guest Organization)
   end
 
   def self.import(file)
@@ -58,7 +58,7 @@ class Customer < ApplicationRecord
   end
 
   def self.with_credits
-    all.select{|a| a.with_credits? }
+    all.select{|a| a.has_credit == true }
   end
   def with_credits?
     total_remaining_balance > 0.0
@@ -110,6 +110,12 @@ class Customer < ApplicationRecord
   def first_credit_created_at
     if line_items.credit.present?
       line_items.first.created_at
+    end
+  end
+
+  def set_has_credit_to_false!
+    if total_remaining_balance == 0.0
+      self.update(has_credit: false)
     end
   end
 

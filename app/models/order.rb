@@ -130,8 +130,12 @@ class Order < ApplicationRecord
     end
   end
 
+  def set_customer_has_credit_to_true!
+    Customer.find(self.customer.id).update(has_credit: true)
+  end
+
   def create_entry
-    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand")
+    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand - Teller")
     @purchases = Accounting::Account.find_by(name: "Purchases")
     @cost_of_goods_sold = Accounting::Account.find_by(name: "Cost of Goods Sold")
     @sales = Accounting::Account.find_by(name: "Sales")

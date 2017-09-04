@@ -1,3 +1,0 @@
-class Catering < Customer
-	
-end

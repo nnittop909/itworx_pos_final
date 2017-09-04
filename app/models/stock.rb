@@ -177,7 +177,7 @@ class Stock < ApplicationRecord
   end
 
   def create_entry
-    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand")
+    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand - Teller")
     @cost_of_goods_sold = Accounting::Account.find_by(name: "Cost of Goods Sold")
     @sales = Accounting::Account.find_by(name: "Sales")
     @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")

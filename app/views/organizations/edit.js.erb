@@ -1,0 +1,5 @@
+$("#organization-modal").html("<%= escape_javascript(render 'new') %>")
+$("#organization-modal").modal( {
+    backdrop: 'static',
+    keyboard: false
+})

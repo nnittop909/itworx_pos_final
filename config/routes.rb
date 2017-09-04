@@ -138,7 +138,8 @@ Rails.application.routes.draw do
     resources :revenues, controller: 'accounts', type: 'Accounting::Revenue'
     resources :expenses, controller: 'accounts', type: 'Accounting::Expense'
     resources :member_entries, only: [:new, :create]
-    resources :employee_entries, only: [:new, :create]
+    resources :fund_transfers, only: [:new, :create]
+    resources :remittances, only: [:new, :create]
     resources :supplier_entries, only: [:new, :create]
     resources :sales_entries, only: [:new, :create]
 

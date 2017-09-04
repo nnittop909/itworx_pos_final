@@ -98,7 +98,7 @@ class LineItem < ApplicationRecord
         
   def create_entry_for_sales_return
     @sales = Accounting::Account.find_by(name: "Sales")
-    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand")
+    @cash_on_hand = Accounting::Account.find_by(name: "Cash on Hand - Teller")
     @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
     @cost_of_goods_sold = Accounting::Account.find_by(name: "Cost of Goods Sold")
     if cash?

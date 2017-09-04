@@ -3,7 +3,7 @@
     <div class="modal-header">
       <h4 class="modal-title">Customer Details</h4>
     </div>
-    <%=simple_form_for @catering_customer, url: catering_customers_url, remote: true do |f| %>
+    <%=simple_form_for @organization, url: organizations_url, remote: true do |f| %>
     <%= f.error_notification %>
       <div class="modal-body">
         <ul class="errors text-danger">

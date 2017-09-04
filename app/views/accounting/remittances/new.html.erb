@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="card-title">New Remittance </h4>
+      </div>
+      <div class="card-body">
+        <%=simple_form_for @entry, remote: true do |f| %>
+        <%=f.error_notification %>
+          <div class="row">
+            <div class="col-md-6">
+              <%=f.input :date, as: :string, input_html: { class: "datepicker" } %>
+            </div>
+            <div class="col-md-6">
+              <%=f.input :reference_number %>
+            </div>
+          </div>
+          <%=f.input :commercial_document_id, input_html: {value: current_user.id}, as: :hidden %>
+          <%=f.input :commercial_document_type, input_html: { value: "Employee"}, as: :hidden %>
+          <%=f.input :description, as: :text %>
+            <h4>AMOUNT</h4>
+            <%=f.simple_fields_for :debit_amounts do |ff| %>
+              <div class="form-group has-success">
+                <%=ff.input :amount, input_html: { class: 'input-lg' } %>
+              </div>
+              <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand - Main Office").id}, readonly: true, as: :hidden %>
+            <% end %>
+
+            <%=f.simple_fields_for :credit_amounts do |ff| %>
+              <%=ff.input :amount, as: :hidden %>
+              <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand - Teller").id}, readonly: true, as: :hidden %>
+            <% end %>
+          <div class="modal-footer">
+            <%= f.submit 'Save Transaction', class: "btn btn-primary" %>
+            <span class="pull-left">
+              <%=link_to 'Cancel', accounting_entries_path, class: 'btn btn-default' %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

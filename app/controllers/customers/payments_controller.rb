@@ -14,6 +14,7 @@ module Customers
       @entry.commercial_document = @member
       @entry.recorder = current_user
       if @entry.save
+        @member.set_has_credit_to_false!
         redirect_to account_details_customer_path(@member), notice: "Payment saved successfully."
       else
         render :new

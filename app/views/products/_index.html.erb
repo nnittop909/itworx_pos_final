@@ -30,58 +30,74 @@
           </div>
         </div>
       </div>
-      <div class="card-header">
-        <div class="card-title">
-          <h4>Categories</h4>
-          <% Category.all.each do |category| %>
-            <%=link_to category.name.truncate(25), scope_to_category_products_path(category: category), title: category.name, class: "btn btn-info btn-xs" %>
-            &nbsp&nbsp&nbsp
-          <% end %>
-        </div>
-      </div>
       <div class="card-body">
-        <div class="table-responsive table-full-width">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Unit</th>
-                <th><span class='pull-right'> Retail</span></th>
-                <th><span class='pull-right'> Wholesale</span> </th>
-                <th><span class='pull-right'> Deliveries </span> </th>
-                <th><span class='pull-right'>In Stock</span></th>
-                <th><span class='pull-right'>Sold </span></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @products.each do |product| %>
-                <tr class="<%="text-danger" if product.out_of_stock?%> <%= "text-warning" if product.low_stock?%>">
-                  <td>
-                    <%=link_to product.name_description, stock_histories_product_path(product) %>
-                    <small class="label label-<%="danger" if (product.out_of_stock? || product.any_expired_and_low_stock? || product.any_expired?) %><%= "warning" if product.low_stock?%>">
-                      <%= product.stock_alert %>
-                    </small>
-                  </td>
-                  <td><%= product.unit %></td>
-                  <td><span class='pull-right'><%=number_to_currency product.retail_price%></span></td>
-                  <td><span class='pull-right'><%=number_to_currency product.wholesale_price%></span></td>
-                  <td><span class='pull-right'><%=product.quantity%></span></td>
-                  <td><span class='pull-right'><%=product.in_stock%></span></td>
-                  <td><span class="pull-right"><%=product.sold %></span></td>
-                  <td class="text-right"><%=link_to new_product_stock_path(product) do %>
-                    <span class="text-primary"><i class="fa fa-plus-circle" title="New Stock" data-toggle='tooltip'></i>
-                    <% end %> &nbsp; &nbsp;
-                    <%=link_to edit_product_path(product), remote: true do %>
-                    <span class="text-danger"><i class="fa fa-pencil" title="Edit" data-toggle='tooltip'></i>
-                    <% end %>
-                  </td>
-                </tr>
+        <div class="row">
+          <div class="col-md-2">
+            <div class="row">
+              <div class="pad box-pane-left bg-green" style="min-height: 280px">
+                <h4>Categories</h4>
+                <table class="table table-responsive table-hover">
+                  <% Category.all.each do |category| %>  
+                    <tr class="bg-info">
+                      <td>
+                        <%=link_to "(#{category.products.count}) #{category.name.truncate(25)}", scope_to_category_products_path(category: category), title: category.name %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-10">
+            <div class="table-responsive table-full-width">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th><span class='pull-right'> Retail</span></th>
+                    <th><span class='pull-right'> Wholesale</span> </th>
+                    <th><span class='pull-right'> Deliveries </span> </th>
+                    <th><span class='pull-right'>In Stock</span></th>
+                    <th><span class='pull-right'>Sold </span></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @products.each do |product| %>
+                    <tr class="<%="text-danger" if product.out_of_stock?%> <%= "text-warning" if product.low_stock?%>">
+                      <td>
+                        <%=link_to product.name_description, stock_histories_product_path(product) %>
+                        <small class="label label-<%="danger" if (product.out_of_stock? || product.any_expired_and_low_stock? || product.any_expired?) %><%= "warning" if product.low_stock?%>">
+                          <%= product.stock_alert %>
+                        </small>
+                      </td>
+                      <td><%= product.unit %></td>
+                      <td><span class='pull-right'><%=number_to_currency product.retail_price%></span></td>
+                      <td><span class='pull-right'><%=number_to_currency product.wholesale_price%></span></td>
+                      <td><span class='pull-right'><%=product.quantity%></span></td>
+                      <td><span class='pull-right'><%=product.in_stock%></span></td>
+                      <td><span class="pull-right"><%=product.sold %></span></td>
+                      <td class="text-right">
+                        <%=link_to new_product_stock_path(product) do %>
+                          <span class="text-primary"><i class="fa fa-plus-circle" title="New Stock" data-toggle='tooltip'></i></span>
+                        <% end %> &nbsp; &nbsp;
+                        <%=link_to edit_product_path(product), remote: true do %>
+                        <span class="text-danger"><i class="fa fa-pencil" title="Edit" data-toggle='tooltip'></i></span>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+              <div class="box-footer">
+              <% if current_page? products_path %>
+                <center><%= paginate @products, params: { controllers: 'products', action: 'index' } %></center>
+              <% else %>
+                <center><%= paginate @products, params: { controllers: 'products', action: 'scope_to_category' } %></center>
               <% end %>
-            </tbody>
-          </table>
-          <div class="box-footer">
-          <center><%= paginate @products, params: { controllers: 'products', action: 'index' } %></center>
+            </div>
+          </div>
         </div>
       </div>
     </div>

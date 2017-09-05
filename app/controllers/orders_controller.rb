@@ -34,6 +34,7 @@ class OrdersController < ApplicationController
       if @order.save
         InvoiceNumber.new.generate_for(@order)
         @order.create_entry
+        @order.create_interest_on_feeds_program
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
         format.html do
@@ -180,6 +181,9 @@ class OrdersController < ApplicationController
   def return_order
     @order = Order.find(params[:order_id])
     @order.employee = current_user
+    if @order.customer.total_remaining_balance == @order.total_amount_without_discount
+      @order.set_has_credit_to_false!
+    end
     @order.return_line_items_to_stock!
     @order.remove_entry_for_return_order!
     @order.destroy

@@ -33,6 +33,28 @@ class Order < ApplicationRecord
     end
   end
 
+  def create_interest_on_feeds_program
+    cash_on_hand_teller = Accounting::Account.find_by(name: "Cash on Hand - Teller")
+    interest_income_from_credit_sales = Accounting::Account.find_by(name: "Interest Income from Credit Sales")
+    line_items.each do |l|
+      if l.stock.product.program.id == feeds_program.id
+        program = l.stock.product.program
+        interest = (program.interest_rate / 100) * l.total_price
+        InterestProgram.create(line_item_id: l.id, amount: interest)
+        Accounting::Entry.create(order_id: self.id, commercial_document_id: self.customer_id, 
+        commercial_document_type: self.customer.class, date: self.date, 
+        description: "Interest for order ##{self.reference_number}.", 
+        debit_amounts_attributes: [{amount: interest, account: cash_on_hand_teller}], 
+        credit_amounts_attributes:[{amount: interest, account: interest_income_from_credit_sales}], 
+        employee_id: self.employee_id)
+      end
+    end
+  end
+
+  def feeds_program
+    Program.find_by(name: "Feeds")
+  end
+
   def self.cost_of_goods_sold
     all.to_a.sum{ |a| a.cost_of_goods_sold }
   end
@@ -132,6 +154,10 @@ class Order < ApplicationRecord
 
   def set_customer_has_credit_to_true!
     Customer.find(self.customer.id).update(has_credit: true)
+  end
+
+  def set_has_credit_to_false!
+    Customer.find(self.customer.id).update(has_credit: false)
   end
 
   def create_entry

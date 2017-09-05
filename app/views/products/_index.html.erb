@@ -40,7 +40,8 @@
                   <% Category.all.each do |category| %>  
                     <tr class="bg-info">
                       <td>
-                        <%=link_to "(#{category.products.count}) #{category.name.truncate(25)}", scope_to_category_products_path(category: category), title: category.name %>
+                        <span class="bg-info"><%= "(#{category.products.count})" %></span>
+                        <%=link_to " #{category.name.truncate(25)}", scope_to_category_products_path(category: category), title: category.name %>
                       </td>
                     </tr>
                   <% end %>

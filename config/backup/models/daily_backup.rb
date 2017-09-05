@@ -27,7 +27,7 @@ Model.new(:daily_backup, 'Description for daily_backup') do
   # Local (Copy) [Storage]
   #
   store_with Local do |local|
-    local.path       = "$HOME/itworx_pos_final/config/backup/backups/"
+    local.path       = "/home/itworx_pos_final/config/backup/backups/"
     local.keep       = 5
     # local.keep       = Time.now - 2592000 # Remove all backups older than 1 month.
   end

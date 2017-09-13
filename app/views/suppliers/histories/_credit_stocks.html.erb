@@ -3,6 +3,7 @@
     <thead>
       <tr>
         <th>Date</th>
+        <th>Product</th>
         <th>QTY </th>
         <th> S/N </th>
         <th> Cost </th>
@@ -14,7 +15,8 @@
           <td><%= stock.date.strftime('%B %e, %Y') %></td>
           <td><%= stock.product.name %></td>
           <td><%= stock.quantity %></td>
-          <td><%= stock.total_cost %></td>
+          <td><%= stock.serial_number %></td>
+          <td><%= stock.unit_cost %></td>
         </tr>
       <% end %>
     </tbody>

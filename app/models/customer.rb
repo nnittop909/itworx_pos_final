@@ -76,11 +76,13 @@ class Customer < ApplicationRecord
   end
 
   def total_catering_expenses
-    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum + 
+    Accounting::Account.find_by_name('Salaries and Wages (Cost of Services)').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
   end
 
   def catering_expenses
-    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc) +
+    Accounting::Account.find_by_name('Salaries and Wages (Cost of Services)').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
   end
 
   def total_payment
@@ -98,7 +100,7 @@ class Customer < ApplicationRecord
     orders.cash.map{|a| a.total_amount_less_discount}.sum
   end
   def total_credit_transactions
-    orders.credit.map{|a| a.total_amount_less_discount}.sum + total_catering_expenses
+    total_credit + total_catering_expenses
   end
   def total_discount 
     orders.map{|a| a.discount.amount}.sum

@@ -1,11 +1,13 @@
 <div class="tab-pane <%='active' if current_page? purchases_customer_path %>">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
     </div>
-    <div class="col-md-6">
+    <div class="col-md-8">
       <span class='pull-right'>
         <% if @member.orders.catering.present? %>
-          <%=link_to 'New Catering Expense', new_customer_catering_expense_path(@member), class: 'btn btn-primary' %>
+          <%=link_to 'New Total Catering Cost', new_customer_total_catering_cost_path(@member), class: 'btn btn-primary' %>
+          <%=link_to 'New Labor Expense', new_customer_catering_labor_path(@member), class: 'btn btn-primary' %>
+          <%=link_to 'New Purchase Expense', new_customer_catering_purchase_path(@member), class: 'btn btn-primary' %>
         <% end %>
         <%=link_to scope_to_date_customer_line_items_path(@member, :from_date => Time.zone.now.beginning_of_year, :to_date => Time.zone.now.end_of_year, format: 'pdf')  do %>
           <btn class="btn btn-info"><i class="fa fa-print"></i> View Report </btn>

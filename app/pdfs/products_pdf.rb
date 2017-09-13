@@ -17,6 +17,8 @@ class ProductsPdf < Prawn::Document
     text "#{Business.last.address}", size: 10, align: :center
     move_down 15
     text 'CURRENT INVENTORY REPORT', style: :bold, size: 11, align: :center
+    move_down 3
+    text "As of #{Time.zone.now.strftime("%B %e, %Y")}", size: 10, align: :center
     move_down 5
     stroke_horizontal_rule
     move_down 2
@@ -62,7 +64,7 @@ class ProductsPdf < Prawn::Document
           header = ["", "", "", "", "", "", ""]
           footer = ["", "", "", "", "", "", ""]
         end
-        products_data = category.products.available.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
+        products_data = category.products.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
         table_data = [header, *products_data, footer]
         table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
           if category.products.present?

@@ -5,11 +5,11 @@
     <div class="card">
       <div class="card-header">
         <div class="card-title">
-          <h4> New Catering Expense Details </h4>
+          <h4> New Total Catering Cost </h4>
         </div>
       </div>
       <div class="card-body">
-        <%= simple_form_for @entry, url: :customer_catering_expenses do |f| %>
+        <%= simple_form_for @entry, url: :customer_total_catering_costs do |f| %>
           <%= f.error_notification %>
           <div class="row">
             <div class="col-md-6">
@@ -19,20 +19,21 @@
               <%=f.input :reference_number %>
             </div>
           </div>
-          <%=f.input :description, as: :text %>
-
-          <h4>AMOUNT</h4>
+          <%=f.input :description, as: :text, input_html: {value: 'Catering cost'} %>
 
           <%=f.simple_fields_for :debit_amounts do |ff| %>
+            <label class="text-success">Total Catering Amount</label>
             <div class="form-group has-success">
-              <%=ff.input :amount, input_html: {class: 'input-lg' } %>
+              <input type="number" id="total-catering-cost" oninput="calculateAmount()" class="form-control" required >
+              <input type="hidden" value="<%= @member.total_remaining_balance %>" id="total-expenses">
+              <%=ff.input :amount, input_html: {class: 'input-lg', id: 'debit-amount' }, as: :hidden %>
             </div>
-            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Raw Material Purchases").id}, readonly: true, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
           <% end %>
 
           <%=f.simple_fields_for :credit_amounts do |ff| %>
-            <%=ff.input :amount, as: :hidden %>
-            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Cash on Hand").id}, readonly: true, as: :hidden %>
+            <%=ff.input :amount, input_html: {class: 'input-lg', id: 'credit-amount' }, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales").id}, readonly: true, as: :hidden %>
           <% end %>
         
           <div class="modal-footer">

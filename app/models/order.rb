@@ -34,7 +34,7 @@ class Order < ApplicationRecord
   end
 
   def create_interest_on_feeds_program
-    cash_on_hand_teller = Accounting::Account.find_by(name: "Cash on Hand - Teller")
+    accounts_receivables_trade = Accounting::Account.find_by(name: "Accounts Receivables Trade - Current")
     interest_income_from_credit_sales = Accounting::Account.find_by(name: "Interest Income from Credit Sales")
     line_items.each do |l|
       if l.stock.product.program.id == feeds_program.id
@@ -44,7 +44,7 @@ class Order < ApplicationRecord
         Accounting::Entry.create(order_id: self.id, commercial_document_id: self.customer_id, 
         commercial_document_type: self.customer.class, date: self.date, 
         description: "Interest for order ##{self.reference_number}.", 
-        debit_amounts_attributes: [{amount: interest, account: cash_on_hand_teller}], 
+        debit_amounts_attributes: [{amount: interest, account: accounts_receivables_trade}], 
         credit_amounts_attributes:[{amount: interest, account: interest_income_from_credit_sales}], 
         employee_id: self.employee_id)
       end
@@ -152,6 +152,12 @@ class Order < ApplicationRecord
     end
   end
 
+  def unsubscribe_to_program!
+    self.line_items.all.each do |l|
+
+    end
+  end
+
   def set_customer_has_credit_to_true!
     Customer.find(self.customer.id).update(has_credit: true)
   end
@@ -184,7 +190,7 @@ class Order < ApplicationRecord
         credit_amounts_attributes:[{amount: self.total_amount_without_discount, account: @sales}, {amount: self.stock_cost, account: @merchandise_inventory}], 
         employee_id: self.employee_id)
 
-    elsif self.cash? && self.discounted? &&
+    elsif self.cash? && self.discounted?
       Accounting::Entry.create(entry_type: "cash_order", order_id: self.id, commercial_document_id: self.customer_id, 
         commercial_document_type: self.customer.class, date: self.date, 
         description: "Payment for order ##{self.reference_number} with discount of #{self.total_discount}", 

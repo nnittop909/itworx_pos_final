@@ -45,7 +45,7 @@ class CustomersController < ApplicationController
   def purchases
     @member = Customer.find(params[:id])
     @cash_transactions = @member.orders.order(date: :desc).page(params[:page]).per(50)
-    @catering_expenses = @member.catering_expenses.order(date: :desc)
+    @catering_expenses = @member.catering_expenses
   end
 
   def account_details

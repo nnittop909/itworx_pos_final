@@ -92,6 +92,10 @@ class Product < ApplicationRecord
     end
   end
 
+  def self.low_stock
+    all.order(:name).select{ |p| p.low_stock? }
+  end
+
   def any_expired?
     if stocks.present?
       stocks.expired.present?

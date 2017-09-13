@@ -16,13 +16,13 @@
     </tr>
   </table>
   
-  <% Customer.has_program_subscriptions.each do |customer| %>
+  <% Customer.with_credits.each do |customer| %>
     <% interest = 0 %>
     <% if customer.credit_payments.present? %>
-      <% date_of_last_payment = customer.credit_payments.last.date %>
+      <%= date_of_last_payment = customer.credit_payments.last.date %>
       <% Program.all.each do |program| %>
-        <% program_line_items = customer.line_items.where("created_at" => date_of_last_payment..customer.line_items.last.created_at).select { |l| l.stock.product.program.id == program.id } %>
-        <% total = program_line_items.map {|l| l.unit_price}.sum %>
+        <%= program_line_items = customer.line_items.where("created_at" => date_of_last_payment..customer.line_items.last.created_at).select { |l| l.stock.product.program.id == program.id } %>
+        <%= total = program_line_items.map {|l| l.total_price}.sum %>
         <% if total == customer.credit_payments.last.credit_amounts.last.amount %>
           <% interest += (program.interest_rate/100) * total %>
         <% else %>
@@ -31,14 +31,15 @@
           <% interest += less %>
         <% end %>
       <% end %>
-      <% interest %>
+      <%= interest %>
     <% else %>
       <% Program.all.each do |program| %>
         <% program_line_items = customer.line_items.select { |l| l.stock.product.program.id == program.id } %>
-        <% total = (program.interest_rate/100) * program_line_items.map {|l| l.unit_price}.sum %>
+        <%= program_line_items.map {|l| l.total_price}.sum %>
+        <%= total = (program.interest_rate/100) * program_line_items.map {|l| l.total_price}.sum %>
         <% interest += total %>
       <% end %>
-      <% interest %>
+      <%= interest %>
     <% end %>
   <% end %>
 </div>

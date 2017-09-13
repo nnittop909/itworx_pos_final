@@ -53,7 +53,7 @@ module Customers
 
     def display_raw_material_purchases_table
       move_down 10
-      text "RAW MATERIAL PURCHASES", size: 10, style: :bold
+      text "CATERING PURCHASES & LABOR COST", size: 10, style: :bold
       move_down 5
       if @member.catering_expenses.blank?
         text "No raw material purchases.", align: :center

@@ -50,6 +50,9 @@
           <li class="<%='active' if current_page? account_details_customer_path %>">
             <%= link_to 'Account Details', account_details_customer_path %>
           </li>
+          <!-- <li class="<%#='active' if current_page? reports_customer_path %>"> -->
+            <%#= link_to 'Reports', reports_customer_path %>
+          <!-- </li> -->
         </ul>
       </div>
       <div class="content">
@@ -57,6 +60,7 @@
           <%= render '/customers/transactions/info' if current_page? info_customer_path %>
           <%= render '/customers/transactions/purchases' if current_page? purchases_customer_path %>
           <%= render '/customers/transactions/account_details' if current_page? account_details_customer_path %>
+          <%#= render '/customers/transactions/reports' if current_page? reports_customer_path %>
         </div>
       </div>
     </div>

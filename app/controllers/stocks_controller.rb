@@ -10,6 +10,15 @@ class StocksController < ApplicationController
     end
   end
 
+  def import
+    begin
+      Stock.import(params[:file])
+      redirect_to settings_url, notice: 'Stocks Imported'
+    rescue
+      redirect_to settings_url, notice: 'Invalid CSV File.'
+    end
+  end
+
   def expired
     @expired = Stock.expired
     @stocks = Kaminari.paginate_array(@expired).page(params[:page]).per(50)

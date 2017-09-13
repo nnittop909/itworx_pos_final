@@ -137,8 +137,8 @@
                 <% elsif current_page? caterings_path %>
                   <%= f.input :order_type, input_html: {value: 'catering'}, as: :hidden %>
                 <% end %>
-                <span><label>Cater to:</label> <span class="pull-right"><%= link_to 'New Customer', new_catering_customer_path, remote: true %></span></span>
-                <%=f.input :customer_id, label: false, collection: Catering.all.map{|a| [a.full_name, a.id] }, input_html: {id: 'order_customer_id' }%>
+                <span><label>Cater to:</label> <span class="pull-right"><%= link_to 'New Customer', new_organization_path, remote: true %></span></span>
+                <%=f.input :customer_id, label: false, collection: Organization.all.map{|a| [a.full_name, a.id] }, input_html: {id: 'order_customer_id' }%>
                 <input type="hidden" name="total" id="total" value="<%= @cart.total_retail_price %>" oninput="calculateChange()">
                 <div class="row">
                   <div class="col-md-5">
@@ -176,7 +176,7 @@
     <% end %>
   </div>
 </div>
-<div id="catering-customer-modal" class="modal fade"></div>
+<div id="organization-modal" class="modal fade"></div>
 <script>
   $(document).ready(function() {
     $("#order_customer_id").select2({

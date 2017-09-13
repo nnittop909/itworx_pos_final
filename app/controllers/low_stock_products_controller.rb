@@ -1,6 +1,6 @@
 class LowStockProductsController < ApplicationController
   def index
-    @products = Product.low_stock.all.page(params[:page]).per(30)
+    @products = Product.low_stock
     respond_to do |format|
       format.html
       format.pdf do

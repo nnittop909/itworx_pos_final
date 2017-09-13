@@ -1,9 +1,9 @@
 module Accounting
   class DueFromCustomersPdf < Prawn::Document
     TABLE_WIDTHS = [140, 220, 90, 122]
-    def initialize(members, view_context)
+    def initialize(has_credits, view_context)
       super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
-      @members = Customer.with_credits
+      @members = has_credits
       @view_context = view_context
       heading
       display_products_table

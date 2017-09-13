@@ -10,8 +10,8 @@
       <% end %>
       <tr>
         <strong>
-          <td>Total <%= name %></td>
-          <td><span class="pull-right"><%=number_to_currency accounts.balance(:from_date => @from_date.beginning_of_day, :to_date => @to_date.end_of_day) %></span></td>
+          <td><b>Total <%= name %></b></td>
+          <td><b><span class="pull-right"><%=number_to_currency accounts.balance(:from_date => @from_date.beginning_of_day, :to_date => @to_date.end_of_day) %></span><b></td>
         </strong>
       </tr>
     </tbody>

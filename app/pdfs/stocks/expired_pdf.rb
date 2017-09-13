@@ -17,6 +17,8 @@ module Stocks
       text "#{Business.last.address}", size: 10, align: :center
       move_down 10
       text 'Expired Stocks Report', size: 11, align: :center, style: :bold
+      move_down 3
+      text "As of #{Time.zone.now.strftime("%B %e, %Y")}", size: 10, align: :center
       move_down 10
       stroke_horizontal_rule
       move_down 5

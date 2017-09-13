@@ -21,4 +21,8 @@ every :reboot do
 	command "backup perform --trigger daily_backup --config_file /var/www/itworx_pos_final/shared/backup/config.rb"
 end
 
+every 1.day :at => '01:00 PM' do
+	rake 'calculate_interest'
+end
+
 # Learn more: http://github.com/javan/whenever

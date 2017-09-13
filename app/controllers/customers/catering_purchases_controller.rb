@@ -1,5 +1,5 @@
 module Customers
-  class CateringExpensesController < ApplicationController
+  class CateringPurchasesController < ApplicationController
     def new
       @member = Customer.find(params[:customer_id])
       @entry = Accounting::Entry.new

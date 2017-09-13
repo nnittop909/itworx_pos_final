@@ -48,17 +48,20 @@ Rails.application.routes.draw do
   end
 
   resources :members, only: [:new, :create, :edit, :update]
-  resources :catering_customers, only: [:new, :create, :edit, :update]
+  resources :organizations, only: [:new, :create, :edit, :update]
   resources :customers do
     collection { post :import}
     get :autocomplete_customer_full_name, on: :collection
     resources :payments, only: [:new, :create], module: :customers
     resources :interests, only: [:new, :create], module: :customers
-    resources :catering_expenses, only: [:new, :create], module: :customers
+    resources :catering_purchases, only: [:new, :create], module: :customers
+    resources :catering_labors, only: [:new, :create], module: :customers
+    resources :total_catering_costs, only: [:new, :create], module: :customers
 
     match "/info" => "customers#info", as: :info, via: [:get], on: :member
     match "/purchases" => "customers#purchases", as: :purchases, via: [:get], on: :member
     match "/account_details" => "customers#account_details", as: :account_details, via: [:get], on: :member
+    match "/reports" => "customers#reports", as: :reports, via: [:get], on: :member
 
     resources :line_items, only: [:index], module: :customers do
       match "/scope_to_date" => "line_items#scope_to_date",  via: [:get], on: :collection, module: :customers
@@ -94,6 +97,7 @@ Rails.application.routes.draw do
   resources :categories
   resources :wholesales
   resources :stocks, only: [:index, :show, :new, :create, :destroy] do
+    collection { post :import}
     get :autocomplete_stock_name, on: :collection
     match "/merge" => "stocks#merge",  via: [:post], on: :member
     resources :merge_stocks, only: [:new, :create], module: :stocks

@@ -1,5 +1,7 @@
 class Stock < ApplicationRecord
   include PgSearch
+  require 'csv'
+
   pg_search_scope :search_by_name, :against => [:name, :serial_number]
   enum stock_type:[:purchased, :returned, :discontinued, :forwarded]
   enum payment_type: [:cash, :credit]
@@ -15,6 +17,21 @@ class Stock < ApplicationRecord
 
   validates :quantity, :supplier_id, :unit_cost, :total_cost,  presence: true, numericality: true
   before_save :set_date, :set_name
+
+  def self.import(file)
+    CSV.foreach(file.path, headers: true) do |row|
+      stock_hash = row.to_hash
+      stock = Stock.where(id: stock_hash['id'])
+
+      if stock.count == 1
+        stock.first.update_attributes(stock_hash)
+      else
+        stock_create = Stock.create!(stock_hash)
+        stock_create.create_entry
+        stock_create.set_stock_status_to_product
+      end
+    end
+  end
 
   def to_s
     name

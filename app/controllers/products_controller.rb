@@ -4,9 +4,9 @@ class ProductsController < ApplicationController
 
   def index
     if params[:name_and_description].present?
-      @products = Product.search_by_name(params[:name_and_description]).page(params[:page]).per(40)
+      @products = Product.search_by_name(params[:name_and_description]).page(params[:page]).per(30)
     else
-      @products = Product.all.order(:name).page(params[:page]).per(40)
+      @products = Product.all.order(:name).page(params[:page]).per(30)
       respond_to do |format|
         format.html
         format.pdf do
@@ -68,7 +68,7 @@ class ProductsController < ApplicationController
   end
 
   def scope_to_category
-    @products = Product.by_category(params[:category]).page(params[:page]).per(40)
+    @products = Product.by_category(params[:category]).page(params[:page]).per(30)
   end
 
   def reports

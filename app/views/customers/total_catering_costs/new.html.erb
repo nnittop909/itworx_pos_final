@@ -46,7 +46,7 @@
 
           <%=f.simple_fields_for :credit_amounts do |ff| %>
             <%=ff.input :amount, input_html: {class: 'input-lg', id: 'credit-amount' }, as: :hidden %>
-            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Sales").id}, readonly: true, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Service Fees").id}, readonly: true, as: :hidden %>
           <% end %>
         
           <div class="modal-footer">

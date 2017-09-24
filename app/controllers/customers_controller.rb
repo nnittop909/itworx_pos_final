@@ -45,7 +45,15 @@ class CustomersController < ApplicationController
   def purchases
     @member = Customer.find(params[:id])
     @cash_transactions = @member.orders.order(date: :desc).page(params[:page]).per(50)
+    @credit_orders = @member.credit_items
     @catering_expenses = @member.catering_expenses
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = Customers::LineItemsPdf.new(@credit_orders, @from_date, @to_date, view_context)
+          send_data pdf.render, type: "application/pdf", disposition: 'inline', file_name: "Customer Purchases Report.pdf"
+      end
+    end
   end
 
   def account_details

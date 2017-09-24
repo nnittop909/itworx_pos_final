@@ -57,7 +57,7 @@ class Product < ApplicationRecord
   end
 
   def total_stock_cost
-    self.stocks.sum(:total_cost)
+    self.stocks.purchased.sum(:total_cost)
   end
 
   def quantity_and_unit

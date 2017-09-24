@@ -1,6 +1,7 @@
 <div class="tab-pane <%='active' if current_page? purchases_customer_path %>">
   <div class="row">
     <div class="col-md-4">
+      <h4> Interest Total: <%=number_to_currency @member.total_interest %></h4>
     </div>
     <div class="col-md-8">
       <span class='pull-right'>

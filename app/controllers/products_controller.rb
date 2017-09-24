@@ -6,7 +6,7 @@ class ProductsController < ApplicationController
     if params[:name_and_description].present?
       @products = Product.search_by_name(params[:name_and_description]).page(params[:page]).per(30)
     else
-      @products = Product.all.order(:name).page(params[:page]).per(30)
+      @products = Product.available.order(:name).page(params[:page]).per(30)
       respond_to do |format|
         format.html
         format.pdf do

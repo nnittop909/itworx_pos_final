@@ -22,12 +22,25 @@
           <%=f.input :description, as: :text, input_html: {value: 'Catering cost'} %>
 
           <%=f.simple_fields_for :debit_amounts do |ff| %>
-            <label class="text-success">Total Catering Amount</label>
-            <div class="form-group has-success">
-              <input type="number" id="total-catering-cost" oninput="calculateAmount()" class="form-control" required >
-              <input type="hidden" value="<%= @member.total_remaining_balance %>" id="total-expenses">
-              <%=ff.input :amount, input_html: {class: 'input-lg', id: 'debit-amount' }, as: :hidden %>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group has-success">
+                  <label class="text-success required">Total Catering Amount</label>
+                  <input type="number" id="total-catering-cost" oninput="calculateAmount()" class="form-control numeric decimal required" >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group has-warning">
+                  <label class="text-warning">Expenses</label>
+                  <input value="<%= @member.total_remaining_balance %>" class="form-control" id="total-expenses" readonly="readonly">
+                </div>
+              </div>
             </div>
+            <div class="form-group has-success">
+              <label class="text-success">Gain</label>
+              <input id="gain" class="form-control input-lg"  readonly="readonly">
+            </div>
+            <%=ff.input :amount, input_html: {class: 'input-lg', id: 'debit-amount' }, as: :hidden %>
             <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
           <% end %>
 

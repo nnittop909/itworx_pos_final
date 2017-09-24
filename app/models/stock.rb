@@ -174,18 +174,20 @@ class Stock < ApplicationRecord
   end
 
   def create_expense_from_expired_stock
-    @spoilage_breakage_and_loses = Accounting::Account.find_by(name: "Spoilage, Breakage and Losses (Selling/Marketing Cost)")
-    @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
+    if in_stock != 0
+      @spoilage_breakage_and_loses = Accounting::Account.find_by(name: "Spoilage, Breakage and Losses (Selling/Marketing Cost)")
+      @merchandise_inventory = Accounting::Account.find_by(name: "Merchandise Inventory")
 
-    Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.id, 
-      commercial_document_type: self.class, date: Time.zone.now, description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}", 
-      debit_amounts_attributes: [amount: self.in_stock_amount, account: @spoilage_breakage_and_loses], 
-      credit_amounts_attributes:[amount: self.in_stock_amount, account: @merchandise_inventory], 
-      employee_id: self.employee_id)
+      Accounting::Entry.create!(stock_id: self.id, commercial_document_id: self.id, 
+        commercial_document_type: self.class, date: Time.zone.now, description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}", 
+        debit_amounts_attributes: [amount: self.in_stock_amount, account: @spoilage_breakage_and_loses], 
+        credit_amounts_attributes:[amount: self.in_stock_amount, account: @merchandise_inventory], 
+        employee_id: self.employee_id)
+    end
   end
 
   def remove_expense_from_expired_stock
-    @entry = Accounting::Entry.where(stock_id: self.id).where(commercial_document_id: self.id).where(commercial_document_type: self.class).where(description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}").last
+    @entry = Accounting::Entry.where(stock_id: self.id).where(commercial_document_id: self.id).where(commercial_document_type: self.class.name).where(description: "Expired stock for #{self.product.name_and_description} with quantity of #{self.quantity} #{self.product.unit}").last
     if @entry.present?
       @entry.destroy
     else

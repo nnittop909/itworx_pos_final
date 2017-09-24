@@ -2,7 +2,7 @@ class ProductsPdf < Prawn::Document
   TABLE_WIDTHS = [150, 40, 70, 80, 70, 70, 92]
   def initialize(products, view_context)
     super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
-    @products = Product.all
+    @products = Product.available
     @view_context = view_context
     heading
     display_products_table
@@ -57,14 +57,14 @@ class ProductsPdf < Prawn::Document
       stroke_horizontal_rule
       
       Category.order(:name).all.each do |category|
-        if category.products.present?
+        if category.products.available.present?
           header = [category.name, "", "", "", "", "", ""]
           footer = ["", "", "", "", "", "", ""]
         else
           header = ["", "", "", "", "", "", ""]
           footer = ["", "", "", "", "", "", ""]
         end
-        products_data = category.products.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
+        products_data = category.products.available.map { |e| [e.name_and_description, e.unit, price(e.retail_price), price(e.wholesale_price), e.quantity, e.in_stock, price(e.stocks.sum(:total_cost))]}
         table_data = [header, *products_data, footer]
         table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
           if category.products.present?

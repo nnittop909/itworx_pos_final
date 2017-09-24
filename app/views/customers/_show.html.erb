@@ -16,16 +16,16 @@
               </h4>
             </div>
             <div class="col-md-2">
-              <h4 class="title text-center"><%=number_to_currency @member.total_cash_transactions %></h4>
-              <h5 class="text-muted text-center">CASH TRANSACTIONS</h5>
+              <h4 class="text-center text-info"><%=number_to_currency @member.total_cash_transactions %></h4>
+              <h5 class="text-muted text-center text-info">CASH TRANSACTIONS</h5>
             </div>
             <div class="col-md-2">
-              <h4 class="title text-center"><%=number_to_currency @member.total_credit_transactions %></h4>
-              <h5 class="text-muted text-center">CREDIT TRANSACTIONS</h5>
+              <h4 class="text-center text-danger"><%=number_to_currency @member.total_credit_transactions %></h4>
+              <h5 class="text-muted text-center  text-danger">CREDIT TRANSACTIONS</h5>
             </div>
             <div class="col-md-2">
-              <h4 class="title text-center"><%=number_to_currency @member.total_remaining_balance %></h4>
-              <h5 class="text-muted text-center">BALANCE</h5>
+              <h4 class="text-center text-warning"><%=number_to_currency @member.total_remaining_balance %></h4>
+              <h5 class="text-muted text-center text-warning">BALANCE</h5>
             </div>
             <div class="col-md-2">
               <% if @member.class.name == "Member" %>
@@ -48,7 +48,7 @@
             <%= link_to 'Purchases', purchases_customer_path %>
           </li>
           <li class="<%='active' if current_page? account_details_customer_path %>">
-            <%= link_to 'Account Details', account_details_customer_path %>
+            <%= link_to 'Payment Details', account_details_customer_path %>
           </li>
           <!-- <li class="<%#='active' if current_page? reports_customer_path %>"> -->
             <%#= link_to 'Reports', reports_customer_path %>

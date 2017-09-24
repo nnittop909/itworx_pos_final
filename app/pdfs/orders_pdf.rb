@@ -4,6 +4,7 @@ class OrdersPdf < Prawn::Document
   def initialize(orders, from_date, to_date, view_context)
     super(margin: 20, page_size: [612, 1008], page_layout: :portrait)
     @orders = orders
+    @total_interest = Accounting::Account.find_by_name('Interest Income from Credit Sales').credit_entries.pluck(:amount).sum
     @from_date = from_date
     @to_date = to_date
     @view_context = view_context
@@ -61,10 +62,11 @@ class OrdersPdf < Prawn::Document
   end
   def heading_income_data
     [["INCOME (CASH): ", "#{price(@orders.select{|a| a.cash?}.map{|a| a.income}.sum)}", "", "", ""]] +
-    [["INCOME (CREDIT): ", "#{price(@orders.select{|a| a.credit?}.map{|a| a.income}.sum)}", "", "", ""]]
+    [["INCOME (CREDIT): ", "#{price(@orders.select{|a| a.credit?}.map{|a| a.income}.sum)}", "", "", ""]] +
+    [["INCOME (INTEREST): ", "#{price(@total_interest)}", "", "", ""]]
   end
   def income_total_data
-    [["INCOME (TOTAL): ", " #{price(@orders.map{|a| a.income}.sum)}", "", "", ""]]
+    [["INCOME (TOTAL): ", " #{price((@orders.map{|a| a.income}.sum)+(@total_interest))}", "", "", ""]]
   end
 
   def display_orders_table
@@ -88,7 +90,7 @@ class OrdersPdf < Prawn::Document
       stroke_horizontal_rule
       header = ["", "", "", "", "", "", ""]
       footer = ["", "", "", "", "", "", ""]
-      orders_data = @orders.map { |e| [e.date.strftime("%B %e, %Y \n%I:%M %p"), e.customer_name, price(e.total_amount_without_discount), price(e.total_discount), price(e.total_amount_less_discount), price(e.cost_of_goods_sold), price(e.income)]}
+      orders_data = @orders.map { |e| [e.date.strftime("%b %e, %Y \n%I:%M %p"), e.customer_name, price(e.total_amount_without_discount), price(e.total_discount), price(e.total_amount_less_discount), price(e.cost_of_goods_sold), price(e.income)]}
       table_data = [header, *orders_data, footer]
       table(table_data, cell_style: { size: 9, font: "Helvetica", inline_format: true, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
         cells.borders = [:top]

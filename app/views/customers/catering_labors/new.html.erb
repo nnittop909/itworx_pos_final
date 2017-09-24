@@ -27,7 +27,7 @@
             <div class="form-group has-success">
               <%=ff.input :amount, input_html: {class: 'input-lg' } %>
             </div>
-            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Salaries and Wages (Cost of Services)").id}, readonly: true, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Salaries and Wages)").id}, readonly: true, as: :hidden %>
           <% end %>
 
           <%=f.simple_fields_for :credit_amounts do |ff| %>

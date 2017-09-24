@@ -1,60 +1,46 @@
 <div class="row">
-	<div class="col-md-8 col-md-offset-2">
+	<div class="col-md-6 col-md-offset-3">
 		<div class="card">
 			<div class="card-header">
 				<div class="card-title">
-					<h4>Entry Details
-						<div class="pull-right">
-					  	<ul class="nav navbar-nav">
-					      <li class="dropdown">
-					        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> <i class="fa fa-cog"></i></a>
-					        <ul class="dropdown-menu dropdown-menu-right">
-					          <li><%=link_to 'Delete', accounting_entry_path(@entry), method: :delete, data: {confirm: 'Are you sure you want to DELETE this entry? THIS ACTION CANNOT BE UNDONE.'} %></li>
-					        </ul>
-					      </li>
-					    </ul>
-					  </div>
-					</h4>
+					<h4>Entry Details</h4>
 				</div>
 			</div>
 			<div class="card-body">
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2">
-						<p><strong>Date</strong></p>
-						<span>&nbsp &nbsp &nbsp<%=@entry.date.strftime("%B %e, %Y") %></span>
-						<hr>
-						<p><strong>Description</strong></p>
-						<span>&nbsp &nbsp &nbsp<%=@entry.description %></span><br>
-						<hr>
-						<p><strong>Member/Employee/Supplier:</strong></p>
-						<span>&nbsp &nbsp &nbsp<%=@entry.commercial_document.try(:full_name) %></span><br>
-						<hr>
-						<p><strong>Reference Number</strong></p>
-						<span>&nbsp &nbsp &nbsp<%=@entry.reference_number%></span>
-						<hr>
-						<p><strong>Debited Account(s)</strong></p>
-						<%@entry.debit_amounts.each do |d|%>
-							<div class="row">
-								<div class="col-md-12">
-									&nbsp &nbsp &nbsp<%=d.account.name %><span class="pull-right"><%=number_to_currency d.amount %></span>
-								</div>
-							</div>
-						<%end %>
-						<hr>
-
-						<p><strong>Credited Account(s)</strong></p>
-						<%@entry.credit_amounts.each do |d|%>
-							<div class="row">
-								<div class="col-md-12">
-									&nbsp &nbsp &nbsp<%=d.account.name %> <span class="pull-right"><%=number_to_currency d.amount %></span>
-								</div>
-							</div>
-						<% end %>
-						<br>
-						<div class="modal-footer">
-							<%= link_to "Back", accounting_entries_path, class: 'btn btn-default pull-left' %>
+				<p><strong>Date</strong></p>
+				<span>&nbsp &nbsp &nbsp<%=@entry.date.strftime("%B %e, %Y") %></span>
+				<hr>
+				<p><strong>Description</strong></p>
+				<span>&nbsp &nbsp &nbsp<%=@entry.description %></span><br>
+				<hr>
+				<p><strong>Member/Employee/Supplier:</strong></p>
+				<span>&nbsp &nbsp &nbsp<%=@entry.commercial_document.try(:full_name) %></span><br>
+				<hr>
+				<p><strong>Reference Number</strong></p>
+				<span>&nbsp &nbsp &nbsp<%=@entry.reference_number%></span>
+				<hr>
+				<p><strong>Debited Account(s)</strong></p>
+				<%@entry.debit_amounts.each do |d|%>
+					<div class="row">
+						<div class="col-md-12">
+							&nbsp &nbsp &nbsp<%=d.account.name %><span class="pull-right"><%=number_to_currency d.amount %></span>
 						</div>
 					</div>
+				<%end %>
+				<hr>
+
+				<p><strong>Credited Account(s)</strong></p>
+				<%@entry.credit_amounts.each do |d|%>
+					<div class="row">
+						<div class="col-md-12">
+							&nbsp &nbsp &nbsp<%=d.account.name %> <span class="pull-right"><%=number_to_currency d.amount %></span>
+						</div>
+					</div>
+				<% end %>
+				<br>
+				<div class="modal-footer">
+					<%= link_to "Back", accounting_entries_path, class: 'btn btn-default pull-left' %>
+					<%=link_to 'Delete Entry', accounting_entry_path(@entry), method: :delete, data: {confirm: 'Are you sure you want to DELETE this entry? THIS ACTION CANNOT BE UNDONE.'}, class: 'text-danger' %>
 				</div>
 			</div>
 		</div>

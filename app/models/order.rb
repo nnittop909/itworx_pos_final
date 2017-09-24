@@ -41,7 +41,7 @@ class Order < ApplicationRecord
         program = l.stock.product.program
         interest = (program.interest_rate / 100) * l.total_price
         InterestProgram.create(line_item_id: l.id, amount: interest)
-        Accounting::Entry.create(order_id: self.id, commercial_document_id: self.customer_id, 
+        Accounting::Entry.create(commercial_document_id: self.customer_id, 
         commercial_document_type: self.customer.class, date: self.date, 
         description: "Interest for order ##{self.reference_number}.", 
         debit_amounts_attributes: [{amount: interest, account: accounts_receivables_trade}], 
@@ -119,6 +119,10 @@ class Order < ApplicationRecord
 
   def total_amount_with_discount
     total_amount_without_discount + total_discount
+  end
+
+  def total_interest
+    Accounting::Account.find_by_name('Interest Income from Credit Sales').credit_entries.pluck(:amount).sum
   end
 
   def total_amount_less_discount

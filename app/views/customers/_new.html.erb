@@ -8,8 +8,8 @@
       <div class="modal-body">
         <ul class="errors text-danger">
         </ul>
-        <%=f.input :type, label: false, collection: Customer.types, as: :radio_buttons, checked: Member.types.first, item_label_class: "radio-inline", item_wrapper_tag: false %>
-        <div class="row">
+        <%=f.input :type, label: false, collection: Customer.types, as: :radio_buttons, checked: Member.types.first, item_label_class: "radio-inline", item_wrapper_tag: false, input_html: {id: "customer-type"} %>
+        <div class="row" id="member-name">
           <div class="col-md-4">
             <%=f.input :first_name %>
           </div>
@@ -19,6 +19,10 @@
           <div class="col-md-4">
             <%=f.input :middle_name %>
           </div>
+        </div>
+        <div id="organization-name" style="display: none">
+          <%=f.input :first_name, label: "Name" %>
+          <%=f.input :last_name, input_html: {value: "."}, as: :hidden  %>
         </div>
         <%=f.input :mobile %>
         <%=f.input :member_type, collection: Member.member_types.keys.to_a.map{|a| [a.titleize, a]}, as: :radio_buttons, checked: Member.member_types.keys.to_a.first, as: :hidden %>
@@ -51,3 +55,18 @@
     <% end %>
   </div>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('input').change(function() {
+      if ($('input[value="Organization"]').is(':checked')) {
+        $('#organization-name').show();
+        $('#member-name').hide();
+      }
+      else {
+        $('#organization-name').hide();
+        $('#member-name').show();
+      }
+    });
+  });
+</script>

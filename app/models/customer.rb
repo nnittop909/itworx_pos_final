@@ -53,8 +53,32 @@ class Customer < ApplicationRecord
     all.select { |c| c.program_subscriptions.present? }
   end
 
+  def self.compute_interests
+    customers = Member.with_credits
+    accounts_receivables_trade = Accounting::Account.find_by(name: "Accounts Receivables Trade - Current")
+    interest_income_from_credit_sales = Accounting::Account.find_by(name: "Interest Income from Credit Sales")
+
+    customers.each do |c|
+      c.line_items.each do |l|
+        program = l.stock.product.program
+        interest = (program.interest_rate / 100.0) * l.total_price
+        InterestProgram.create(line_item_id: l.id, amount: interest)
+        Accounting::Entry.create(commercial_document_id: self.customer_id, 
+        commercial_document_type: self.customer.class, date: self.date, 
+        description: "Interest of order ##{self.reference_number}.", 
+        debit_amounts_attributes: [{amount: interest, account: accounts_receivables_trade}], 
+        credit_amounts_attributes:[{amount: interest, account: interest_income_from_credit_sales}], 
+        employee_id: self.employee_id)
+      end
+    end
+  end
+
   def fullname
     "#{first_name} #{last_name}"
+  end
+
+  def credit_items
+    line_items.select { |l| l.order.pay_type == "credit" }
   end
 
   def self.with_credits
@@ -75,14 +99,22 @@ class Customer < ApplicationRecord
     # Accounting::Account.find_by_name("Accounts Receivables Trade - Current").entries.where(:commercial_document_id => self.id).map{|a| a.credit_amounts.pluck(:amount).sum}.sum
   end
 
+  def total_interest
+    Accounting::Account.find_by_name('Interest Income from Credit Sales').credit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
+  end
+
   def total_catering_expenses
     Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum + 
-    Accounting::Account.find_by_name('Salaries and Wages (Cost of Services)').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
+    Accounting::Account.find_by_name('Salaries and Wages').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
   end
 
   def catering_expenses
     Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc) +
-    Accounting::Account.find_by_name('Salaries and Wages (Cost of Services)').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
+    Accounting::Account.find_by_name('Salaries and Wages').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
+  end
+
+  def catering_cost
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
   end
 
   def total_payment

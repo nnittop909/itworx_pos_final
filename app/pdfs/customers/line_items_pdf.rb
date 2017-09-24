@@ -43,11 +43,11 @@ module Customers
     end
     def heading_data
       [["#{@member.full_name}", "", "Cash Transaction:", "#{price(@member.total_cash_transactions)}"]] +
-      [["#{@member.address_details || "Address: N/A"}", "", "Credit Transaction:", "#{price(@member.total_credit_transactions)}" ]] +
-      [["#{@member.mobile}", "", "Total Payment:", "#{price(@member.total_payment)}" ]] +
+      [["#{@member.address_details || "Address: N/A"}", "", "Credit Transaction:", "#{price(@member.total_credit_transactions - @member.total_interest)}" ]] +
+      [["#{@member.mobile}", "", "Total Interest:", "#{price(@member.total_interest)}" ]] +
+      [["", "", "Total Payment:", "#{price(@member.total_payment)}" ]] +
       [["", "", "Remaining Balance:", "#{price(@member.total_remaining_balance)}" ]] +
-      [["", "", "Total Discount:", "#{price(@member.total_discount)}" ]] +
-      [["", "", "", "" ]]
+      [["", "", "Total Discount:", "#{price(@member.total_discount)}" ]]
 
     end
 
@@ -137,7 +137,11 @@ module Customers
 
     def display_credit_line_items_table
       move_down 10
-      text "CREDIT TRANSACTIONS", size: 10, style: :bold
+      if @member.type == "Organization"
+        text "PURCHASES FROM STOCK", size: 10, style: :bold
+      else
+        text "CREDIT TRANSACTIONS", size: 10, style: :bold
+      end
       move_down 5
       if @orders.credit.blank?
         text "No orders data.", align: :center
@@ -152,21 +156,17 @@ module Customers
           column(4).align = :right
           column(5).align = :right
         end
-        stroke_horizontal_rule
-        move_down 5
-        @orders.credit.each do |order|
+        if @member.type == "Organization"
           header = ["", "", "", "", "", ""]
           footer = ["", "", "", "", "", ""]
-          move_down 3
-          text "Invoice Number: #{order.invoice_number.number}", size: 9, style: :bold
-          line_items_data = order.line_items.map { |e| [ 
-                e.created_at.strftime("%B %e, %Y"), 
-                "#{e.quantity} #{e.stock.product.unit}", 
-                e.stock.product.name_and_description, 
-                e.stock.try(:serial_number), 
-                price(e.unit_price), 
-                price(e.total_price) 
-              ]}
+          line_items_data = @member.credit_items.map { |e| [ 
+            e.created_at.strftime("%B %e, %Y"), 
+            "#{e.quantity} #{e.stock.product.unit}", 
+            e.stock.product.name_and_description, 
+            e.stock.try(:serial_number), 
+            price(e.unit_price), 
+            price(e.total_price) 
+          ]}
 
           table_data = [header, *line_items_data, footer]
           table(table_data, cell_style: { size: 9, font: "Helvetica", align: :center, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
@@ -178,6 +178,36 @@ module Customers
             column(3).align = :right
             column(4).align = :right
             column(5).align = :right
+          end
+
+        else
+          stroke_horizontal_rule
+          move_down 5
+          @orders.credit.each do |order|
+            header = ["", "", "", "", "", ""]
+            footer = ["", "", "", "", "", ""]
+            move_down 3
+            text "Invoice Number: #{order.invoice_number.number}", size: 9, style: :bold
+            line_items_data = order.line_items.map { |e| [ 
+                  e.created_at.strftime("%B %e, %Y"), 
+                  "#{e.quantity} #{e.stock.product.unit}", 
+                  e.stock.product.name_and_description, 
+                  e.stock.try(:serial_number), 
+                  price(e.unit_price), 
+                  price(e.total_price) 
+                ]}
+
+            table_data = [header, *line_items_data, footer]
+            table(table_data, cell_style: { size: 9, font: "Helvetica", align: :center, :padding => [2, 4, 2, 4]}, column_widths: TABLE_WIDTHS) do
+              cells.borders = [:top]
+              row(0).font_style = :bold
+              row(0).align = :center
+              column(0).align = :left
+              column(1).align = :right
+              column(3).align = :right
+              column(4).align = :right
+              column(5).align = :right
+            end
           end
         end
       end

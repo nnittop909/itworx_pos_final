@@ -102,7 +102,6 @@
                 <%= link_to 'Empty Cart', @cart, method: :delete, data: {confirm: 'Are you sure you want to empty cart?'}, class: "btn btn-danger btn-xs" %>
               </span>
             </h4>
-            <hr>
           <% end %>
         </div>
       </div>
@@ -148,7 +147,7 @@
                     <%=f.input :date, as: :string, input_html: {class: 'datepicker', value: Time.zone.now.strftime("%Y-%m-%d %I:%M %p")} %>
                   </div>
                 </div>
-                <%=f.input :discounted, as: :boolean, input_html: { id: 'order_discount'} %>
+                <%=f.input :discounted, as: :hidden, input_html: { id: 'order_discount'} %>
                 <div id="discount_details" style="display:none;">
                   <%=f.simple_fields_for :discount do |ff| %>
                     <div class="form-group has-warning">
@@ -185,7 +184,7 @@
     });
   });
 </script>
-<script>
+<!-- <script>
   var checkbox = document.getElementById('order_discount');
   var details_div = document.getElementById('discount_details');
   checkbox.onchange = function() {
@@ -195,4 +194,4 @@
        details_div.style['display'] = 'none';
      }
   };
-</script>
+</script> -->

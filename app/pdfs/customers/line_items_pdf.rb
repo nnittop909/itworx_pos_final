@@ -10,7 +10,7 @@ module Customers
       @to_date = to_date
       @view_context = view_context
       heading
-      if @member.catering_expenses.present?
+      if @member.catering_items.present?
         display_raw_material_purchases_table
       else
         display_cash_line_items_table
@@ -53,9 +53,9 @@ module Customers
 
     def display_raw_material_purchases_table
       move_down 10
-      text "CATERING PURCHASES & LABOR COST", size: 10, style: :bold
+      text "CATERING CHARGES", size: 10, style: :bold
       move_down 5
-      if @member.catering_expenses.blank?
+      if @member.catering_items.blank?
         text "No raw material purchases.", align: :center
       else
         header = [["DATE", "DESCRIPTION", "REFERENCE", "AMOUNT"]]
@@ -67,7 +67,7 @@ module Customers
         end
         header = ["", "", "", ""]
         footer = ["", "", "", ""]
-        catering_expenses_data = @member.catering_expenses.map { |e| [
+        catering_expenses_data = @member.catering_items.map { |e| [
           e.created_at.strftime("%B %e, %Y"), 
           e.description, 
           e.reference_number, 

@@ -104,13 +104,13 @@ class Customer < ApplicationRecord
   end
 
   def total_catering_expenses
-    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum + 
-    Accounting::Account.find_by_name('Salaries and Wages').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
+    Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.pluck(:amount).sum
   end
 
-  def catering_expenses
+  def catering_items
     Accounting::Account.find_by_name('Raw Material Purchases').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc) +
-    Accounting::Account.find_by_name('Salaries and Wages').debit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
+    Accounting::Account.find_by_name('Income from Service Operations').credit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc) +
+    Accounting::Account.find_by_name('Service Fees').credit_entries.where(commercial_document_id: self.id).distinct.order(date: :desc)
   end
 
   def catering_cost

@@ -60,8 +60,8 @@
 
         </tr>
       <% end %>
-      <% if @catering_expenses.present? %>
-        <% @catering_expenses.each do |expense| %>
+      <% if @catering_items.present? %>
+        <% @catering_items.each do |expense| %>
           <tr>
             <td><%=expense.date.strftime("%B %e, %Y") %></td>
             <td colspan="4"><%=expense.description %></td>

@@ -46,7 +46,7 @@ class CustomersController < ApplicationController
     @member = Customer.find(params[:id])
     @cash_transactions = @member.orders.order(date: :desc).page(params[:page]).per(50)
     @credit_orders = @member.credit_items
-    @catering_expenses = @member.catering_expenses
+    @catering_items = @member.catering_items
     respond_to do |format|
       format.html
       format.pdf do

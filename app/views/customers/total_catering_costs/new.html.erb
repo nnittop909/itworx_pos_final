@@ -19,7 +19,7 @@
               <%=f.input :reference_number %>
             </div>
           </div>
-          <%=f.input :description, as: :text, input_html: {value: 'Catering cost'} %>
+          <%=f.input :description, as: :hidden, input_html: {value: 'Service Fee'} %>
 
           <%=f.simple_fields_for :debit_amounts do |ff| %>
             <div class="row">
@@ -37,7 +37,7 @@
               </div>
             </div>
             <div class="form-group has-success">
-              <label class="text-success">Gain</label>
+              <label class="text-success">Service Fee / Gain</label>
               <input id="gain" class="form-control input-lg"  readonly="readonly">
             </div>
             <%=ff.input :amount, input_html: {class: 'input-lg', id: 'debit-amount' }, as: :hidden %>
@@ -50,7 +50,7 @@
           <% end %>
         
           <div class="modal-footer">
-            <%= f.submit 'Save Expense', class: "btn btn-primary" %>
+            <%= f.submit 'Save Entry', class: "btn btn-primary" %>
             <span class="pull-left">
               <%=link_to 'Cancel', purchases_customer_path(@member), class: 'btn btn-default' %>
             </span>

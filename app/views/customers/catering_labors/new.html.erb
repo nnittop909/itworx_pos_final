@@ -27,7 +27,7 @@
             <div class="form-group has-success">
               <%=ff.input :amount, input_html: {class: 'input-lg' } %>
             </div>
-            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current)").id}, readonly: true, as: :hidden %>
+            <%=ff.association :account, input_html: { value: Accounting::Account.find_by(name: "Accounts Receivables Trade - Current").id}, readonly: true, as: :hidden %>
           <% end %>
 
           <%=f.simple_fields_for :credit_amounts do |ff| %>
@@ -36,7 +36,7 @@
           <% end %>
         
           <div class="modal-footer">
-            <%= f.submit 'Save Expense', class: "btn btn-primary" %>
+            <%= f.submit 'Save Entry', class: "btn btn-primary" %>
             <span class="pull-left">
               <%=link_to 'Cancel', purchases_customer_path(@member), class: 'btn btn-default' %>
             </span>
